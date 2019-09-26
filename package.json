@@ -22,7 +22,13 @@
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "typescript": "^3.4.3",
-    "vue-template-compiler": "^2.6.10"
+    "pug": "2.0.3",
+    "pug-plain-loader": "1.0.0",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "4.29.6",
+    "webpack-cli": "3.3.0",
+    "webpack-laravel-mix-manifest": "2.0.1",
+    "webpack-notifier": "1.7.0"
   },
   "postcss": {
     "plugins": {

@@ -1,13 +1,24 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+layout
+  router-view
 </template>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import Layout from "@/components/base/BaseLayout.vue";
 
+interface RouteParams {
+  pair: string;
+}
+
+@Component({
+  components: {
+    Layout,
+  },
+})
+export default class App extends Vue {
+
+}
+</script>
 <style lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
