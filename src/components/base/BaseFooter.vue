@@ -1,11 +1,9 @@
 <template lang="pug">
 include ../../lib/pugDeps.pug
 
-+b.BaseLayout
-    +e.BASEHEADER.header
-    +e.MAIN.main
-        +e.container: slot/
-    +e.BASEFOOTER.footer
++b.BaseFooter
+    | sdfksdljfksdjf
+
 </template>
 
 <script>
@@ -17,6 +15,12 @@ export default class BaseFooter extends Vue {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.BaseFooter {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 20px 74px;
+}
 </style>
