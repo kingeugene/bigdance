@@ -1,0 +1,107 @@
+@import "./vars";
+
+/*Sizes*/
+$w-large-desktop: 1440px;
+$w-middle-desktop: 1200px;
+$w-desktop: 992px;
+$w-tablet: 768px;
+$w-mobile: 414px;
+
+$h-Header: 60px;
+$h-Footer: 60px;
+
+/*Z-indexes*/
+$defaultFontSize: 16;
+$borderRadius: 10px;
+
+@mixin bp($point) {
+  @if $point == s {
+    @media (min-width: $w-mobile) {
+      @content;
+    }
+  } @else if $point == m {
+    @media (min-width: $w-tablet) {
+      @content;
+    }
+  } @else if $point == l {
+    @media (min-width: $w-desktop) {
+      @content;
+    }
+  } @else if $point == md {
+    @media (min-width: $w-middle-desktop) {
+      @content;
+    }
+  } @else if $point == xl {
+    @media (min-width: $w-large-desktop) {
+      @content;
+    }
+  } @else if $point {
+    // allows custom breakpoints
+    @media (min-width: $point) {
+      @content;
+    }
+  }
+}
+
+@mixin font($size: $defaultFontSize, $color: false, $weight: false) {
+  
+  font-size: #{$size}px;
+
+  @if $color != false {
+    color: #{$color};
+  }
+
+  @if $weight != false {
+    font-weight: $weight;
+  }
+}
+
+@mixin Light($color, $size: $defaultFontSize) {
+  @include font($size, $color, 300);
+}
+
+@mixin Reg($color, $size: $defaultFontSize) {
+  @include font($size, $color, 400);
+}
+
+@mixin Bold($color, $size: $defaultFontSize) {
+  @include font($size, $color, 700);
+}
+
+@mixin Semibold($color, $size: $defaultFontSize) {
+  @include font($size, $color, 600);
+}
+
+@mixin boxShadow($blurRadius: 10px, $y: 4px) {
+  box-shadow: 0 $y $blurRadius rgba(0, 0, 0, .16);
+}
+
+@mixin button($color-var, $bgcolor-var, $border-color-var) {
+  @include Semibold($color-var, 14);
+  background-color: $bgcolor-var;
+  border: 1px solid $border-color-var;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.68rem 2.8rem;
+  cursor: pointer;
+  text-align: center;
+  border-radius: $borderRadius;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(.165, .84, .44, 1);
+
+  &:focus,
+  &:hover,
+  &:active {
+    outline: none;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .3);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: darken($bgcolor-var, 0.2);
+    pointer-events: none;
+  }
+}
+

@@ -4,14 +4,14 @@ include ../../lib/pugDeps.pug
 +b.BaseLayout
     +e.BASEHEADER.header
     +e.MAIN.main
-        +e.container: slot/
+        +e.container.container: slot/
     +e.BASEFOOTER.footer
 </template>
 
 <script>
 import { Component, Vue } from "vue-property-decorator";
-import baseheader from "../../components/base/BaseHeader";
-import basefooter from "../../components/base/BaseFooter";
+import baseheader from "@/components/base/BaseHeader.vue";
+import basefooter from "@/components/base/BaseFooter.vue";
 
 @Component({
     components: {
@@ -38,7 +38,7 @@ export default class BaseLayout extends Vue {
     }
 
     &__main {
-        padding-top: 60px;
+        padding: 60px 0;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
@@ -46,11 +46,10 @@ export default class BaseLayout extends Vue {
     }
 
     &__container {
-        padding-left: 15px;
-        padding-right: 15px;
-        flex-grow: 1;
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
+        padding-top: 30px;
     }
 }
 </style>
