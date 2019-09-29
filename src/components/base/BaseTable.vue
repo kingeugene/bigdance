@@ -1,26 +1,26 @@
 <template lang="pug">
 include ../../lib/pugDeps.pug
-
-+b.TABLE.BaseTable
-    +e.THEAD.head(:class="`is-${colorTable}`")
-        +e.TR.th-row.is-daysWeek
-            +e.TH.th-cell.is-number(rowspan="2") Дата
-            +e.TH.th-cell(
-                :colspan="numHalls"
-                v-for="(cell, index) of 7"
-            ) {{ daysWeek[index] }}
-        +e.TR.th-row.is-halls
-            +e.TH.th-cell(
-                v-for="(cell, index) of 7 * numHalls"
-            ) Зал {{halsTurn(index + 1)}}
-    +e.TBODY.tbody
-        +e.TR.tr-row(
-            v-for="(item, index) of quantityTime"
-        )
-            +e.TD.td-cell.is-number {{timeCurrent(index)}}
-            +e.TD.td-cell(
-                v-for="(cell, index) of 7 * numHalls"
-            ) Занятия
+.BaseTableWrap
+    +b.TABLE.BaseTable
+        +e.THEAD.head(:class="`is-${colorTable}`")
+            +e.TR.th-row.is-daysWeek
+                +e.TH.th-cell.is-number(rowspan="2") Дата
+                +e.TH.th-cell(
+                    :colspan="numHalls"
+                    v-for="(cell, index) of 7"
+                ) {{ daysWeek[index] }}
+            +e.TR.th-row.is-halls
+                +e.TH.th-cell(
+                    v-for="(cell, index) of 7 * numHalls"
+                ) Зал {{halsTurn(index + 1)}}
+        +e.TBODY.tbody
+            +e.TR.tr-row(
+                v-for="(item, index) of quantityTime"
+            )
+                +e.TD.td-cell.is-number {{timeCurrent(index)}}
+                +e.TD.td-cell(
+                    v-for="(cell, index) of 7 * numHalls"
+                ) Занятия
 
 </template>
 
@@ -77,6 +77,10 @@ timeCurrent(i: number): string {
     table-layout: fixed;
     border-collapse: collapse;
     margin-top: 40px;
+
+    &Wrap {
+        overflow-x: auto;
+    }
 
     &,
     th,

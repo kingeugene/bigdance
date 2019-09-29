@@ -54,8 +54,6 @@ get colorTable(): string {
 
 <style lang="scss" scoped>
 .Timetable {
-  overflow-x: auto;
-
   &__filter {
     margin-top: 30px;
   }
