@@ -85,6 +85,8 @@ timeCurrent(i: number): string {
     }
 
     &__head {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+
         &.is-orange {
             background: $orange;
         }
@@ -101,6 +103,12 @@ timeCurrent(i: number): string {
 
     &__th-cell {
         padding: 8px 0;
+    }
+
+    &__tr-row {
+        &:hover {
+            background-color: #f9f9f9;
+        }
     }
 
 }
