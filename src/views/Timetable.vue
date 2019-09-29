@@ -22,7 +22,7 @@ include ../lib/pugDeps.pug
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import basetable from "@/components/base/BaseTable.vue"
+import basetable from "@/components/base/BaseTable.vue";
 
 @Component({
   components: {
@@ -33,15 +33,15 @@ export default class Timetable extends Vue {
 studios: {name: string, color: string}[] = [
         {
           name: "Студия Подол",
-          color: "orange"
+          color: "orange",
         },
         {
           name: "Студия Театральная",
-          color: "violet"
+          color: "violet",
         },
         {
           name: "Студия Институт физкультуры",
-          color: "blue"
+          color: "blue",
         },
 ];
 
