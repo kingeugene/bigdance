@@ -1,8 +1,8 @@
 <template lang="pug">
 include ../../lib/pugDeps.pug
 
-+b.TABLE.BaseTable(:style="{width: `${1200 * numHalls}px`}")
-    +e.THEAD.head
++b.TABLE.BaseTable
+    +e.THEAD.head(:class="`is-${colorTable}`")
         +e.TR.th-row.is-daysWeek
             +e.TH.th-cell.is-number(rowspan="2") Дата
             +e.TH.th-cell(
@@ -21,8 +21,6 @@ include ../../lib/pugDeps.pug
             +e.TD.td-cell(
                 v-for="(cell, index) of 7 * numHalls"
             ) Занятия
-
-
 
 </template>
 
@@ -45,6 +43,7 @@ daysWeek: string[] = [
 @Prop({type: Number, default: 510}) startTime!: number;
 @Prop({type: Number, default: 1320}) endTime!: number;
 @Prop({type: Number, default: 30}) gapTime!: number;
+@Prop({type: String, default: "orange"}) colorTable!: number;
 
 get quantityTime(): number {
     return Math.round((this.endTime - this.startTime + this.gapTime) / this.gapTime);
@@ -82,16 +81,27 @@ timeCurrent(i: number): string {
     &,
     th,
     td {
-        border: 1px solid black;
+        border: 1px solid #f2f2f2;
+    }
+
+    &__head {
+        &.is-orange {
+            background: $orange;
+        }
     }
 
     &__th-cell, &__td-cell {
-        width: 100%;
+        min-width: 150px;
         text-align: center;
 
         &.is-number {
-            width: 90px;
+            min-width: 90px;
         }
     }
+
+    &__th-cell {
+        padding: 8px 0;
+    }
+
 }
 </style>

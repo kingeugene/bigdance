@@ -14,6 +14,7 @@ include ../lib/pugDeps.pug
     :startTime="510"
     :endTime="1320"
     :gapTime="30"
+    :colorTable="colorTable"
   )
 
 
@@ -43,6 +44,10 @@ studios: {name: string, color: string}[] = [
           color: "blue"
         },
 ];
+
+get colorTable(): string {
+  return "orange";
+}
 
 }
 </script>
