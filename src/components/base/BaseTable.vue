@@ -9,7 +9,7 @@ include ../../lib/pugDeps.pug
                     :colspan="numHalls"
                     v-for="(cell, index) of 7"
                 ) {{ daysWeek[index] }}
-            +e.TR.th-row.is-halls
+            +e.TR.th-row.is-hall
                 +e.TH.th-cell(
                     v-for="(cell, index) of 7 * numHalls"
                 ) Зал {{halsTurn(index + 1)}}
@@ -19,8 +19,9 @@ include ../../lib/pugDeps.pug
             )
                 +e.TD.td-cell.is-number {{timeCurrent(index)}}
                 +e.TD.td-cell(
+                    @click="myblock(event)"
                     v-for="(cell, index) of 7 * numHalls"
-                ) Занятия
+                )
 
 </template>
 
@@ -76,7 +77,6 @@ timeCurrent(i: number): string {
 .BaseTable {
     table-layout: fixed;
     border-collapse: collapse;
-    margin-top: 40px;
 
     &Wrap {
         overflow-x: auto;

@@ -12,7 +12,9 @@ import Layout from "@/components/base/BaseLayout.vue";
   },
 })
 export default class App extends Vue {
-
+    get test(): any {
+        return this.$router
+    }
 }
 </script>
 
