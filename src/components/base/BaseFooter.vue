@@ -18,6 +18,7 @@ export default class BaseFooter extends Vue {
 
 <style lang="scss" scoped>
 .BaseFooter {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

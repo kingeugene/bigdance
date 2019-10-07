@@ -9,6 +9,10 @@ include ../lib/pugDeps.pug
             v-for="item in studios"
             :class="`is-${item.color}`"
             ) {{ item.name }}
+        datepicker(
+            inline
+            maximum-view="month"
+        )
     +e.time
         +e.dataTable(:class="`is-${colorTable}`") Data
         +e.timeBlock(:style="{'top': `-${scrollTime}px`}" :class="`is-${colorTable}`")
@@ -26,11 +30,9 @@ include ../lib/pugDeps.pug
                   ) Зал {{halsTurn(index + 1)}}
         +e.TBODY.tbody
             +e.TR.tr-row(
-                testH
                 v-for="(item, index) of quantityTime"
             )
                 +e.TD.td-cell(
-                    @click="myblock(event)"
                     v-for="(cell, index) of 7 * numHalls"
                 )
 
@@ -39,12 +41,14 @@ include ../lib/pugDeps.pug
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import basetable from "@/components/base/BaseTable.vue";
+import datepicker from "vuejs-datepicker";
 import { throttle } from "lodash";
 
 @Component({
-  components: {
-    basetable,
-  },
+    components: {
+        basetable,
+        datepicker,
+    },
 })
 export default class Timetable extends Vue {
     numHalls: number = 2;
@@ -123,9 +127,10 @@ export default class Timetable extends Vue {
 .Timetable {
     $root: &;
     display: flex;
+    overflow: hidden;
 
     &__filter {
-        min-width: 260px;
+        min-width: 320px;
         margin: 20px;
     }
 
@@ -163,6 +168,9 @@ export default class Timetable extends Vue {
     }
 
     &__timeBlock, &__dataTable {
+        padding: 0 10px;
+        text-align: center;
+
         &.is-orange {
             background: $orange;
         }
@@ -170,6 +178,7 @@ export default class Timetable extends Vue {
 
     &__time {
         padding-top: 2px;
+        height: calc(100vh - 204px);
 
         &Block {
             position: relative;
@@ -179,12 +188,12 @@ export default class Timetable extends Vue {
         }
 
         &Number {
-            top: -12px;
+            top: -5px;
             position: relative;
         }
     }
 
-    &__dataTable {
+    & &__dataTable {
         padding: 22px 0;
         height: 83px;
         z-index: 9;
