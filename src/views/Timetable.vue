@@ -2,7 +2,7 @@
 include ../lib/pugDeps.pug
 
 +b.Timetable
-    +e.filter
+    +e.filter(v-if="showFilter")
         h1 Расписание
         +e.studios
             +e.BUTTON.studiosBtn(
@@ -26,20 +26,25 @@ include ../lib/pugDeps.pug
                 ) {{ daysWeek[index] }}
                 +e.TR.th-row.is-halls
                     +e.TH.th-cell(
-                        v-for="(cell, index) of 7 * numHalls"
+                        v-for="(cell, index) of allDays"
                   ) Зал {{halsTurn(index + 1)}}
         +e.TBODY.tbody
             +e.TR.tr-row(
-                v-for="(item, index) of quantityTime"
+                v-for="(item, index1) of quantityTime"
+                :class="{'green': index1 % 3 === 0 && index1 % 2 === 0}"
             )
                 +e.TD.td-cell(
-                    v-for="(cell, index) of 7 * numHalls"
+                    v-for="(cell, index) of allDays"
                 )
+                    div(v-if="index % 3 === 0 && index1 % 2 === 0" class="greenInd") Индива </br> {{timeCurrent(index1)}} до {{timeCurrent(index1 + 1)}}
+                    div(v-else-if="index % 2 === 0 && index1 % 3 === 0" class="redInd") Общие занятия </br> {{timeCurrent(index1)}} до {{timeCurrent(index1 + 1)}}
+
 
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import { State } from "vuex-class";
 import basetable from "@/components/base/BaseTable.vue";
 import datepicker from "vuejs-datepicker";
 import { throttle } from "lodash";
@@ -82,8 +87,14 @@ export default class Timetable extends Vue {
             },
     ];
 
+    @State(state => state.baseTable.show) showFilter!: boolean;
+
+    get allDays(): number {
+        return this.numHalls * 7;
+    }
+
     get colorTable(): string {
-        return "orange";
+        return "blue ";
     }
 
     get quantityTime(): number {
@@ -174,11 +185,18 @@ export default class Timetable extends Vue {
         &.is-orange {
             background: $orange;
         }
+
+        &.is-violet {
+            background: $violet;
+        }
+
+        &.is-blue {
+            background: $blue;
+        }
     }
 
     &__time {
-        padding-top: 2px;
-        height: calc(100vh - 204px);
+        height: calc(100vh - 120px);
 
         &Block {
             position: relative;
@@ -194,11 +212,12 @@ export default class Timetable extends Vue {
     }
 
     & &__dataTable {
+        position: relative;
         padding: 22px 0;
         height: 83px;
-        z-index: 9;
-        position: relative;
+        z-index: 99;
         color: #fff;
+        border-top: 2px solid;
     }
 
     &__td-data {
@@ -215,10 +234,26 @@ export default class Timetable extends Vue {
         th,
         td {
             border: 1px solid #f2f2f2;
+            color: #fff;
         }
 
         td {
-            padding: 50px 0;
+            height: 101px;
+        }
+
+        .greenInd {
+            background: green;
+        }
+
+        .redInd {
+            background-color: red;
+        }
+
+        &__td-cell div {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         &__head {
@@ -232,13 +267,13 @@ export default class Timetable extends Vue {
             }
 
             &.is-violet {
-                #{$root}__th-row {
+                .Table__th-row {
                     background: $violet;
                 }
             }
 
             &.is-blue {
-                #{$root}__th-row {
+                .Table__th-row {
                     background: $blue;
                 }
             }
@@ -261,6 +296,10 @@ export default class Timetable extends Vue {
 
         &__th-cell {
             padding: 8px 0;
+
+            &.green {
+                background: green;
+            }
         }
 
         &__tr-row {
