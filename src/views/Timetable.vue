@@ -46,13 +46,13 @@ include ../lib/pugDeps.pug
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { State } from "vuex-class";
 import basetable from "@/components/base/BaseTable.vue";
-import datepicker from "vuejs-datepicker";
+// import datepicker from "vuejs-datepicker";
 import { throttle } from "lodash";
 
 @Component({
     components: {
         basetable,
-        datepicker,
+        // datepicker,
     },
 })
 export default class Timetable extends Vue {

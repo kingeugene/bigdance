@@ -17,11 +17,11 @@ include ../../lib/pugDeps.pug
 import { Component, Vue } from 'vue-property-decorator';
 import { State, Mutation } from "vuex-class";
 
-import arrow from "@/icons/arrow.svg"
+// import arrow from "@/icons/arrow.svg"
 
 @Component({
     components: {
-        arrow,
+        // arrow,
     }
 })
 export default class BaseHeader extends Vue {
