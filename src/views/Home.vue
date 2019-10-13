@@ -20,7 +20,7 @@ export default class Home extends Vue {}
 .Welcome {
     &__icon {
         width: 100%;
-        max-width: 720px;
+        max-width: 600px;
         margin: 100px;
 
         &Wrap {

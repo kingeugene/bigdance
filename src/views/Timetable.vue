@@ -3,12 +3,28 @@ include ../lib/pugDeps.pug
 
 +b.Timetable
     +e.filter(v-if="showFilter")
-        h1 Расписание
         +e.studios
             +e.BUTTON.studiosBtn(
             v-for="item in studios"
             :class="`is-${item.color}`"
+            @click="changeColor(item.color)"
             ) {{ item.name }}
+
+        +e.select
+            +e.selectName Выбрать учителя
+            v-select(
+                :options="daysWeek"
+                v-model="selectedTicher"
+                label="country"
+            )
+
+        +e.select
+            +e.selectName Выбрать клиента
+            v-select(
+                :options="daysWeek"
+                v-model="selectedChild"
+                label="country"
+            )
         datepicker(
             inline
             maximum-view="month"
@@ -45,13 +61,11 @@ include ../lib/pugDeps.pug
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { State } from "vuex-class";
-import basetable from "@/components/base/BaseTable.vue";
 import datepicker from "vuejs-datepicker";
 import { throttle } from "lodash";
 
 @Component({
     components: {
-        basetable,
         datepicker,
     },
 })
@@ -62,6 +76,9 @@ export default class Timetable extends Vue {
     gapTime: number = 60;
     scrollHead: number = 0;
     scrollTime: number = 0;
+    colorTable: string = "blue";
+    selectedTicher: string = "";
+    selectedChild: string = "";
 
     daysWeek: string[] = [
         "Понедельник",
@@ -93,10 +110,6 @@ export default class Timetable extends Vue {
         return this.numHalls * 7;
     }
 
-    get colorTable(): string {
-        return "blue ";
-    }
-
     get quantityTime(): number {
         return Math.round((this.endTime - this.startTime + this.gapTime) / this.gapTime);
     }
@@ -126,6 +139,10 @@ export default class Timetable extends Vue {
         this.scrollHead = document.querySelector(".Table__tbody")!.scrollLeft;
     }
 
+    changeColor(color: string): void {
+        this.colorTable = color;
+    }
+
     mounted() {
         let testT = document.querySelector(".Table__tbody");
         testT!.addEventListener("scroll", throttle(this.handleScroll, 50));
@@ -141,7 +158,7 @@ export default class Timetable extends Vue {
     overflow: hidden;
 
     &__filter {
-        min-width: 320px;
+        min-width: 300px;
         margin: 20px;
     }
 
@@ -154,6 +171,7 @@ export default class Timetable extends Vue {
             margin-bottom: 15px;
             border-radius: 5px;
             box-shadow: 0 10px 10px rgba(0, 0, 0, .3);
+            outline:none;
             @include font(14, $white);
 
             &:not(:last-child) {
@@ -176,6 +194,10 @@ export default class Timetable extends Vue {
                 background: $blue;
             }
         }
+    }
+
+    &__select {
+        margin: 20px 0;
     }
 
     &__timeBlock, &__dataTable {
@@ -229,6 +251,7 @@ export default class Timetable extends Vue {
         table-layout: fixed;
         border-collapse: collapse;
         overflow: hidden;
+        transition: 3s;
 
         &,
         th,
