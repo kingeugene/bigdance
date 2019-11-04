@@ -5,7 +5,7 @@ include ../../lib/pugDeps.pug
     +e.BASEHEADER.header
     +e.MAIN.main
         +e.container(:class="{'container': haveContainerClass}"): slot/
-    +e.BASEFOOTER.footer
+    +e.BASEFOOTER.footer(v-if="haveContainerClass")
 </template>
 
 <script lang="ts">

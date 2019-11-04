@@ -57,14 +57,14 @@ include ../lib/pugDeps.pug
                 v-for="(item, indexTr) of quantityTime"
             )
                 +e.TD.td-cell(
-                    v-for="(cell, indexTd) of allDays"
                     :id="classTd(indexTd, indexTr)"
+                    v-for="(cell, indexTd) of allDays"
                 )
                     +e.timeCurrent
                         +e.timeCurrentDefault(
                             @click="showModal(indexTr, indexTd)"
                         )
-                            | {{timeCurrent(indexTr)}}
+                            | {{timeCurrent(indexTr)}}-{{timeCurrent(indexTr + 1)}}
                     +e.timeCurrentModal(
                         @click="showModalCurrent(indexTr, indexTd)"
                     )
@@ -232,7 +232,7 @@ export default class Timetable extends Vue {
     startTime: number = 510;
     endTime: number = 1320;
     gapTime: number = 30;
-    oneMinInPx: number = 102 / this.gapTime;
+    oneMinInPx: number = 101 / this.gapTime;
     scrollHead: number = 0;
     scrollTime: number = 0;
     colorTable: string = "blue";
@@ -314,19 +314,46 @@ export default class Timetable extends Vue {
     addData(): any {
         for (let objData in this.dataTable) {
             for (let halls in this.dataTable[objData] as any) {
-                let idStr = objData + halls;
+                for (let idTrain in this.dataTable[objData][halls]) {
+                    let idStr = objData + halls,
+                        startTrain = Number(this.dataTable[objData][halls as any][idTrain as any]["startTraining" as any]),
+                        endTrain = Number(this.dataTable[objData][halls as any][idTrain as any]["endTraining" as any]),
+                        typeTrain: number = this.dataTable[objData][halls][idTrain].typeTraining,
+                        nameTeacher: string = this.dataTable[objData][halls as any][idTrain as any]["nameTeacher" as any],
+                        colorItem = null;
 
-                let testDone = document.getElementById(idStr),
-                    createdBlock = document.createElement("div");
+                    if (typeTrain === 0) {
+                        colorItem = "green";
+                    }
 
-                createdBlock.classList.add("is-full");
+                    switch (typeTrain) {
+                        case 0:
+                            colorItem = "green";
+                            break;
+                        case 1:
+                            colorItem = "red";
+                            break;
+                        case 2:
+                            colorItem = "yellow";
+                            break;
+                        case 3:
+                            colorItem = "lightgray";
+                            break;
+                    }
 
-                let startPosition = ((parseInt(this.dataTable[objData][halls as any]["training1" as any]["startTraining" as any])) - (this.startTime )) * this.oneMinInPx;
+                    let testDone = document.getElementById(idStr),
+                        itemData = document.createElement("div"),
+                        startPosition = (startTrain - this.startTime) * this.oneMinInPx,
+                        heightItem = (endTrain - Number(this.dataTable[objData][halls as any][idTrain as any]["startTraining" as any])) * this.oneMinInPx - 1;
 
-                createdBlock.style.top = startPosition + "px";
-                createdBlock.innerText = "Done";
+                    itemData!.style.top = startPosition + "px";
+                    itemData!.style.height = heightItem + "px";
+                    itemData!.style.background = colorItem;
+                    itemData!.innerHTML = `${this.minInTime(startTrain)}-${this.minInTime(endTrain)} <div>${nameTeacher}</div>`;
+                    itemData!.classList.add("is-full");
 
-                testDone!.appendChild(createdBlock)
+                    testDone!.appendChild(itemData);
+                }
             }
         }
 
@@ -342,8 +369,12 @@ export default class Timetable extends Vue {
     }
 
     timeCurrent(i: number): string {
-        let time: number = this.startTime + (i * this.gapTime),
-            mins: number | string = time % 60,
+        let time: number = this.startTime + (i * this.gapTime);
+        return this.minInTime(time);
+    }
+
+    minInTime(time: number): string {
+        let mins: number | string = time % 60,
             hours: number | string  = (time - mins) / 60;
 
         if (mins < 10)  mins = '0' + mins;
@@ -382,7 +413,7 @@ export default class Timetable extends Vue {
     }
 
     showModalCurrent(indexTr: number, indexTd: number) {
-        this.currentChangeArr = this.classTd(indexTr, indexTd);
+        console.error("sdasd");
 
         this.$modal.show('modal-changed');
     }
@@ -482,8 +513,6 @@ export default class Timetable extends Vue {
     }
 
     &__time {
-        height: calc(100vh - 120px);
-
         &Block {
             position: relative;
             display: flex;
@@ -579,7 +608,7 @@ export default class Timetable extends Vue {
 
         &__tbody {
             display: block;
-            height: calc(100vh - 204px);
+            height: calc(100vh - 146px);
             overflow: auto;
         }
 
@@ -587,7 +616,7 @@ export default class Timetable extends Vue {
             color: grey;
 
             &Modal {
-                position: relative;
+                display: none;
             }
         }
 
@@ -610,6 +639,8 @@ export default class Timetable extends Vue {
         }
 
         &__tr-row {
+            transition: .2s;
+
             &:hover {
                 background-color: #f9f9f9;
             }
@@ -664,10 +695,23 @@ export default class Timetable extends Vue {
             .is-full {
                 position: absolute;
                 top: 0;
-                width: 148px;
+                color: black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                left: 6px;
+                right: 6px;
                 height: 100px;
-                background: red;
+                border: 2px solid white;
                 z-index: 9;
+                transition: .2s;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 2px 20px rgba(0, 0, 0, .5);
+                }
             }
         }
     }
