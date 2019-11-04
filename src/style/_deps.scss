@@ -44,7 +44,7 @@ $borderRadius: 10px;
 }
 
 @mixin font($size: $defaultFontSize, $color: false, $weight: false) {
-  
+
   font-size: #{$size}px;
 
   @if $color != false {

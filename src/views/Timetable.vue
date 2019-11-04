@@ -59,11 +59,10 @@ include ../lib/pugDeps.pug
                 +e.TD.td-cell(
                     :id="classTd(indexTd, indexTr)"
                     v-for="(cell, indexTd) of allDays"
+                    @click="showModal(indexTr, indexTd)"
                 )
                     +e.timeCurrent
-                        +e.timeCurrentDefault(
-                            @click="showModal(indexTr, indexTd)"
-                        )
+                        +e.timeCurrentDefault
                             | {{timeCurrent(indexTr)}}-{{timeCurrent(indexTr + 1)}}
                     +e.timeCurrentModal(
                         @click="showModalCurrent(indexTr, indexTd)"
@@ -77,68 +76,75 @@ include ../lib/pugDeps.pug
         scrollable
         resizable
     )
-        +e.modalDate
-            datepicker2(
-                lang="ru"
-                v-model="dateModal"
-                valueType="format"
-                clearable
-                :first-day-of-week="1"
-                format="DD-MM-YYYY"
-            )
-        +e.modalTime
-            | Время начала
-            v-select(
-                :options="allTime"
-                v-model="selectTimeStart"
-            )
 
-        +e.modalTime
-            | Время окончания
-            v-select(
-                :options="allTime"
-                v-model="selectTimeEnd"
-            )
+        +e.modalWrap
+            +e.modalDate
+                | Дата
+                datepicker2(
+                    lang="ru"
+                    v-model="dateModal"
+                    valueType="format"
+                    clearable
+                    :first-day-of-week="1"
+                    format="DD-MM-YYYY"
+                )
+            +e.modalTime
+                | Начало
+                input(
+                    type="tel"
+                    v-mask="'##:##'"
+                    v-model="selectTimeStart"
+                )
 
-        +e.select
-            +e.selectName Выбрать учителя
-            v-select(
-                :options="teacher"
-                v-model="selectTeacherModal"
-            )
+            +e.modalTime
+                | Окончания
+                input(
+                    type="tel"
+                    v-mask="'##:##'"
+                    v-model="selectTimeEnd"
+                )
 
-        +e.select
-            +e.selectName Выбрать клиента
-            v-select(
-                :options="clients"
-                v-model="selectedChildModal"
-            )
-        +e.select
-            +e.selectName Выбрать тип занятия
-            v-select(
-                :options="typeLessons"
-                v-model="currentType"
-            )
+        +e.modalWrap
+            +e.select
+                +e.selectName Выбрать учителя
+                v-select(
+                    :options="teacher"
+                    v-model="selectTeacherModal"
+                )
 
-        +e.select
-            +e.selectName Выбрать зал
-            v-select(
-                :options="halls"
-                v-model="currentHall"
-            )
-        +e.modalStatus
-            +e.INPUT(type="checkbox" v-model="statusModal")
-            | Статус
+            +e.select
+                +e.selectName Выбрать клиента
+                v-select(
+                    :options="clients"
+                    v-model="selectedChildModal"
+                )
+        +e.modalWrap
+            +e.select.is-type
+                +e.selectName Тип занятия
+                v-select(
+                    :options="typeLessons"
+                    v-model="currentType"
+                )
 
-        +e.modalWeek
-            +e.modalWeekName Введите количество недель (для регулярных занятий)
-            +e.INPUT(type="text" v-model="quantityWeek")
+            +e.select.is-halls
+                +e.selectName Зал
+                v-select(
+                    :options="halls"
+                    v-model="currentHall"
+                )
+        +e.modalWrap
+            +e.modalWeek
+                +e.modalWeekName Кол-во недель
+                +e.INPUT(type="text" v-model="quantityWeek")
+            +e.modalStatus
+                +e.INPUT(type="checkbox" v-model="statusModal")
+                | Статус
 
-        +e.modalNotes
-            +e.modalNotesName Справка
-            +e.TEXTAREA.modalNotesText(v-model="modalNotes")
+            +e.modalNotes
+                +e.modalNotesName Справка
+                +e.TEXTAREA.modalNotesText(v-model="modalNotes")
 
-        +e.BUTTON.modalSubmit(@click="submitForm") Отправить
+        +e.BUTTON.modalSubmit.btn.btn-success(@click="submitForm") Отправить
 
     //modal changed
     +e.VMODAL.modal(
@@ -150,28 +156,29 @@ include ../lib/pugDeps.pug
         scrollable
         resizable
     )
-        +e.modalDate
-            datepicker2(
-                lang="ru"
-                v-model="dateModal"
-                valueType="format"
-                clearable
-                :first-day-of-week="1"
-                format="DD-MM-YYYY"
-            )
-        +e.modalTime
-            | Время начала
-            v-select(
-                :options="allTime"
-                v-model="dataTable[currentChangeArr][0]"
-            )
+        +e.modalWrap
+            +e.modalDate
+                datepicker2(
+                    lang="ru"
+                    v-model="dateModal"
+                    valueType="format"
+                    clearable
+                    :first-day-of-week="1"
+                    format="DD-MM-YYYY"
+                )
+            +e.modalTime
+                | Время начала
+                v-select(
+                    :options="allTime"
+                    v-model="dataTable[currentChangeArr][0]"
+                )
 
-        +e.modalTime
-            | Время окончания
-            v-select(
-                :options="allTime"
-                v-model="dataTable[currentChangeArr][3]"
-            )
+            +e.modalTime
+                | Время окончания
+                v-select(
+                    :options="allTime"
+                    v-model="dataTable[currentChangeArr][3]"
+                )
 
         +e.select
             +e.selectName Выбрать учителя
@@ -219,12 +226,10 @@ include ../lib/pugDeps.pug
 import { Component, Vue } from 'vue-property-decorator';
 import { State, Mutation } from "vuex-class";
 import datepicker2 from "vue2-datepicker";
-import datepicker from "vuejs-datepicker";
 import { throttle } from "lodash";
 
 @Component({
     components: {
-        datepicker,
         datepicker2,
     },
 })
@@ -309,8 +314,6 @@ export default class Timetable extends Vue {
         return arr;
     }
 
-
-
     addData(): any {
         for (let objData in this.dataTable) {
             for (let halls in this.dataTable[objData] as any) {
@@ -341,7 +344,7 @@ export default class Timetable extends Vue {
                             break;
                     }
 
-                    let testDone = document.getElementById(idStr),
+                    let dataAdd = document.getElementById(idStr),
                         itemData = document.createElement("div"),
                         startPosition = (startTrain - this.startTime) * this.oneMinInPx,
                         heightItem = (endTrain - Number(this.dataTable[objData][halls as any][idTrain as any]["startTraining" as any])) * this.oneMinInPx - 1;
@@ -352,7 +355,7 @@ export default class Timetable extends Vue {
                     itemData!.innerHTML = `${this.minInTime(startTrain)}-${this.minInTime(endTrain)} <div>${nameTeacher}</div>`;
                     itemData!.classList.add("is-full");
 
-                    testDone!.appendChild(itemData);
+                    dataAdd!.appendChild(itemData);
                 }
             }
         }
@@ -650,9 +653,50 @@ export default class Timetable extends Vue {
     &__modal {
         z-index: 99999999;
 
+        &Wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+
+            #{$root}__select {
+                width: 48%;
+                margin: 0;
+
+                &.is-type {
+                    width: 70%;
+                }
+
+                &.is-halls {
+                    width: 25%;
+                }
+            }
+        }
+
+        &Date {
+            display: flex;
+            flex-direction: column;
+        }
+
+        &Time {
+            width: 25%;
+
+            input {
+                width: 100%;
+                height: 34px;
+                padding: 0 8px 4px;
+                background: none;
+                border: 1px solid rgba(60,60,60,.26);
+                border-radius: 4px;
+                white-space: normal;
+            }
+        }
+
         &Status {
             display: flex;
             align-items: center;
+            margin-top: 24px;
+            width: 15%;
 
             input {
                 margin-right: 10px;
@@ -661,6 +705,8 @@ export default class Timetable extends Vue {
 
         &Week {
             margin: 16px 0;
+            width: 15%;
+            white-space: nowrap;
 
             input {
                 width: 100%;
@@ -674,9 +720,11 @@ export default class Timetable extends Vue {
         }
 
         &Notes {
+            width: 60%;
+
             &Text {
                 width: 100%;
-                height: 60px;
+                height: 34px;
             }
         }
     }

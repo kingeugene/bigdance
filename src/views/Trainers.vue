@@ -1,5 +1,5 @@
 <template lang="pug">
-    include ../lib/pugDeps.pug
+include ../lib/pugDeps.pug
 
 </template>
 

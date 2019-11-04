@@ -10,7 +10,9 @@ import vClickOutside from 'v-click-outside';
 import vSelect from 'vue-select';
 import "vue-select/src/scss/vue-select.scss";
 import VModal from 'vue-js-modal';
+import VueTheMask from 'vue-the-mask';
 
+Vue.use(VueTheMask);
 Vue.use(vClickOutside);
 Vue.use(VModal, {componentName: "vmodal" });
 
