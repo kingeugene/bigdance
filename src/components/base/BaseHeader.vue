@@ -2,16 +2,18 @@
 include ../../lib/pugDeps.pug
 
 +b.HEADER.header#header
-    +e.showFilter(@click="changeShow" :class="{ 'is-active': showFilter }")
+    +e.showFilter(
+        v-if="$route.name == \"timetable\""
+        @click="changeShow"
+        :class="{ 'is-active': showFilter }"
+    )
         +e.LABEL.showFilterLabel
             +e.showFilterLine(v-for="item in 3")
     .d-flex.align-items-center.container
-        +e.logo(@click="$router.push('/')") BIG Dance
+        +e.logo(@click="$router.push('/').catch(err => {})") BIG Dance
         +e.navigation
             template(v-for="item in navigationItem")
-                +e.navigationItem(@click="$router.push(`/${item.link}`)") {{item.name}}
-
-
+                +e.navigationItem(@click="$router.push(item.link).catch(err => {})") {{item.name}}
 </template>
 
 <script lang="ts">
@@ -30,7 +32,7 @@ export default class BaseHeader extends Vue {
     navigationItem: {name: string, link: string}[] = [
         {
             name: "Расписание",
-            link: "timetable",
+            link: "/",
         },
         {
             name: "Клиенты",
@@ -49,8 +51,6 @@ export default class BaseHeader extends Vue {
             link: "login",
         },
     ];
-
-
 }
 </script>
 

@@ -21,11 +21,13 @@ import basefooter from "@/components/base/BaseFooter.vue";
 })
 export default class BaseLayout extends Vue {
     get haveContainerClass(): boolean {
-        if (this.$route.name == "timetable") {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
+        // if (this.$route.name === "timetable") {
+        //     document.body.style.overflow = "hidden";
+        // } else {
+        //     document.body.style.overflow = "";
+        // }
+
+        document.body.style.overflow = "hidden";
 
         switch (this.$route.name) {
             case "timetable":

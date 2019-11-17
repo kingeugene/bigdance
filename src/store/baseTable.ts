@@ -63,7 +63,7 @@ const module: Module<baseTableState, any> = {
                     },
                     training2: {
                         startTraining: 570,
-                        endTraining: 600,
+                        endTraining: 610,
                         typeTraining: 0,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -75,7 +75,7 @@ const module: Module<baseTableState, any> = {
                 2: {
                     training1: {
                         startTraining: 570,
-                        endTraining: 585,
+                        endTraining: 655,
                         typeTraining: 1,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -85,7 +85,7 @@ const module: Module<baseTableState, any> = {
                     },
                     training2: {
                         startTraining: 700,
-                        endTraining: 740,
+                        endTraining: 760,
                         typeTraining: 3,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -99,7 +99,7 @@ const module: Module<baseTableState, any> = {
                 1: {
                     training1: {
                         startTraining: 574,
-                        endTraining: 605,
+                        endTraining: 655,
                         typeTraining: 2,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -108,8 +108,8 @@ const module: Module<baseTableState, any> = {
                         reference: "",
                     },
                     training2: {
-                        startTraining: 645,
-                        endTraining: 720,
+                        startTraining: 695,
+                        endTraining: 750,
                         typeTraining: 1,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -121,7 +121,7 @@ const module: Module<baseTableState, any> = {
                 2: {
                     training1: {
                         startTraining: 596,
-                        endTraining: 605,
+                        endTraining: 675,
                         typeTraining: 3,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -130,8 +130,8 @@ const module: Module<baseTableState, any> = {
                         reference: "",
                     },
                     training2: {
-                        startTraining: 640,
-                        endTraining: 650,
+                        startTraining: 700,
+                        endTraining: 760,
                         typeTraining: 2,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -167,7 +167,7 @@ const module: Module<baseTableState, any> = {
                 2: {
                     training1: {
                         startTraining: 530,
-                        endTraining: 550,
+                        endTraining: 570,
                         typeTraining: 3,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -177,7 +177,7 @@ const module: Module<baseTableState, any> = {
                     },
                     training2: {
                         startTraining: 640,
-                        endTraining: 670,
+                        endTraining: 680,
                         typeTraining: 2,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -191,7 +191,7 @@ const module: Module<baseTableState, any> = {
                 1: {
                     training1: {
                         startTraining: 610,
-                        endTraining: 645,
+                        endTraining: 685,
                         typeTraining: 2,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -200,8 +200,8 @@ const module: Module<baseTableState, any> = {
                         reference: "",
                     },
                     training2: {
-                        startTraining: 655,
-                        endTraining: 720,
+                        startTraining: 705,
+                        endTraining: 740,
                         typeTraining: 1,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -237,7 +237,7 @@ const module: Module<baseTableState, any> = {
                 1: {
                     training1: {
                         startTraining: 524,
-                        endTraining: 565,
+                        endTraining: 585,
                         typeTraining: 2,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",
@@ -246,8 +246,8 @@ const module: Module<baseTableState, any> = {
                         reference: "",
                     },
                     training2: {
-                        startTraining: 580,
-                        endTraining: 620,
+                        startTraining: 620,
+                        endTraining: 660,
                         typeTraining: 1,
                         nameTeacher: "Vasy Popovich",
                         nameClient: "Geny Geny",

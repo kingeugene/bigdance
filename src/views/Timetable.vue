@@ -274,10 +274,6 @@ export default class Timetable extends Vue {
               name: "Студия Театральная",
               color: "violet",
             },
-            {
-              name: "Студия Институт физкультуры",
-              color: "blue",
-            },
     ];
 
     //modal changed
