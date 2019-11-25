@@ -1,11 +1,16 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
+
+
+
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-@Component
+@Component({
+
+})
 export default class Reference extends Vue {
 
 }
