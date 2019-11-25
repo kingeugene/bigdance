@@ -31,12 +31,12 @@ export default class Login extends Vue {
     email: string = "";
     password: string = "";
 
-    @Action submitL!: (o: {login: string; password: string;}) => void;
+    @Action submitL!: (o: {email: string; password: string;}) => void;
 
     submitForm(): void {
         console.error(this.email);
         console.error(this.password);
-        this.submitL({login: this.email, password: this.password});
+        this.submitL({email: this.email, password: this.password});
     }
 }
 </script>
