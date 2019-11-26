@@ -1,7 +1,7 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Auth
-    +e.FORM.form(@submit.prevent="submitForm")
+    +e.FORM.form(@submit.prevent="submitForm({email: email, password: password})")
         +e.H2.header Логин
         +e.subHeader заполните все поля
         +e.LABEL.label(for="Auth__login") Логин
@@ -14,6 +14,7 @@ include ../lib/pugDeps.pug
             type="password"
             v-model="password"
         )
+        +e.valid {{ validLogin }}
         +e.BUTTON.button.btn.btn-success(
             type="submit"
         ) Вход
@@ -31,13 +32,9 @@ export default class Login extends Vue {
     email: string = "";
     password: string = "";
 
-    @Action submitL!: (o: {email: string; password: string;}) => void;
+    @State(state => state.login.validLogin) validLogin!: string;
 
-    submitForm(): void {
-        console.error(this.email);
-        console.error(this.password);
-        this.submitL({email: this.email, password: this.password});
-    }
+    @Action submitForm!: (o: {email: string; password: string;}) => void;
 }
 </script>
 
@@ -56,6 +53,9 @@ export default class Login extends Vue {
         display: flex;
         flex-direction: column;
         align-items: center;
+        border-radius: 50px;
+        padding: 50px 80px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
     }
 
     &__label {
@@ -68,7 +68,12 @@ export default class Login extends Vue {
     }
 
     &__button {
+        margin-top: 10px;
         padding: 10px 30px;
+    }
+
+    &__valid {
+        color: red;
     }
 }
 </style>

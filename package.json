@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 8089",
     "build": "vue-cli-service build",
     "production": "npm run production:build && npm run production:transform",
     "production:build": "NODE_ENV=production; node --max_old_space_size=4096 ./node_modules/.bin/vue-cli-service build",
