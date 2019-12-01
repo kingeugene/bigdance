@@ -1,13 +1,13 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 
-+b.Timetable
++b.Timetable(ref="formContainer")
     +e.filter(v-if="showFilter")
         +e.studios
             +e.BUTTON.studiosBtn(
-            v-for="item in studios"
-            :class="`is-${item.color}`"
-            @click="changeColor(item.color)"
+                v-for="item in listVenue"
+                :style="{background:  item.color}"
+                @click="changeColor(item.name)"
             ) {{ item.name }}
 
         datepicker2(
@@ -23,7 +23,7 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать учителя
             v-select(
-                :options="teacher"
+                :options="coach"
                 v-model="selectedTeacher"
             )
 
@@ -108,7 +108,7 @@ include ../lib/pugDeps.pug
             +e.select
                 +e.selectName Выбрать учителя
                 v-select(
-                    :options="teacher"
+                    :options="coach"
                     v-model="selectTeacherModal"
                 )
 
@@ -183,7 +183,7 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать учителя
             v-select(
-                :options="teacher"
+                :options="coach"
                 v-model="dataTable[currentChangeArr][4]"
             )
 
@@ -219,18 +219,24 @@ include ../lib/pugDeps.pug
             +e.TEXTAREA.modalNotesText(v-model="dataTable[currentChangeArr][9]")
 
         +e.BUTTON.modalSubmit(@click="submitForm") Изменить
-
+    loading(
+        :active.sync="loadedComponent"
+        :is-full-page="fullPage"
+    )
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { State, Mutation } from "vuex-class";
+import {Component, Vue, Watch} from 'vue-property-decorator';
+import {State, Mutation, Action} from "vuex-class";
 import datepicker2 from "vue2-datepicker";
 import { throttle } from "lodash";
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 @Component({
     components: {
         datepicker2,
+        Loading,
     },
 })
 export default class Timetable extends Vue {
@@ -255,6 +261,8 @@ export default class Timetable extends Vue {
     statusModal: boolean = false;
     quantityWeek: string = "1";
     modalNotes: string = "";
+    fullPage: boolean = true;
+    isLoading: boolean = true;
 
     daysWeek: string[] = [
         "Понедельник",
@@ -265,16 +273,6 @@ export default class Timetable extends Vue {
         "Суббота",
         "Воскресенье",
     ];
-    studios: {name: string, color: string}[] = [
-            {
-              name: "Студия Подол",
-              color: "orange",
-            },
-            {
-              name: "Студия Театральная",
-              color: "violet",
-            },
-    ];
 
     //modal changed
     currentChangeArr: string = "loading";
@@ -282,12 +280,16 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.typeLessons) typeLessons!: string[];
     @State(state => state.baseTable.show) showFilter!: boolean;
     @State(state => state.baseTable.dateArr) dateArr!: string[];
-    @State(state => state.baseTable.teacher) teacher!: string[];
-    @State(state => state.baseTable.clients) clients!: string[];
+    @State(state => state.baseTable.allCoach) coach!: string[];
+    @State(state => state.baseTable.allClients) clients!: string[];
     @State(state => state.baseTable.halls) halls!: string[];
     @State(state => state.baseTable.dataTable) dataTable!: string[];
+    @State(state => state.baseTable.listVenue) listVenue!: string[];
+    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
 
     @Mutation setDataTable!: ({}) => void;
+
+    @Action initBaseTable!: () => void;
 
     get numHalls(): number {
         return this.halls.length;
@@ -433,6 +435,12 @@ export default class Timetable extends Vue {
         arr.push(this.modalNotes);
 
         this.setDataTable({data: arr, id: idStr});
+    }
+
+    created() {
+        if (this.loadedComponent) {
+            this.initBaseTable();
+        }
     }
 
     mounted() {

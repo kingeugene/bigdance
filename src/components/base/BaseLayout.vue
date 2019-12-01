@@ -5,28 +5,19 @@ include ../../lib/pugDeps.pug
     +e.BASEHEADER.header
     +e.MAIN.main
         +e.container(:class="{'container': haveContainerClass}"): slot/
-    +e.BASEFOOTER.footer(v-if="haveContainerClass")
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import baseheader from "@/components/base/BaseHeader.vue";
-import basefooter from "@/components/base/BaseFooter.vue";
 
 @Component({
     components: {
         baseheader,
-        basefooter,
     },
 })
 export default class BaseLayout extends Vue {
     get haveContainerClass(): boolean {
-        // if (this.$route.name === "timetable") {
-        //     document.body.style.overflow = "hidden";
-        // } else {
-        //     document.body.style.overflow = "";
-        // }
-
         document.body.style.overflow = "hidden";
 
         switch (this.$route.name) {

@@ -2,6 +2,7 @@ declare module "vue2-datepicker";
 declare module "vue-the-mask";
 declare module "vue-good-table";
 declare module "v-click-outside";
+declare module "vue-loading-overlay";
 declare module "vue-select";
 declare module "*.json";
 declare module "*.json5";

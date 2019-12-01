@@ -1,7 +1,14 @@
 import { Module } from 'vuex';
+import api from "@/lib/api"
 
 interface baseTableState {
     show: boolean;
+    listVenue: [];
+    listVenueObject: [];
+    activitiesType: [];
+    allClients: [];
+    allCoach: [];
+    loadedComponent: boolean;
     dateArr: string[];
     teacher: string[];
     clients: string[];
@@ -13,6 +20,12 @@ interface baseTableState {
 const module: Module<baseTableState, any> = {
     state: {
         show: true,
+        listVenue: [],
+        listVenueObject: [],
+        activitiesType: [],
+        allClients: [],
+        allCoach: [],
+        loadedComponent: true,
         dateArr: [
           "13-10-2019",
           "14-10-2019",
@@ -290,7 +303,96 @@ const module: Module<baseTableState, any> = {
         setDataTable(state, {data, id}) {
             state.dataTable[id] = data;
         },
+
+        setListVenue(state, data) {
+            state.listVenue = data;
+        },
+
+        setListVenueObject(state, data) {
+            state.listVenueObject = data;
+        },
+
+        setActivitiesType(state, data) {
+            state.activitiesType = data;
+        },
+
+        setAllClients(state, data) {
+            state.allClients = data;
+        },
+
+        setAllCoach(state, data) {
+            state.allCoach = data;
+        },
+
+        setLoaded(state, data) {
+            state.loadedComponent = data;
+        },
     },
+
+    actions: {
+        async initBaseTable({dispatch, commit}) {
+            commit("setLoaded", true);
+
+            await dispatch("listVenue");
+            await dispatch("listVenueObject");
+            await dispatch("activitiesType");
+            await dispatch("allClients");
+            await dispatch("allCoach");
+
+            commit("setLoaded", false);
+        },
+
+        async listVenue({commit}) {
+            const {data, status} = await api.listVenues();
+
+            if (status === 200) {
+                commit("setListVenue", data);
+            }
+        },
+
+        async listVenueObject({commit}) {
+            const {data, status} = await api.showVenueObject();
+
+            if (status === 200) {
+                commit("setListVenueObject", data);
+            }
+        },
+
+        async activitiesType({commit}) {
+            const {data, status} = await api.activitiesType();
+
+            if (status === 200) {
+                commit("setActivitiesType", data);
+            }
+        },
+
+        async allClients({commit}) {
+            const {data, status} = await api.createClient();
+
+            if (status === 200) {
+                let arrName = [];
+
+                for (let i = 0; i < data.length; i++) {
+                    arrName.push(`${data[i].first_name} ${data[i].second_name}`)
+                }
+                commit("setAllClients", arrName);
+            }
+        },
+
+        async allCoach({commit}) {
+            const {data, status} = await api.showAllCoach();
+
+            if (status === 200) {
+                let arrName = [];
+
+                for (let i = 0; i < data.length; i++) {
+                    arrName.push(`${data[i].first_name} ${data[i].second_name}`)
+                }
+
+                commit("setAllCoach", arrName);
+            }
+        },
+    }
 };
 
 export default module;

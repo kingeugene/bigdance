@@ -22,7 +22,6 @@ const ifAuthenticated = (to: any, from: any, next: any) => {
 
 const router = new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
@@ -40,7 +39,7 @@ const router = new Router({
         title: "Клиенты",
       },
       component: () => import(/* webpackChunkName: "about" */ './views/Сustomers.vue'),
-      // beforeEnter: ifAuthenticated,
+      beforeEnter: ifAuthenticated,
     },
     {
       path: '/trainers',
@@ -49,7 +48,7 @@ const router = new Router({
         title: "Тренеры",
       },
       component: () => import(/* webpackChunkName: "about" */ './views/Trainers.vue'),
-      // beforeEnter: ifAuthenticated,
+      beforeEnter: ifAuthenticated,
     },
     {
       path: '/reference',
@@ -58,7 +57,7 @@ const router = new Router({
         title: "Справка",
       },
       component: () => import(/* webpackChunkName: "about" */ './views/Reference.vue'),
-      // beforeEnter: ifAuthenticated,
+      beforeEnter: ifAuthenticated,
     },
     {
       path: '/login',
@@ -67,6 +66,7 @@ const router = new Router({
         title: "Вход",
       },
       component: () => import(/* webpackChunkName: "about" */ './views/Login.vue'),
+      beforeEnter: ifNotAuthenticated,
     },
   ],
 });

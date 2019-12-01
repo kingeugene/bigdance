@@ -5,6 +5,9 @@ layout
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Layout from "@/components/base/BaseLayout.vue";
+import {Action} from "vuex-class";
+const axios = require('axios').default;
+
 
 @Component({
   components: {
@@ -12,8 +15,19 @@ import Layout from "@/components/base/BaseLayout.vue";
   },
 })
 export default class App extends Vue {
-    get test(): any {
-        return this.$router
+    @Action logout!: () => void;
+
+
+    created() {
+        let currentThis = this;
+
+        axios.interceptors.response.use(undefined, function (err: any) {
+            if (err) {
+                currentThis.logout();
+            }
+
+            throw err;
+        });
     }
 }
 </script>

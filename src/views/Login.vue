@@ -18,21 +18,28 @@ include ../lib/pugDeps.pug
         +e.BUTTON.button.btn.btn-success(
             type="submit"
         ) Вход
+            loading(
+                :active.sync="isLoaded"
+            )
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { State, Mutation, Getter, Action } from "vuex-class";
-
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 @Component({
-
+    components: {
+        Loading,
+    }
 })
 export default class Login extends Vue {
     email: string = "";
     password: string = "";
 
     @State(state => state.login.validLogin) validLogin!: string;
+    @State(state => state.login.status) isLoaded!: string;
 
     @Action submitForm!: (o: {email: string; password: string;}) => void;
 }

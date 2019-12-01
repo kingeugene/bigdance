@@ -1,7 +1,7 @@
 <template lang="pug">
 include ../../lib/pugDeps.pug
 
-+b.HEADER.header#header
++b.HEADER.header#header(:class="{'menu-opened': menuOpen}")
     +e.showFilter(
         v-if="$route.name == \"timetable\""
         @click="changeShow"
@@ -12,21 +12,43 @@ include ../../lib/pugDeps.pug
     .d-flex.align-items-center.container
         +e.logo(@click="$router.push('/').catch(err => {})") BIG Dance
         +e.navigation
-            template(v-for="item in navigationItem")
+            template(v-if="token" v-for="item in navigationItem")
                 +e.navigationItem(@click="$router.push(item.link).catch(err => {})") {{item.name}}
+            +e.navigationItem(v-if="token" @click="logout()") Выйти
+            +e.navigationItem(v-if="!token") Логин
+        +e.menuBurger(v-if="token")
+            +e.burger-container(@click="changeBurger")
+                +e.burger
+                    +e.burgerBtn.topBar
+                    +e.burgerBtn.btmBar
+            +e.menu
+                template(v-for="item in navigationItem")
+                    +e.menu-item(@click="$router.push(item.link).catch(err => {})") {{item.name}}
+                +e.menu-item(v-if="token" @click="logout()") Выйти
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { State, Mutation } from "vuex-class";
+import { Action, State, Mutation } from "vuex-class";
+import {} from "vuex";
 
 @Component
 export default class BaseHeader extends Vue {
+    menuOpen: boolean = false;
+
     @State(state => state.baseTable.show) showFilter!: boolean;
+    @State(state => state.login.token) token!: string;
+
     @Mutation setShow!: () => void;
+
+    @Action logout!: () => void;
 
     changeShow(): void {
         this.setShow();
+    }
+
+    changeBurger() {
+        this.menuOpen = !this.menuOpen;
     }
 
     navigationItem: {name: string, link: string}[] = [
@@ -45,10 +67,6 @@ export default class BaseHeader extends Vue {
         {
             name: "Справка",
             link: "reference",
-        },
-        {
-            name: "Выход",
-            link: "login",
         },
     ];
 }
@@ -160,7 +178,11 @@ export default class BaseHeader extends Vue {
     }
 
     &__navigation {
-        display: flex;
+        display: none;
+
+        @include bp(m) {
+            display: flex;
+        }
 
         &Item {
             padding: 18px 0;
@@ -174,6 +196,111 @@ export default class BaseHeader extends Vue {
 
             &:hover {
                 opacity: 0.8;
+            }
+        }
+    }
+
+    &__menu {
+        position: relative;
+        display: block;
+        padding: 0 48px 0;
+        list-style: none;
+
+        &-item {
+            border-bottom: 1px solid #333;
+            margin-top: 5px;
+            transform: scale(1.15) translateY(0px);
+            opacity: 0;
+            transition: transform 0.5s $cubic, opacity 0.6s $cubic;
+
+            @for $i from 1 through $menuItems {
+                &:nth-child(#{$i}) {
+                    transition-delay: #{0.56 - ($i * 0.07)}s;
+                }
+            }
+        }
+
+        &Burger {
+            @include bp(m) {
+                display: none;
+            }
+        }
+    }
+
+    &__burger {
+        width: 18px;
+        height: 8px;
+        position: relative;
+        display: block;
+        margin: -4px auto 0;
+        top: 50%;
+
+            &-container {
+                position: relative;
+                display: inline-block;
+                height: 50px;
+                width: 50px;
+                cursor: pointer;
+                transform: rotate(0deg);
+                transition: all 0.3s $cubic;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            &Btn {
+                width: 100%;
+                height: 1px;
+                display: block;
+                position: relative;
+                background: #FFF;
+                transition: all 0.3s $cubic;
+                transition-delay: 0s;
+
+                &.topBar {
+                    transform: translateY(0px) rotate(0deg);
+                }
+
+                &.btmBar {
+                    transform: translateY(6px) rotate(0deg);
+                }
+            }
+    }
+
+    &.menu-opened {
+        height: 100%;
+        background-color: #000;
+        transition: all 0.3s ease-in, background 0.5s ease-in;
+        transition-delay: 0.25s;
+
+        #{$root}__burger {
+            &Btn {
+                transition: all 0.4s $cubic;
+                transition-delay: 0.2s;
+
+                &.topBar {
+                    transform: translateY(4px) rotate(45deg);
+                }
+
+                &.btmBar {
+                    transform: translateY(3px) rotate(-45deg);
+                }
+            }
+
+            &-container {
+                transform: rotate(90deg);
+            }
+        }
+
+        #{$root}__menu {
+            &-item {
+                transform: scale(1) translateY(0px);
+                opacity: 1;
+
+                @for $i from 1 through $menuItems {
+                    &:nth-child(#{$i}) {
+                        transition-delay: #{0.07 * $i+0.2}s;
+                    }
+                }
             }
         }
     }

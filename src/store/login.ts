@@ -1,23 +1,23 @@
 import { Module } from 'vuex';
 import api from "@/lib/api"
 import router from "@/router";
+const axios = require('axios').default;
 
 interface loginState {
     token: any,
     validLogin: string,
-    status: string,
+    status: boolean,
 }
 
 const module: Module<loginState, any> = {
     state: {
         token: localStorage.getItem('user-token') || '',
-        status: '',
+        status: false,
         validLogin: "",
     },
 
     getters: {
         isAuthenticated: state => !!state.token,
-        authStatus: state => state.status,
     },
 
     mutations: {
@@ -25,21 +25,24 @@ const module: Module<loginState, any> = {
             state.validLogin = status;
         },
 
-        auth__request: (state) => {
-            state.status = 'loading'
+        changeToken(state, data) {
+          state.token = data;
+        },
+        auth_request: (state) => {
+            state.status = true;
         },
         auth_succes: (state, token) => {
-            state.status = 'success'
+            state.status = false;
             state.token = token
         },
         auth_error: (state) => {
-            state.status = 'error'
+            state.status = true;
         },
     },
 
     actions: {
         async submitForm({commit, state}, body) {
-            commit("auth__request");
+            commit("auth_request");
             const { data, errors, status } = await api.login(body);
 
             if (errors) {
@@ -49,12 +52,26 @@ const module: Module<loginState, any> = {
                 commit("auth_error");
                 return;
             } else {
-                localStorage.setItem('user-token', data.access_token);
-
+                const token = data.access_token;
+                localStorage.setItem('user-token', token);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 commit("changeValidLogin", "");
                 commit("auth_succes", data.access_token);
 
-                router.push('/')
+                router.push('/').catch(err => {});
+            }
+        },
+        async logout({commit, state}, body) {
+            const response = await api.logout();
+
+            if (response.status) {
+                localStorage.removeItem('user-token');
+                commit("changeToken", "");
+                location.reload();
+            } else {
+                localStorage.removeItem('user-token');
+                commit("changeToken", "");
+                router.push('/login').catch(err => {});
             }
         }
     }
