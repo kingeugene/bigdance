@@ -1,30 +1,31 @@
 <template lang="pug">
 include ../../lib/pugDeps.pug
 
-+b.HEADER.header#header(:class="{'menu-opened': menuOpen}")
-    +e.showFilter(
-        v-if="$route.name == \"timetable\""
-        @click="changeShow"
-        :class="{ 'is-active': showFilter }"
-    )
-        +e.LABEL.showFilterLabel
-            +e.showFilterLine(v-for="item in 3")
-    .d-flex.align-items-center.container
-        +e.logo(@click="$router.push('/').catch(err => {})") BIG Dance
-        +e.navigation
-            template(v-if="token" v-for="item in navigationItem")
-                +e.navigationItem(@click="$router.push(item.link).catch(err => {})") {{item.name}}
-            +e.navigationItem(v-if="token" @click="logout()") Выйти
-            +e.navigationItem(v-if="!token") Логин
-        +e.menuBurger(v-if="token")
-            +e.burger-container(@click="changeBurger")
-                +e.burger
-                    +e.burgerBtn.topBar
-                    +e.burgerBtn.btmBar
-            +e.menu
-                template(v-for="item in navigationItem")
-                    +e.menu-item(@click="$router.push(item.link).catch(err => {})") {{item.name}}
-                +e.menu-item(v-if="token" @click="logout()") Выйти
++b.HEADER.header#header
+    +e.Wrap
+        +e.showFilter(
+            v-if="$route.name == \"timetable\""
+            @click="changeShow"
+            :class="{ 'is-active': showFilter }"
+        )
+            +e.LABEL.showFilterLabel
+                +e.showFilterLine(v-for="item in 3")
+        .d-flex.align-items-center.container
+            +e.logo(@click="$router.push('/').catch(err => {})") BIG Dance
+            +e.navigation
+                template(v-if="token" v-for="item in navigationItem")
+                    +e.navigationItem(@click="$router.push(item.link).catch(err => {})") {{item.name}}
+                +e.navigationItem(v-if="token" @click="logout()") Выйти
+                +e.navigationItem(v-if="!token") Логин
+            +e.mobileBtn(v-if="token" @click="toggleBurger" :class="{'is-active': menuOpen}")
+                +e.mobileBtnLine(v-for="item in 3")
+
+    +e.mobileMenu(:class="{'menu-opened': menuOpen}")
+        +e.mobileMenuWrap
+            template(v-for="item in navigationItem")
+                +e.mobileMenu-item(@click="changeRout(item.link)") {{item.name}}
+            +e.mobileMenu-item(v-if="token" @click="logout()") Выйти
+
 </template>
 
 <script lang="ts">
@@ -47,8 +48,13 @@ export default class BaseHeader extends Vue {
         this.setShow();
     }
 
-    changeBurger() {
+    toggleBurger() {
         this.menuOpen = !this.menuOpen;
+    }
+
+    changeRout(item: string) {
+        this.$router.push(item).catch(err => {});
+        this.toggleBurger();
     }
 
     navigationItem: {name: string, link: string}[] = [
@@ -82,13 +88,21 @@ export default class BaseHeader extends Vue {
     left: 0;
     right: 0;
     contain: layout size;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.2s, box-shadow 0.2s;
     padding-left: 15px;
     transform: translateZ(0);
     background-color: $c-header;
+
+    &__Wrap {
+        height: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-left: 20px;
+
+        @include bp(m) {
+            margin-left: 0;
+        }
+    }
 
     &__showFilter {
         position: absolute;
@@ -200,18 +214,111 @@ export default class BaseHeader extends Vue {
         }
     }
 
-    &__menu {
+    &__mobileBtn {
         position: relative;
+        width: 40px;
+        height: 26px;
+        display: inline-block;
+        cursor: pointer;
+        transition: all .5s;
+        text-align: left;
+
+        @include bp(m) {
+            display: none;
+        }
+
+        &Line {
+            transition: top .15s .15s, transform .15s;
+
+            &,
+            &:before,
+            &:after {
+                background: $orange;
+                position: absolute;
+                height: 4px;
+                width: 40px;
+                border-radius: 4px;
+                transition: all .25s;
+            }
+
+            &:first-child {
+                top: 0;
+            }
+
+            &:nth-child(2) {
+                top: 10px;
+            }
+
+            &:nth-child(3) {
+                top: 20px;
+            }
+        }
+
+        &.is-active & {
+            &Line {
+                &:first-child {
+                    top: 10px;
+                    transform: rotate(45deg);
+                }
+
+                &:nth-child(2),
+                &:nth-child(3) {
+                    top: 10px;
+                    transform: rotate(-45deg);
+                }
+            }
+        }
+    }
+
+    &__mobileMenu {
+        position: fixed;
+        height: 0;
+        top: 60px;
         display: block;
+        left: 0;
+        right: 0;
+        bottom: auto;
+        overflow: hidden;
         padding: 0 48px 0;
-        list-style: none;
+        transition: all 0.5s ease-out, background 1s ease-out;
+        background: inherit;
+        transition-delay: 0.2s;
+
+        &Wrap {
+            position: relative;
+            transition: height .3s ease-in-out;
+            padding: 24px 24px 100px;
+
+        }
+
+        &.menu-opened {
+            height: calc(100vh - 60px);
+            transition-delay: .25s;
+            overflow-y: auto;
+
+            #{$root}__mobileMenu {
+                &-item {
+                    transform: scale(1) translateY(0px);
+                    opacity: 1;
+
+                    @for $i from 1 through $menuItems {
+                        &:nth-child(#{$i}) {
+                            transition-delay: #{0.07 * $i+0.5}s;
+                        }
+                    }
+                }
+            }
+        }
 
         &-item {
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid $orange;
             margin-top: 5px;
-            transform: scale(1.15) translateY(0px);
+            transform: scale(1.15) translateY(-30px);
+            margin-bottom: 30px;
+            padding-bottom: 5px;
             opacity: 0;
             transition: transform 0.5s $cubic, opacity 0.6s $cubic;
+            @include Semibold(white, 16);
 
             @for $i from 1 through $menuItems {
                 &:nth-child(#{$i}) {
@@ -219,90 +326,8 @@ export default class BaseHeader extends Vue {
                 }
             }
         }
-
-        &Burger {
-            @include bp(m) {
-                display: none;
-            }
-        }
     }
 
-    &__burger {
-        width: 18px;
-        height: 8px;
-        position: relative;
-        display: block;
-        margin: -4px auto 0;
-        top: 50%;
 
-            &-container {
-                position: relative;
-                display: inline-block;
-                height: 50px;
-                width: 50px;
-                cursor: pointer;
-                transform: rotate(0deg);
-                transition: all 0.3s $cubic;
-                user-select: none;
-                -webkit-tap-highlight-color: transparent;
-            }
-
-            &Btn {
-                width: 100%;
-                height: 1px;
-                display: block;
-                position: relative;
-                background: #FFF;
-                transition: all 0.3s $cubic;
-                transition-delay: 0s;
-
-                &.topBar {
-                    transform: translateY(0px) rotate(0deg);
-                }
-
-                &.btmBar {
-                    transform: translateY(6px) rotate(0deg);
-                }
-            }
-    }
-
-    &.menu-opened {
-        height: 100%;
-        background-color: #000;
-        transition: all 0.3s ease-in, background 0.5s ease-in;
-        transition-delay: 0.25s;
-
-        #{$root}__burger {
-            &Btn {
-                transition: all 0.4s $cubic;
-                transition-delay: 0.2s;
-
-                &.topBar {
-                    transform: translateY(4px) rotate(45deg);
-                }
-
-                &.btmBar {
-                    transform: translateY(3px) rotate(-45deg);
-                }
-            }
-
-            &-container {
-                transform: rotate(90deg);
-            }
-        }
-
-        #{$root}__menu {
-            &-item {
-                transform: scale(1) translateY(0px);
-                opacity: 1;
-
-                @for $i from 1 through $menuItems {
-                    &:nth-child(#{$i}) {
-                        transition-delay: #{0.07 * $i+0.2}s;
-                    }
-                }
-            }
-        }
-    }
 }
 </style>
