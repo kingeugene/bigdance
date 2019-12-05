@@ -3,6 +3,7 @@ import api from "@/lib/api"
 
 interface baseTableState {
     show: boolean;
+    currentDate: string;
     listVenue: [];
     listVenueObject: [];
     activitiesType: [];
@@ -14,18 +15,21 @@ interface baseTableState {
     clients: string[];
     typeLessons: string[];
     halls: string[];
-    dataTable: any;
+    listRecord: any;
+    dataTable: any,
 }
 
 const module: Module<baseTableState, any> = {
     state: {
         show: true,
+        currentDate: "",
         listVenue: [],
         listVenueObject: [],
         activitiesType: [],
         allClients: [],
         allCoach: [],
         loadedComponent: true,
+        dataTable: [],
         dateArr: [
           "13-10-2019",
           "14-10-2019",
@@ -61,241 +65,14 @@ const module: Module<baseTableState, any> = {
             "1",
             "2",
         ],
-        dataTable: {
-            "13-10-2019": {
-                1: {
-                    training1: {
-                        startTraining: 510,
-                        endTraining: 570,
-                        typeTraining: 0,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 570,
-                        endTraining: 610,
-                        typeTraining: 0,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-                2: {
-                    training1: {
-                        startTraining: 570,
-                        endTraining: 655,
-                        typeTraining: 1,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 700,
-                        endTraining: 760,
-                        typeTraining: 3,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-            },
-            "14-10-2019": {
-                1: {
-                    training1: {
-                        startTraining: 574,
-                        endTraining: 655,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 695,
-                        endTraining: 750,
-                        typeTraining: 1,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-                2: {
-                    training1: {
-                        startTraining: 596,
-                        endTraining: 675,
-                        typeTraining: 3,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 700,
-                        endTraining: 760,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-            },
-            "15-10-2019": {
-                1: {
-                    training1: {
-                        startTraining: 510,
-                        endTraining: 640,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 650,
-                        endTraining: 720,
-                        typeTraining: 1,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-                2: {
-                    training1: {
-                        startTraining: 530,
-                        endTraining: 570,
-                        typeTraining: 3,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 640,
-                        endTraining: 680,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-            },
-            "16-10-2019": {
-                1: {
-                    training1: {
-                        startTraining: 610,
-                        endTraining: 685,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 705,
-                        endTraining: 740,
-                        typeTraining: 1,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-                2: {
-                    training1: {
-                        startTraining: 632,
-                        endTraining: 660,
-                        typeTraining: 3,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 690,
-                        endTraining: 750,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-            },
-            "17-10-2019": {
-                1: {
-                    training1: {
-                        startTraining: 524,
-                        endTraining: 585,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 620,
-                        endTraining: 660,
-                        typeTraining: 1,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-                2: {
-                    training1: {
-                        startTraining: 1290,
-                        endTraining: 1310,
-                        typeTraining: 3,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                    training2: {
-                        startTraining: 680,
-                        endTraining: 720,
-                        typeTraining: 2,
-                        nameTeacher: "Vasy Popovich",
-                        nameClient: "Geny Geny",
-                        statusTraining: true,
-                        numberWeeks: 1,
-                        reference: "",
-                    },
-                },
-            },
-        },
+        listRecord: {},
     },
 
     mutations: {
+        setCurrentDate(state, data) {
+            state.currentDate = data
+        },
+
         setShow(state) {
             state.show = !state.show;
         },
@@ -327,22 +104,51 @@ const module: Module<baseTableState, any> = {
         setLoaded(state, data) {
             state.loadedComponent = data;
         },
+
+        setListRecord(state, data) {
+            state.listRecord = data;
+        }
     },
 
     actions: {
+        currentDate({commit}) {
+            let dateObj = new Date(),
+                year = dateObj.getFullYear(),
+                month: string = dateObj.getMonth().toString(),
+                day = dateObj.getDay().toString();
+
+            if (month.length === 1) {
+                month = "0" + month;
+            }
+
+            if (day.length === 1) {
+                day = "0" + day;
+            }
+
+            commit("setCurrentDate", `${year}-${month}-${day}`);
+        },
+
         async initBaseTable({dispatch, commit}) {
             commit("setLoaded", true);
 
-            await dispatch("listVenue");
-            await dispatch("listVenueObject");
-            await dispatch("activitiesType");
-            await dispatch("allClients");
-            await dispatch("allCoach");
+            dispatch("listVenue");
+            dispatch("listVenueObject");
+            dispatch("listRecord");
+            dispatch("activitiesType");
+            dispatch("allClients");
+            dispatch("allCoach");
 
             commit("setLoaded", false);
         },
 
-        async listVenue({commit}) {
+//GET
+        async listRecord({commit}) {
+
+            await api.listRecord();
+        },
+
+        async listVenue({commit, state}) {
+            console.error(state.currentDate);
             const {data, status} = await api.listVenues();
 
             if (status === 200) {

@@ -5,9 +5,10 @@ include ../lib/pugDeps.pug
     +e.filter(v-if="showFilter")
         +e.studios
             +e.BUTTON.studiosBtn(
-                v-for="item in listVenue"
+                v-for="(item, i) in listVenue"
+                :key="i"
                 :style="{background:  item.color}"
-                @click="changeColor(item.name)"
+                @click="handleSwitchVenue(item.id, i)"
             ) {{ item.name }}
 
         datepicker2(
@@ -35,11 +36,11 @@ include ../lib/pugDeps.pug
             )
 
     +e.time
-        +e.dataTable(:class="`is-${colorTable}`") Data
-        +e.timeBlock(:style="{'top': `-${scrollTime}px`}" :class="`is-${colorTable}`")
+        +e.dataTable(:style="{'background':  currentColor}") Data
+        +e.timeBlock(:style="{'top': `-${scrollTime}px`, 'background':  currentColor}")
             +e.TD.td-data(v-for="(item, index) of quantityTime"): +e.timeNumber {{timeCurrent(index)}}
     +b.TABLE.Table
-        +e.THEAD.head(:class="`is-${colorTable}`" :style="{'left': `-${scrollHead}px`}" )
+        +e.THEAD.head(:style="{'left': `-${scrollHead}px`, 'background':  currentColor }" )
             +e.TR.th-row.is-daysWeek
                 +e.TH.th-cell(
                     :colspan="numHalls"
@@ -52,7 +53,7 @@ include ../lib/pugDeps.pug
                     +e.TH.th-cell(
                         v-for="(cell, index) of allDays"
                   ) {{halsTurn(index + 1)}}
-        +e.TBODY.tbody
+        +e.TBODY.tbody(ref="tableScroll")
             +e.TR.tr-row(
                 v-for="(item, indexTr) of quantityTime"
             )
@@ -240,6 +241,8 @@ import 'vue-loading-overlay/dist/vue-loading.css';
     },
 })
 export default class Timetable extends Vue {
+    scrollTable: any = null;
+    currentVenue: number = 0;
     startTime: number = 510;
     endTime: number = 1320;
     gapTime: number = 30;
@@ -310,6 +313,18 @@ export default class Timetable extends Vue {
         }
 
         return arr;
+    }
+
+    get currentColor(): string {
+        return this.listVenue.length ? (this.listVenue[this.currentVenue]["color" as any]) : "#2f628e";
+    }
+
+    handleSwitchVenue(venueId: number, index: number): void {
+        if (this.currentVenue === index) {
+            return;
+        }
+
+        this.currentVenue = index;
     }
 
     addData(): any {
@@ -437,6 +452,14 @@ export default class Timetable extends Vue {
         this.setDataTable({data: arr, id: idStr});
     }
 
+    setScrollTable(): void {
+        this.scrollTable = this.$refs.tableScroll;
+
+        if (this.scrollTable) {
+            this.scrollTable!.addEventListener("scroll", throttle(this.handleScroll, 50));
+        }
+    }
+
     created() {
         if (this.loadedComponent) {
             this.initBaseTable();
@@ -446,10 +469,12 @@ export default class Timetable extends Vue {
     mounted() {
         this.addData();
 
-        let testT = document.querySelector(".Table__tbody");
-        testT!.addEventListener("scroll", throttle(this.handleScroll, 50));
+        this.setScrollTable();
     }
 
+    updated() {
+        this.setScrollTable();
+    }
 }
 </script>
 

@@ -61,7 +61,7 @@ const module: Module<loginState, any> = {
                 router.push('/').catch(err => {});
             }
         },
-        async logout({commit, state}, body) {
+        async logout({commit, state}) {
             const response = await api.logout();
 
             if (response.status) {
