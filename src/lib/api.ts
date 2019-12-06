@@ -18,6 +18,10 @@ class ApiService {
             });
     }
 
+    public createRecord(): any {
+        return axios.post(`${serverName}/v0/records`)
+    }
+
     public listVenues(): any {
         return axios.get(`${serverName}/v0/venues`);
     }

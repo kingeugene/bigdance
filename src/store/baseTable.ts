@@ -4,16 +4,24 @@ import api from "@/lib/api"
 interface baseTableState {
     show: boolean;
     currentDate: string;
+    currentVenue: number;
+    currentColor: string;
     listVenue: [];
     listVenueObject: [];
-    activitiesType: [];
+    activitiesType: [
+        {
+            id: number,
+            account_id: number,
+            name: string,
+            color: string | null,
+        }
+    ];
     allClients: [];
     allCoach: [];
     loadedComponent: boolean;
     dateArr: string[];
     teacher: string[];
     clients: string[];
-    typeLessons: string[];
     halls: string[];
     listRecord: any;
     dataTable: any,
@@ -23,9 +31,18 @@ const module: Module<baseTableState, any> = {
     state: {
         show: true,
         currentDate: "",
+        currentVenue: 1,
+        currentColor: "#2f628e",
         listVenue: [],
         listVenueObject: [],
-        activitiesType: [],
+        activitiesType: [
+            {
+                "id": 1,
+                "account_id": 1,
+                "name": "Individual",
+                "color": ""
+            },
+        ],
         allClients: [],
         allCoach: [],
         loadedComponent: true,
@@ -54,13 +71,6 @@ const module: Module<baseTableState, any> = {
             "Клиент 5",
             "Клиент 6",
         ],
-        typeLessons: [
-            "Свободно",
-            "Аренда",
-            "Индивидуальные занятие",
-            "Групповое занятие",
-
-        ],
         halls: [
             "1",
             "2",
@@ -71,6 +81,10 @@ const module: Module<baseTableState, any> = {
     mutations: {
         setCurrentDate(state, data) {
             state.currentDate = data
+        },
+
+        setCurrentVenue(state, data) {
+            state.currentVenue = data;
         },
 
         setShow(state) {
@@ -133,7 +147,7 @@ const module: Module<baseTableState, any> = {
 
             dispatch("listVenue");
             dispatch("listVenueObject");
-            dispatch("listRecord");
+            // dispatch("listRecord");
             dispatch("activitiesType");
             dispatch("allClients");
             dispatch("allCoach");
@@ -143,12 +157,14 @@ const module: Module<baseTableState, any> = {
 
 //GET
         async listRecord({commit}) {
+            const {data, status} = await api.listRecord();
 
-            await api.listRecord();
+            if (status === 200) {
+                commit("setListRecord", data);
+            }
         },
 
         async listVenue({commit, state}) {
-            console.error(state.currentDate);
             const {data, status} = await api.listVenues();
 
             if (status === 200) {

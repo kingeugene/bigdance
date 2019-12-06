@@ -40,8 +40,8 @@ include ../lib/pugDeps.pug
         +e.timeBlock(:style="{'top': `-${scrollTime}px`, 'background':  currentColor}")
             +e.TD.td-data(v-for="(item, index) of quantityTime"): +e.timeNumber {{timeCurrent(index)}}
     +b.TABLE.Table
-        +e.THEAD.head(:style="{'left': `-${scrollHead}px`, 'background':  currentColor }" )
-            +e.TR.th-row.is-daysWeek
+        +e.THEAD.head(:style="{'left': `-${scrollHead}px`}" )
+            +e.TR.th-row.is-daysWeek(:style="{'background':  currentColor}")
                 +e.TH.th-cell(
                     :colspan="numHalls"
                     v-for="(cell, index) of 7"
@@ -49,7 +49,7 @@ include ../lib/pugDeps.pug
                     +e.headDate
                         div {{ daysWeek[index] }}
                         div {{dateArr[index]}}
-                +e.TR.th-row.is-halls
+                +e.TR.th-row.is-halls(:style="{'background':  currentColor}")
                     +e.TH.th-cell(
                         v-for="(cell, index) of allDays"
                   ) {{halsTurn(index + 1)}}
@@ -123,7 +123,7 @@ include ../lib/pugDeps.pug
             +e.select.is-type
                 +e.selectName Тип занятия
                 v-select(
-                    :options="typeLessons"
+                    :options="listActivities['name']"
                     v-model="currentType"
                 )
 
@@ -197,7 +197,8 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать тип занятия
             v-select(
-                :options="typeLessons"
+
+                :options="listActivities['name']"
                 v-model="dataTable[currentChangeArr][6]"
             )
 
@@ -243,6 +244,10 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 export default class Timetable extends Vue {
     scrollTable: any = null;
     currentVenue: number = 0;
+    listActivities: {id: number[], name: string[]} = {
+        id: [],
+        name: [],
+    };
     startTime: number = 510;
     endTime: number = 1320;
     gapTime: number = 30;
@@ -280,7 +285,7 @@ export default class Timetable extends Vue {
     //modal changed
     currentChangeArr: string = "loading";
 
-    @State(state => state.baseTable.typeLessons) typeLessons!: string[];
+    @State(state => state.baseTable.activitiesType) activitiesType!: Array<any>;
     @State(state => state.baseTable.show) showFilter!: boolean;
     @State(state => state.baseTable.dateArr) dateArr!: string[];
     @State(state => state.baseTable.allCoach) coach!: string[];
@@ -291,8 +296,17 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
 
     @Mutation setDataTable!: ({}) => void;
+    @Mutation setCurrentVenue!: (id: number) => void;
 
     @Action initBaseTable!: () => void;
+
+    @Watch("activitiesType")
+    setActivitiesType(value: Array<any>) {
+        for (let i = 0; i < value.length; i++) {
+            this.listActivities["id"].push(value[i].id);
+            this.listActivities["name"].push(value[i].name);
+        }
+    }
 
     get numHalls(): number {
         return this.halls.length;
@@ -324,6 +338,7 @@ export default class Timetable extends Vue {
             return;
         }
 
+        this.setCurrentVenue(venueId);
         this.currentVenue = index;
     }
 
