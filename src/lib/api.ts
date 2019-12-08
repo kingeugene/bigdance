@@ -53,10 +53,10 @@ class ApiService {
     }
 
     public listRecord({venue_id = 1, date, coach, client, mobile}: any): any {
-        let dateR = date ? `?date=${date}` : "",
-            coachR = coach ? `?coach=${coach}` : "",
-            clientR = client ? `?client=${client}` : "",
-            mobileR = mobile == null ? "" : `?mobile=${mobile}`;
+        let dateR = date ? `&date=${date}` : "",
+            coachR = coach ? `&coach=${coach}` : "",
+            clientR = client ? `&client=${client}` : "",
+            mobileR = mobile ? `&mobile=${mobile}` : "" ;
 
         return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}`);
     }

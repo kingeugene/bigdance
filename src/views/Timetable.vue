@@ -18,7 +18,7 @@ include ../lib/pugDeps.pug
             clearable
             :first-day-of-week="7"
             width="100%"
-            format="YYYY-DD-MM"
+            format="YYYY-MM-DD"
         )
 
         +e.select
@@ -436,6 +436,11 @@ export default class Timetable extends Vue {
         if (this.scrollTable) {
             this.scrollTable!.addEventListener("scroll", throttle(this.handleScroll, 50));
         }
+    }
+
+    @Watch("dataItem")
+    testN(value: any) {
+        this.setDataItem();
     }
 
     setDataItem() {
