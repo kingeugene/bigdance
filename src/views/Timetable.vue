@@ -18,21 +18,21 @@ include ../lib/pugDeps.pug
             clearable
             :first-day-of-week="7"
             width="100%"
-            format="DD-MM-YYYY"
+            format="YYYY-DD-MM"
         )
 
         +e.select
             +e.selectName Выбрать учителя
             v-select(
                 :options="coach"
-                v-model="selectedTeacher"
+                v-model="actualCoach"
             )
 
         +e.select
             +e.selectName Выбрать клиента
             v-select(
                 :options="clients"
-                v-model="selectedChild"
+                v-model="actualCustomer"
             )
 
     +e.time
@@ -44,7 +44,7 @@ include ../lib/pugDeps.pug
             +e.TR.th-row.is-daysWeek(:style="{'background':  currentColor}")
                 +e.TH.th-cell(
                     :colspan="numHalls"
-                    v-for="(cell, index) of 7"
+                    v-for="(cell, index) of allDays"
                 )
                     +e.headDate
                         div {{ daysWeek[index] }}
@@ -52,7 +52,8 @@ include ../lib/pugDeps.pug
                 +e.TR.th-row.is-halls(:style="{'background':  currentColor}")
                     +e.TH.th-cell(
                         v-for="(cell, index) of allDays"
-                  ) {{halsTurn(index + 1)}}
+                    )
+                        div {{halls[(halsTurn(index + 1)) - 1].name}}
         +e.TBODY.tbody(ref="tableScroll")
             +e.TR.tr-row(
                 v-for="(item, indexTr) of quantityTime"
@@ -65,9 +66,6 @@ include ../lib/pugDeps.pug
                     +e.timeCurrent
                         +e.timeCurrentDefault
                             | {{timeCurrent(indexTr)}}-{{timeCurrent(indexTr + 1)}}
-                    +e.timeCurrentModal(
-                        @click="showModalCurrent(indexTr, indexTd)"
-                    )
     // modall add
     +e.VMODAL.modal(
         name="modal-add"
@@ -80,17 +78,17 @@ include ../lib/pugDeps.pug
 
         +e.modalWrap
             +e.modalDate
-                | Дата
+                | Дата*
                 datepicker2(
                     lang="ru"
                     v-model="dateModal"
                     valueType="format"
                     clearable
                     :first-day-of-week="1"
-                    format="DD-MM-YYYY"
+                    format="YYYY-MM-DD"
                 )
             +e.modalTime
-                | Начало
+                | Начало*
                 input(
                     type="tel"
                     v-mask="'##:##'"
@@ -98,7 +96,7 @@ include ../lib/pugDeps.pug
                 )
 
             +e.modalTime
-                | Окончания
+                | Окончания*
                 input(
                     type="tel"
                     v-mask="'##:##'"
@@ -109,31 +107,39 @@ include ../lib/pugDeps.pug
             +e.select
                 +e.selectName Выбрать учителя
                 v-select(
+                    multiple
                     :options="coach"
                     v-model="selectTeacherModal"
+                    :reduce="label => label.code"
                 )
 
             +e.select
                 +e.selectName Выбрать клиента
                 v-select(
+                    multiple
                     :options="clients"
                     v-model="selectedChildModal"
+                    :reduce="label => label.code"
                 )
         +e.modalWrap
             +e.select.is-type
-                +e.selectName Тип занятия
+                +e.selectName Тип занятия*
                 v-select(
-                    :options="listActivities['name']"
+                    label="name"
+                    :options="activitiesType"
                     v-model="currentType"
+                    :reduce="name => name.id"
                 )
 
             +e.select.is-halls
-                +e.selectName Зал
+                +e.selectName Зал*
                 v-select(
+                    label="name"
                     :options="halls"
                     v-model="currentHall"
+                    :reduce="name => name.id"
                 )
-        +e.modalWrap
+        +e.modalWrap.d-none
             +e.modalWeek
                 +e.modalWeekName Кол-во недель
                 +e.INPUT(type="text" v-model="quantityWeek")
@@ -145,82 +151,9 @@ include ../lib/pugDeps.pug
                 +e.modalNotesName Справка
                 +e.TEXTAREA.modalNotesText(v-model="modalNotes")
 
-        +e.BUTTON.modalSubmit.btn.btn-success(@click="submitForm") Отправить
-
-    //modal changed
-    +e.VMODAL.modal(
-        v-if="currentChangeArr !== 'loading'"
-        name="modal-changed"
-        height="auto"
-        draggable
-        adaptive
-        scrollable
-        resizable
-    )
-        +e.modalWrap
-            +e.modalDate
-                datepicker2(
-                    lang="ru"
-                    v-model="dateModal"
-                    valueType="format"
-                    clearable
-                    :first-day-of-week="1"
-                    format="DD-MM-YYYY"
-                )
-            +e.modalTime
-                | Время начала
-                v-select(
-                    :options="allTime"
-                    v-model="dataTable[currentChangeArr][0]"
-                )
-
-            +e.modalTime
-                | Время окончания
-                v-select(
-                    :options="allTime"
-                    v-model="dataTable[currentChangeArr][3]"
-                )
-
-        +e.select
-            +e.selectName Выбрать учителя
-            v-select(
-                :options="coach"
-                v-model="dataTable[currentChangeArr][4]"
-            )
-
-        +e.select
-            +e.selectName Выбрать клиента
-            v-select(
-                :options="clients"
-                v-model="dataTable[currentChangeArr][5]"
-            )
-        +e.select
-            +e.selectName Выбрать тип занятия
-            v-select(
-
-                :options="listActivities['name']"
-                v-model="dataTable[currentChangeArr][6]"
-            )
-
-        +e.select
-            +e.selectName Выбрать зал
-            v-select(
-                :options="halls"
-                v-model="currentHall"
-            )
-        +e.modalStatus
-            +e.INPUT(type="checkbox" v-model="dataTable[currentChangeArr][7]")
-            | Статус
-
-        +e.modalWeek
-            +e.modalWeekName Введите количество недель (для регулярных занятий)
-            +e.INPUT(type="text" v-model="dataTable[currentChangeArr][8]")
-
-        +e.modalNotes
-            +e.modalNotesName Справка
-            +e.TEXTAREA.modalNotesText(v-model="dataTable[currentChangeArr][9]")
-
-        +e.BUTTON.modalSubmit(@click="submitForm") Изменить
+        +e.errorMessageWrap
+            +e.BUTTON.modalSubmit.btn.btn-success(@click="submitForm") Отправить
+            +e.errorMessage {{errorMessage}}
     loading(
         :active.sync="loadedComponent"
         :is-full-page="fullPage"
@@ -244,33 +177,21 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 export default class Timetable extends Vue {
     scrollTable: any = null;
     currentVenue: number = 0;
-    listActivities: {id: number[], name: string[]} = {
-        id: [],
-        name: [],
-    };
+    initDataItem: boolean = true;
     startTime: number = 510;
     endTime: number = 1320;
-    gapTime: number = 30;
-    oneMinInPx: number = 101 / this.gapTime;
     scrollHead: number = 0;
     scrollTime: number = 0;
-    colorTable: string = "blue";
-    selectedTeacher: string = "";
-    selectedChild: string = "";
 
-    selectTimeStart: string = "";
-    selectTimeEnd: string = "";
-    selectTeacherModal: string = "";
-    selectedChildModal: string = "";
-    dateTime: string = "";
-    dateModal: string = "";
-    currentType: string = "Индивидуальные занятие";
+    selectTeacherModal: Array<any> = [];
+    selectedChildModal: Array<any> = [];
+    currentType: string = "";
     currentHall: string = "";
     statusModal: boolean = false;
     quantityWeek: string = "1";
     modalNotes: string = "";
+    errorMessage: string = "";
     fullPage: boolean = true;
-    isLoading: boolean = true;
 
     daysWeek: string[] = [
         "Понедельник",
@@ -290,22 +211,106 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.dateArr) dateArr!: string[];
     @State(state => state.baseTable.allCoach) coach!: string[];
     @State(state => state.baseTable.allClients) clients!: string[];
-    @State(state => state.baseTable.halls) halls!: string[];
-    @State(state => state.baseTable.dataTable) dataTable!: string[];
+    @State(state => state.baseTable.listVenueObject) halls!: [{id: number; name: string; venue_id: number}];
+    @State(state => state.baseTable.dataTable) dataTable!: any;
     @State(state => state.baseTable.listVenue) listVenue!: string[];
+    @State(state => state.baseTable.listRecord) listRecord!: any;
+    @State(state => state.baseTable.currentVenue) actualVenue!: any;
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
+    @State(state => state.baseTable.gapTime) gapTime!: number;
+    @State(state => state.baseTable.oneMinInPx) oneMinInPx!: number;
+    @State(state => state.baseTable.dataItem) dataItem!: any;
+    @State(state => state.baseTable.dateTimeChoose) dateTimeChoose!: any;
+    @State(state => state.baseTable.coachChoose) coachChoose!: any;
+    @State(state => state.baseTable.customerChoose) customerChoose!: any;
+    @State(state => state.baseTable.isMobileChoose) isMobileChoose!: any;
+    @State(state => state.baseTable.recordDate) recordDate!: any;
+    @State(state => state.baseTable.recordStartTime) recordStartTime!: any;
+    @State(state => state.baseTable.recordEndTime) recordEndTime!: any;
+    @State(state => state.baseTable.recordCoaches) recordCoaches!: any;
+    @State(state => state.baseTable.recordClients) recordClients!: any;
 
     @Mutation setDataTable!: ({}) => void;
     @Mutation setCurrentVenue!: (id: number) => void;
+    @Mutation setDateTimeChoose!: (date: string) => void;
+    @Mutation setCoachChoose!: (coach: string) => void;
+    @Mutation setCustomerChoose!: (customer: string) => void;
+    @Mutation setRecordDate!: (recordData: string) => void;
+    @Mutation setRecordStartTime!: (recordStartTime: string) => void;
+    @Mutation setRecordEndTime!: (recordEndTime: string) => void;
+    @Mutation setRecordCoaches!: (recordCoaches: string[]) => void;
+    @Mutation setRecordClients!: (recordClients: string[]) => void;
 
     @Action initBaseTable!: () => void;
+    @Action getListRecord!: ({venue_id, date, coach, client, mobile}: any) => void;
+    @Action createRecord!: ({venue_object_id, activity_id, coaches, clients}: any) => void;
 
-    @Watch("activitiesType")
-    setActivitiesType(value: Array<any>) {
-        for (let i = 0; i < value.length; i++) {
-            this.listActivities["id"].push(value[i].id);
-            this.listActivities["name"].push(value[i].name);
-        }
+    @Watch("dateTimeChoose")
+    getActualRecords(value: any) {
+        this.serActualDataItem();
+    }
+
+    @Watch("coachChoose")
+    getActualСoach(value: any) {
+        this.serActualDataItem();
+    }
+
+    @Watch("customerChoose")
+    getActualСustomer(value: any) {
+        this.serActualDataItem();
+    }
+
+    @Watch("actualVenue")
+    setActualVenue(value: any) {
+        this.serActualDataItem();
+    }
+
+    get dateTime(): string {
+        return this.dateTimeChoose;
+    }
+
+    set dateTime(value: string) {
+        this.setDateTimeChoose(value);
+    }
+
+    get actualCoach(): {code: string, label: string} {
+        return this.coachChoose.label;
+    }
+
+    set actualCoach(value: {code: string, label: string}) {
+        this.setCoachChoose(value.code);
+    }
+
+    get actualCustomer(): {code: string, label: string} {
+        return this.customerChoose.label;
+    }
+
+    set actualCustomer(value: {code: string, label: string}) {
+        this.setCustomerChoose(value.code);
+    }
+
+    get dateModal(): string {
+        return this.recordDate;
+    }
+
+    set dateModal(value: string) {
+        this.setRecordDate(value);
+    }
+
+    get selectTimeStart(): string {
+        return this.recordStartTime;
+    }
+
+    set selectTimeStart(value: string) {
+        this.setRecordStartTime(value);
+    }
+
+    get selectTimeEnd(): string {
+        return this.recordEndTime;
+    }
+
+    set selectTimeEnd(value: string) {
+        this.setRecordEndTime(value);
     }
 
     get numHalls(): number {
@@ -333,6 +338,16 @@ export default class Timetable extends Vue {
         return this.listVenue.length ? (this.listVenue[this.currentVenue]["color" as any]) : "#2f628e";
     }
 
+    serActualDataItem() {
+        let venue_id = this.actualVenue,
+            date = this.dateTimeChoose,
+            coach = this.coachChoose,
+            client = this.customerChoose,
+            mobile = this.isMobileChoose;
+
+        this.getListRecord({ venue_id, date, coach, client, mobile});
+    }
+
     handleSwitchVenue(venueId: number, index: number): void {
         if (this.currentVenue === index) {
             return;
@@ -342,61 +357,23 @@ export default class Timetable extends Vue {
         this.currentVenue = index;
     }
 
-    addData(): any {
-        for (let objData in this.dataTable) {
-            for (let halls in this.dataTable[objData] as any) {
-                for (let idTrain in this.dataTable[objData][halls]) {
-                    let idStr = objData + halls,
-                        startTrain = Number(this.dataTable[objData][halls as any][idTrain as any]["startTraining" as any]),
-                        endTrain = Number(this.dataTable[objData][halls as any][idTrain as any]["endTraining" as any]),
-                        typeTrain: number = this.dataTable[objData][halls][idTrain].typeTraining,
-                        nameTeacher: string = this.dataTable[objData][halls as any][idTrain as any]["nameTeacher" as any],
-                        colorItem = null;
-
-                    if (typeTrain === 0) {
-                        colorItem = "green";
-                    }
-
-                    switch (typeTrain) {
-                        case 0:
-                            colorItem = "green";
-                            break;
-                        case 1:
-                            colorItem = "red";
-                            break;
-                        case 2:
-                            colorItem = "yellow";
-                            break;
-                        case 3:
-                            colorItem = "lightgray";
-                            break;
-                    }
-
-                    let dataAdd = document.getElementById(idStr),
-                        itemData = document.createElement("div"),
-                        startPosition = (startTrain - this.startTime) * this.oneMinInPx,
-                        heightItem = (endTrain - Number(this.dataTable[objData][halls as any][idTrain as any]["startTraining" as any])) * this.oneMinInPx - 1;
-
-                    itemData!.style.top = startPosition + "px";
-                    itemData!.style.height = heightItem + "px";
-                    itemData!.style.background = colorItem;
-                    itemData!.innerHTML = `${this.minInTime(startTrain)}-${this.minInTime(endTrain)} <div>${nameTeacher}</div>`;
-                    itemData!.classList.add("is-full");
-
-                    dataAdd!.appendChild(itemData);
-                }
-            }
-        }
-
-        return true;
-    }
-
     halsTurn(i: number): number {
-        if ( i < this.numHalls) {
+        if ( i < (this.numHalls)) {
             return i;
         } else if (!(i % this.numHalls)) {
             return this.numHalls;
         } else return i % this.numHalls;
+    }
+
+    sortOutHalls(index: number): any {
+        const currentIndex = this.halsTurn(index);
+
+        console.log(this.halls[currentIndex].name || "2");
+
+
+        return this.halls
+            ? this.halsTurn(index + 1)
+            : this.halsTurn(index + 1)
     }
 
     timeCurrent(i: number): string {
@@ -425,46 +402,32 @@ export default class Timetable extends Vue {
         this.scrollHead = document.querySelector(".Table__tbody")!.scrollLeft;
     }
 
-    changeColor(color: string): void {
-        this.colorTable = color;
-    }
-
     showModal (currentRow: number, currentTd: number) {
+        this.dateModal =
         this.selectTimeStart = this.timeCurrent((currentRow));
         this.selectTimeEnd = this.timeCurrent((currentRow + 1));
 
-        this.selectTeacherModal = this.selectedTeacher || "";
-        this.selectedChildModal = this.selectedChild || "";
-
         let currentDate = Math.floor(currentTd / this.numHalls);
         this.dateModal = this.dateArr[currentDate];
-
-        this.currentHall = `${this.halsTurn(currentTd + 1)}`;
+        // this.currentHall = this.halls[this.halsTurn(currentTd)];
         this.$modal.show('modal-add');
     }
 
-    showModalCurrent(indexTr: number, indexTd: number) {
-        console.error("sdasd");
-
-        this.$modal.show('modal-changed');
-    }
-
     submitForm(): void {
-        let arr = [],
-            idStr = this.selectTimeStart + this.dateModal + this.currentHall;
+        this.errorMessage = "";
 
-        arr.push(this.selectTimeStart);
-        arr.push(this.dateModal);
-        arr.push(this.currentHall);
-        arr.push(this.selectTimeEnd);
-        arr.push(this.selectTeacherModal);
-        arr.push(this.selectedChildModal);
-        arr.push(this.currentType);
-        arr.push(this.statusModal);
-        arr.push(this.quantityWeek);
-        arr.push(this.modalNotes);
+        const venue_object_id = this.currentHall,
+            activity_id = this.currentType,
+            coaches = this.selectTeacherModal,
+            clients = this.selectedChildModal;
 
-        this.setDataTable({data: arr, id: idStr});
+        if (!this.dateModal || !this.selectTimeStart || !this.selectTimeEnd || !activity_id || !venue_object_id) {
+            this.errorMessage = "Введите все обязательные поля";
+
+            return;
+        }
+
+        this.createRecord({venue_object_id, activity_id, coaches, clients});
     }
 
     setScrollTable(): void {
@@ -475,6 +438,27 @@ export default class Timetable extends Vue {
         }
     }
 
+    setDataItem() {
+        if (this.initDataItem && Object.keys(this.dataItem).length !== 0) {
+            let value = this.dataItem;
+
+            for (let key in value) {
+                let dataAdd = document.getElementById(key),
+                    itemData = document.createElement("div");
+
+                itemData!.style.top = value[key][0] + "px";
+                itemData!.style.height = value[key][1] + "px";
+                itemData!.style.background = value[key][2];
+                itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} <div>${value[key][5]} <br>${value[key][6]} </div>`;
+                itemData!.classList.add("is-full");
+
+                dataAdd!.appendChild(itemData);
+            }
+
+            this.initDataItem = false;
+        }
+    }
+
     created() {
         if (this.loadedComponent) {
             this.initBaseTable();
@@ -482,13 +466,12 @@ export default class Timetable extends Vue {
     }
 
     mounted() {
-        this.addData();
-
         this.setScrollTable();
     }
 
     updated() {
         this.setScrollTable();
+        this.setDataItem();
     }
 }
 </script>
@@ -576,7 +559,7 @@ export default class Timetable extends Vue {
     & &__dataTable {
         position: relative;
         padding: 22px 0;
-        height: 83px;
+        height: 84px;
         z-index: 99;
         color: #fff;
         border-top: 2px solid;
@@ -649,6 +632,7 @@ export default class Timetable extends Vue {
             &Date {
                 display: flex;
                 justify-content: space-between;
+                flex-wrap: wrap;
                 margin: 0 20px;
             }
         }
@@ -672,7 +656,7 @@ export default class Timetable extends Vue {
             text-align: center;
 
             &.is-number {
-                min-width: 90px;
+                width: 90px;
             }
         }
 
@@ -770,6 +754,17 @@ export default class Timetable extends Vue {
                 width: 100%;
                 height: 34px;
             }
+        }
+    }
+
+    &__errorMessage {
+        color: red;
+        transition: .5s;
+
+        &Wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
     }
 }

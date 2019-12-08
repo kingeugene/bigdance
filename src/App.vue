@@ -22,11 +22,12 @@ export default class App extends Vue {
         let currentThis = this;
 
         axios.interceptors.response.use(undefined, function (err: any) {
-            if (err) {
-                currentThis.logout();
-            }
-
-            throw err;
+            return new Promise(function (resolve, reject) {
+                if (err.response.status === 401 && err.config && !err.config.__isRetryRequest) {
+                    currentThis.logout();
+                }
+                throw err;
+            });
         });
     }
 }

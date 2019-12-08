@@ -3,11 +3,18 @@ import api from "@/lib/api"
 
 interface baseTableState {
     show: boolean;
+    account_id: number;
     currentDate: string;
     currentVenue: number;
     currentColor: string;
     listVenue: [];
-    listVenueObject: [];
+    listVenueObject: [
+        {
+            id: number;
+            name: string;
+            venue_id: number
+        }
+    ];
     activitiesType: [
         {
             id: number,
@@ -20,21 +27,52 @@ interface baseTableState {
     allCoach: [];
     loadedComponent: boolean;
     dateArr: string[];
-    teacher: string[];
-    clients: string[];
-    halls: string[];
+    idItem: number[];
     listRecord: any;
-    dataTable: any,
+    dataTable: any;
+    gapTime: number;
+    oneMinInPx: number;
+    startTime: number,
+    endTime: number,
+    dataItem: any;
+    dateTimeChoose: string;
+    coachChoose: string;
+    customerChoose: string;
+    isMobileChoose: boolean;
+    recordActivityType: string;
+    recordColor: string;
+    recordDate: string;
+    recordStartTime: string,
+    recordEndTime: string,
+    recordStatus: string,
+    recordCancelledAt: string,
+    recordCoaches: Array<any>,
+    recordClients: Array<any>,
 }
 
 const module: Module<baseTableState, any> = {
     state: {
         show: true,
+        account_id: 1,
         currentDate: "",
         currentVenue: 1,
+        dateTimeChoose: "",
+        coachChoose: "",
+        customerChoose: "",
+        isMobileChoose: false,
         currentColor: "#2f628e",
+        gapTime: 30,
+        oneMinInPx: 101 / 30,
+        startTime: 510,
+        endTime: 1320,
         listVenue: [],
-        listVenueObject: [],
+        listVenueObject: [
+            {
+                id: 1,
+                name:"",
+                venue_id: 1
+            }
+        ],
         activitiesType: [
             {
                 "id": 1,
@@ -46,41 +84,42 @@ const module: Module<baseTableState, any> = {
         allClients: [],
         allCoach: [],
         loadedComponent: true,
-        dataTable: [],
-        dateArr: [
-          "13-10-2019",
-          "14-10-2019",
-          "15-10-2019",
-          "16-10-2019",
-          "17-10-2019",
-          "18-10-2019",
-          "19-10-2019",
-        ],
-        teacher:  [
-          "Алеша Николаевич",
-          "Диадор Петрович",
-          "Шарик Леопольдович",
-          "Кузьма Петрович",
-          "Петросян Петрухин",
-        ],
-        clients: [
-            "Клиент 1",
-            "Клиент 2",
-            "Клиент 3",
-            "Клиент 4",
-            "Клиент 5",
-            "Клиент 6",
-        ],
-        halls: [
-            "1",
-            "2",
-        ],
+        dataTable: {},
+        dateArr: [],
+        idItem: [],
         listRecord: {},
-    },
+        dataItem: {},
+        recordDate: "",
+        recordActivityType: "",
+        recordColor: "#DC4141",
+        recordStartTime: "",
+        recordEndTime: "",
+        recordStatus: "",
+        recordCancelledAt: "",
+        recordCoaches: [],
+        recordClients: []
+},
 
     mutations: {
         setCurrentDate(state, data) {
             state.currentDate = data
+        },
+
+        setAllDataItem(state, data) {
+            state.dateArr = data.dateArr;
+            state.dataItem = data.dataItem;
+        },
+
+        setDateTimeChoose(state, data) {
+            state.dateTimeChoose = data;
+        },
+
+        setCoachChoose(state, data) {
+            state.coachChoose = data;
+        },
+
+        setCustomerChoose(state, data) {
+            state.customerChoose = data;
         },
 
         setCurrentVenue(state, data) {
@@ -121,10 +160,48 @@ const module: Module<baseTableState, any> = {
 
         setListRecord(state, data) {
             state.listRecord = data;
-        }
+        },
+
+        setRecordDate(state, data) {
+            state.recordDate = data;
+        },
+
+        setRecordStartTime(state, data) {
+            state.recordStartTime = data;
+        },
+
+        setRecordEndTime(state, data) {
+            state.recordEndTime = data;
+        },
+
+        // setRecordCoaches(state, data) {
+        //     state.recordCoaches = data;
+        // },
+        //
+        // setRecordClients(state, data) {
+        //     state.recordClients = data;
+        // },
+        //
+        // setRecordActivityType(state, data) {
+        //     state.recordActivityType = data;
+        // }
     },
 
     actions: {
+        async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients})  {
+            const color = state.currentColor,
+                start_time = `${state.recordDate} ${state.recordStartTime}:00`,
+                end_time = `${state.recordDate} ${state.recordEndTime}:00`,
+                status_record = "confirmed",
+                cancelled_at = "";
+
+            const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients });
+
+            if (status === 200) {
+                dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null})
+            }
+        },
+
         currentDate({commit}) {
             let dateObj = new Date(),
                 year = dateObj.getFullYear(),
@@ -145,29 +222,73 @@ const module: Module<baseTableState, any> = {
         async initBaseTable({dispatch, commit}) {
             commit("setLoaded", true);
 
-            dispatch("listVenue");
-            dispatch("listVenueObject");
-            // dispatch("listRecord");
-            dispatch("activitiesType");
-            dispatch("allClients");
-            dispatch("allCoach");
+            let request = [
+                dispatch("listVenue"),
+                dispatch("listVenueObject"),
+                dispatch("activitiesType"),
+                dispatch("allClients"),
+                dispatch("allCoach"),
+                dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null}),
+            ];
+
+            await Promise.all(request);
+
+            dispatch("dataForItem");
 
             commit("setLoaded", false);
         },
 
 //GET
-        async listRecord({commit}) {
-            const {data, status} = await api.listRecord();
+        async getListRecord({commit}, {venue_id, date, coach, client, mobile}) {
+            const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile});
 
             if (status === 200) {
                 commit("setListRecord", data);
             }
         },
 
+        dataForItem({commit, state}) {
+            const dataTable = state.listRecord,
+                dateArr = [],
+                dataItem: any = {};
+
+            for (let key in dataTable) {
+                dateArr.push(key);
+
+                for (let indexItem = 0; indexItem < dataTable[key].length; indexItem++)  {
+
+                    const classTd = `${(key + 1)}`;
+
+                    const startTrain = dataTable[key][indexItem]["start_time"],
+                        endTrain = dataTable[key][indexItem]["end_time"],
+                        activityColor = dataTable[key][indexItem]["color"],
+                        nameCoach = dataTable[key][indexItem]["clients"],
+                        nameCustomer = dataTable[key][indexItem]["coaches"];
+
+                    const startPosition = (startTrain - state.startTime) * state.oneMinInPx,
+                        heightRecord = (endTrain - startTrain) * state.oneMinInPx - 1;
+
+                    dataItem[classTd] = [
+                        startPosition,
+                        heightRecord,
+                        activityColor,
+                        startTrain,
+                        endTrain,
+                        nameCoach,
+                        nameCustomer,
+                    ]
+                }
+            }
+
+            commit("setAllDataItem", {dateArr, dataItem});
+
+        },
+
         async listVenue({commit, state}) {
             const {data, status} = await api.listVenues();
 
             if (status === 200) {
+
                 commit("setListVenue", data);
             }
         },
@@ -195,7 +316,7 @@ const module: Module<baseTableState, any> = {
                 let arrName = [];
 
                 for (let i = 0; i < data.length; i++) {
-                    arrName.push(`${data[i].first_name} ${data[i].second_name}`)
+                    arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].id}`})
                 }
                 commit("setAllClients", arrName);
             }
@@ -208,7 +329,7 @@ const module: Module<baseTableState, any> = {
                 let arrName = [];
 
                 for (let i = 0; i < data.length; i++) {
-                    arrName.push(`${data[i].first_name} ${data[i].second_name}`)
+                    arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].id}`})
                 }
 
                 commit("setAllCoach", arrName);
