@@ -8,13 +8,7 @@ interface baseTableState {
     currentVenue: number;
     currentColor: string;
     listVenue: [];
-    listVenueObject: [
-        {
-            id: number;
-            name: string;
-            venue_id: number
-        }
-    ];
+    listVenueObject: [];
     activitiesType: [
         {
             id: number,
@@ -66,13 +60,7 @@ const module: Module<baseTableState, any> = {
         startTime: 510,
         endTime: 1320,
         listVenue: [],
-        listVenueObject: [
-            {
-                id: 1,
-                name:"",
-                venue_id: 1
-            }
-        ],
+        listVenueObject: [],
         activitiesType: [
             {
                 "id": 1,
@@ -198,8 +186,14 @@ const module: Module<baseTableState, any> = {
             const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients });
 
             if (status === 200) {
-                dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null})
+                const data = await dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null});
+
+                if (status === 200) {
+                    dispatch("dataForItem");
+                }
             }
+
+
         },
 
         currentDate({commit}) {
@@ -233,18 +227,18 @@ const module: Module<baseTableState, any> = {
 
             await Promise.all(request);
 
-            dispatch("dataForItem");
-
             commit("setLoaded", false);
         },
 
 //GET
-        async getListRecord({commit}, {venue_id, date, coach, client, mobile}) {
+        async getListRecord({commit, dispatch}, {venue_id, date, coach, client, mobile}) {
             const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile});
 
             if (status === 200) {
-                commit("setListRecord", data);
+                await commit("setListRecord", data);
             }
+
+            dispatch("dataForItem");
         },
 
         dataForItem({commit, state}) {
@@ -257,9 +251,10 @@ const module: Module<baseTableState, any> = {
 
                 for (let indexItem = 0; indexItem < dataTable[key].length; indexItem++)  {
 
-                    const classTd = `${(key + 1)}`;
 
-                    const startTrain = dataTable[key][indexItem]["start_time"],
+                    const venueID = dataTable[key][indexItem]["venue_object_id"],
+                        tdId = `${(key + venueID)}`,
+                        startTrain = dataTable[key][indexItem]["start_time"],
                         endTrain = dataTable[key][indexItem]["end_time"],
                         activityColor = dataTable[key][indexItem]["color"],
                         nameCoach = dataTable[key][indexItem]["clients"],
@@ -268,7 +263,7 @@ const module: Module<baseTableState, any> = {
                     const startPosition = (startTrain - state.startTime) * state.oneMinInPx,
                         heightRecord = (endTrain - startTrain) * state.oneMinInPx - 1;
 
-                    dataItem[classTd] = [
+                    dataItem[tdId] = [
                         startPosition,
                         heightRecord,
                         activityColor,

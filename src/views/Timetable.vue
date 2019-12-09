@@ -53,7 +53,7 @@ include ../lib/pugDeps.pug
                     +e.TH.th-cell(
                         v-for="(cell, index) of allDays"
                     )
-                        div {{halls[(halsTurn(index + 1)) - 1].name}}
+                        div {{halls[(halsTurn(index + 1)) - 1].id}}
         +e.TBODY.tbody(ref="tableScroll")
             +e.TR.tr-row(
                 v-for="(item, indexTr) of quantityTime"
@@ -144,9 +144,7 @@ include ../lib/pugDeps.pug
                 +e.modalWeekName Кол-во недель
                 +e.INPUT(type="text" v-model="quantityWeek")
             +e.modalStatus
-                +e.INPUT(type="checkbox" v-model="statusModal")
-                | Статус
-
+                +e.INPUT(type="checkbox" v-model="statusModal") Статус
             +e.modalNotes
                 +e.modalNotesName Справка
                 +e.TEXTAREA.modalNotesText(v-model="modalNotes")
@@ -365,17 +363,6 @@ export default class Timetable extends Vue {
         } else return i % this.numHalls;
     }
 
-    sortOutHalls(index: number): any {
-        const currentIndex = this.halsTurn(index);
-
-        console.log(this.halls[currentIndex].name || "2");
-
-
-        return this.halls
-            ? this.halsTurn(index + 1)
-            : this.halsTurn(index + 1)
-    }
-
     timeCurrent(i: number): string {
         let time: number = this.startTime + (i * this.gapTime);
         return this.minInTime(time);
@@ -392,8 +379,14 @@ export default class Timetable extends Vue {
     }
 
     classTd(indexTd: any, indexTr: any): string {
+        let hallID: string | number = "";
+
+        if (this.halls[(this.halsTurn(indexTd + 1) - 1)]) {
+            hallID  = this.halls[(this.halsTurn(indexTd + 1) - 1)].id;
+        }
+
         return indexTr === 0
-            ? `${this.dateArr[Math.floor(indexTd / this.numHalls)]}${this.halsTurn(indexTd + 1)}`
+            ? `${this.dateArr[Math.floor(indexTd / this.numHalls)]}${hallID}`
             : "";
     }
 
@@ -439,28 +432,34 @@ export default class Timetable extends Vue {
     }
 
     @Watch("dataItem")
-    testN(value: any) {
+    getDataItem(value: any) {
+        debugger;
         this.setDataItem();
     }
 
+    @Watch("selectTeacherModal")
+    test(value: any) {
+        debugger;
+    }
+
     setDataItem() {
-        if (this.initDataItem && Object.keys(this.dataItem).length !== 0) {
-            let value = this.dataItem;
+        let value = this.dataItem;
 
-            for (let key in value) {
-                let dataAdd = document.getElementById(key),
-                    itemData = document.createElement("div");
+        for (let key in value) {
+            let dataAdd = document.getElementById(key),
+                itemData = document.createElement("div");
 
-                itemData!.style.top = value[key][0] + "px";
-                itemData!.style.height = value[key][1] + "px";
-                itemData!.style.background = value[key][2];
-                itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} <div>${value[key][5]} <br>${value[key][6]} </div>`;
-                itemData!.classList.add("is-full");
-
-                dataAdd!.appendChild(itemData);
+            if (!dataAdd) {
+                return;
             }
 
-            this.initDataItem = false;
+            itemData!.style.top = value[key][0] + "px";
+            itemData!.style.height = value[key][1] + "px";
+            itemData!.style.background = value[key][2];
+            itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} <div>${value[key][5]} <br>${value[key][6]} </div>`;
+            itemData!.classList.add("is-full");
+
+            dataAdd!.appendChild(itemData);
         }
     }
 
