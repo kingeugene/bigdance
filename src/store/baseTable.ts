@@ -9,14 +9,7 @@ interface baseTableState {
     currentColor: string;
     listVenue: [];
     listVenueObject: [];
-    activitiesType: [
-        {
-            id: number,
-            account_id: number,
-            name: string,
-            color: string | null,
-        }
-    ];
+    activitiesType: [];
     allClients: [];
     allCoach: [];
     loadedComponent: boolean;
@@ -30,8 +23,8 @@ interface baseTableState {
     endTime: number,
     dataItem: any;
     dateTimeChoose: string;
-    coachChoose: string;
-    customerChoose: string;
+    coachChoose: {code?: string, label?: string};
+    customerChoose: {code?: string, label?: string};
     isMobileChoose: boolean;
     recordActivityType: string;
     recordColor: string;
@@ -51,8 +44,8 @@ const module: Module<baseTableState, any> = {
         currentDate: "",
         currentVenue: 1,
         dateTimeChoose: "",
-        coachChoose: "",
-        customerChoose: "",
+        coachChoose: {},
+        customerChoose: {},
         isMobileChoose: false,
         currentColor: "#2f628e",
         gapTime: 30,
@@ -61,14 +54,7 @@ const module: Module<baseTableState, any> = {
         endTime: 1320,
         listVenue: [],
         listVenueObject: [],
-        activitiesType: [
-            {
-                "id": 1,
-                "account_id": 1,
-                "name": "Individual",
-                "color": ""
-            },
-        ],
+        activitiesType: [],
         allClients: [],
         allCoach: [],
         loadedComponent: true,

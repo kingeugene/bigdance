@@ -24,6 +24,7 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать учителя
             v-select(
+                label="label"
                 :options="coach"
                 v-model="actualCoach"
             )
@@ -31,6 +32,7 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать клиента
             v-select(
+                label="label"
                 :options="clients"
                 v-model="actualCustomer"
             )
@@ -53,7 +55,7 @@ include ../lib/pugDeps.pug
                     +e.TH.th-cell(
                         v-for="(cell, index) of allDays"
                     )
-                        div {{halls[(halsTurn(index + 1)) - 1].id}}
+                        div {{halls[(halsTurn(index + 1)) - 1].name}}
         +e.TBODY.tbody(ref="tableScroll")
             +e.TR.tr-row(
                 v-for="(item, indexTr) of quantityTime"
@@ -231,8 +233,8 @@ export default class Timetable extends Vue {
     @Mutation setDataTable!: ({}) => void;
     @Mutation setCurrentVenue!: (id: number) => void;
     @Mutation setDateTimeChoose!: (date: string) => void;
-    @Mutation setCoachChoose!: (coach: string) => void;
-    @Mutation setCustomerChoose!: (customer: string) => void;
+    @Mutation setCoachChoose!: (coach: {code: string, label: string}) => void;
+    @Mutation setCustomerChoose!: (customer: {code: string, label: string}) => void;
     @Mutation setRecordDate!: (recordData: string) => void;
     @Mutation setRecordStartTime!: (recordStartTime: string) => void;
     @Mutation setRecordEndTime!: (recordEndTime: string) => void;
@@ -248,7 +250,7 @@ export default class Timetable extends Vue {
         this.serActualDataItem();
     }
 
-    @Watch("coachChoose")
+    @Watch("actualCoach")
     getActualСoach(value: any) {
         this.serActualDataItem();
     }
@@ -271,20 +273,28 @@ export default class Timetable extends Vue {
         this.setDateTimeChoose(value);
     }
 
-    get actualCoach(): {code: string, label: string} {
-        return this.coachChoose.label;
+    get actualCoach(): {code: string, label: string} | null {
+        return this.coachChoose;
     }
 
-    set actualCoach(value: {code: string, label: string}) {
-        this.setCoachChoose(value.code);
+    set actualCoach(value: {code: string, label: string} | null) {
+        if(!value) {
+            value = {code: "", label: ""};
+        }
+
+        this.setCoachChoose(value);
     }
 
     get actualCustomer(): {code: string, label: string} {
-        return this.customerChoose.label;
+        return this.customerChoose;
     }
 
     set actualCustomer(value: {code: string, label: string}) {
-        this.setCustomerChoose(value.code);
+        if(!value) {
+            value = {code: "", label: ""};
+        }
+
+        this.setCustomerChoose(value);
     }
 
     get dateModal(): string {
@@ -339,8 +349,8 @@ export default class Timetable extends Vue {
     serActualDataItem() {
         let venue_id = this.actualVenue,
             date = this.dateTimeChoose,
-            coach = this.coachChoose,
-            client = this.customerChoose,
+            coach = this.coachChoose.code,
+            client = this.customerChoose.code,
             mobile = this.isMobileChoose;
 
         this.getListRecord({ venue_id, date, coach, client, mobile});
@@ -433,33 +443,37 @@ export default class Timetable extends Vue {
 
     @Watch("dataItem")
     getDataItem(value: any) {
-        debugger;
+        this.initDataItem = true;
         this.setDataItem();
     }
 
-    @Watch("selectTeacherModal")
-    test(value: any) {
-        debugger;
-    }
-
     setDataItem() {
-        let value = this.dataItem;
+        if (this.initDataItem) {
+            const value = this.dataItem,
+                oldRecord = document.querySelectorAll(".is-record");
 
-        for (let key in value) {
-            let dataAdd = document.getElementById(key),
-                itemData = document.createElement("div");
-
-            if (!dataAdd) {
-                return;
+            for (let i = 0; i < oldRecord.length; i++) {
+                oldRecord[i].remove();
             }
 
-            itemData!.style.top = value[key][0] + "px";
-            itemData!.style.height = value[key][1] + "px";
-            itemData!.style.background = value[key][2];
-            itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} <div>${value[key][5]} <br>${value[key][6]} </div>`;
-            itemData!.classList.add("is-full");
+            for (let key in value) {
+                let dataAdd = document.getElementById(key),
+                    itemData = document.createElement("div");
 
-            dataAdd!.appendChild(itemData);
+                if (!dataAdd) {
+                    return;
+                }
+
+                itemData!.style.top = value[key][0] + "px";
+                itemData!.style.height = value[key][1] + "px";
+                itemData!.style.background = value[key][2];
+                itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} <div>${value[key][5]} <br>${value[key][6]} </div>`;
+                itemData!.classList.add("is-record");
+
+                dataAdd!.appendChild(itemData);
+            }
+
+            this.initDataItem = false;
         }
     }
 
@@ -783,7 +797,7 @@ export default class Timetable extends Vue {
 
     .Table {
         &__td-cell {
-            .is-full {
+            .is-record {
                 position: absolute;
                 top: 0;
                 color: black;
