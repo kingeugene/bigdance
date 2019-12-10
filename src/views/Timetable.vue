@@ -24,7 +24,6 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать учителя
             v-select(
-                label="label"
                 :options="coach"
                 v-model="actualCoach"
             )
@@ -32,7 +31,6 @@ include ../lib/pugDeps.pug
         +e.select
             +e.selectName Выбрать клиента
             v-select(
-                label="label"
                 :options="clients"
                 v-model="actualCustomer"
             )
@@ -113,7 +111,6 @@ include ../lib/pugDeps.pug
                     multiple
                     :options="coach"
                     v-model="selectTeacherModal"
-                    :reduce="label => label.code"
                 )
 
             +e.select
@@ -122,7 +119,6 @@ include ../lib/pugDeps.pug
                     multiple
                     :options="clients"
                     v-model="selectedChildModal"
-                    :reduce="label => label.code"
                 )
         +e.modalWrap
             +e.select.is-type
@@ -131,7 +127,6 @@ include ../lib/pugDeps.pug
                     label="name"
                     :options="activitiesType"
                     v-model="currentType"
-                    :reduce="name => name.id"
                 )
 
             +e.select.is-halls
@@ -140,7 +135,6 @@ include ../lib/pugDeps.pug
                     label="name"
                     :options="halls"
                     v-model="currentHall"
-                    :reduce="name => name.id"
                 )
         +e.modalWrap.d-none
             +e.modalWeek
@@ -184,10 +178,6 @@ export default class Timetable extends Vue {
     scrollHead: number = 0;
     scrollTime: number = 0;
 
-    selectTeacherModal: Array<any> = [];
-    selectedChildModal: Array<any> = [];
-    currentType: string = "";
-    currentHall: string = "";
     statusModal: boolean = false;
     quantityWeek: string = "1";
     modalNotes: string = "";
@@ -212,7 +202,7 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.dateArr) dateArr!: string[];
     @State(state => state.baseTable.allCoach) coach!: string[];
     @State(state => state.baseTable.allClients) clients!: string[];
-    @State(state => state.baseTable.listVenueObject) halls!: [{id: number; name: string; venue_id: number}];
+    @State(state => state.baseTable.listVenueObject) halls!: [{id: number; name: string;}];
     @State(state => state.baseTable.dataTable) dataTable!: any;
     @State(state => state.baseTable.listVenue) listVenue!: string[];
     @State(state => state.baseTable.listRecord) listRecord!: any;
@@ -230,6 +220,14 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.recordEndTime) recordEndTime!: any;
     @State(state => state.baseTable.recordCoaches) recordCoaches!: any;
     @State(state => state.baseTable.recordClients) recordClients!: any;
+    @State(state => state.baseTable.recordActivityType) recordActivityType!: {
+        account_id: number,
+        block: number,
+        color: string,
+        id: number,
+        name: string,
+    };
+    @State(state => state.baseTable.recordHall) recordHall!: {id: number, name: string};
     @State(state => state.baseTable.recordLoading) recordLoading!: boolean;
 
     @Mutation setDataTable!: ({}) => void;
@@ -240,8 +238,17 @@ export default class Timetable extends Vue {
     @Mutation setRecordDate!: (recordData: string) => void;
     @Mutation setRecordStartTime!: (recordStartTime: string) => void;
     @Mutation setRecordEndTime!: (recordEndTime: string) => void;
-    @Mutation setRecordCoaches!: (recordCoaches: string[]) => void;
-    @Mutation setRecordClients!: (recordClients: string[]) => void;
+    @Mutation setRecordCoaches!: (recordCoaches: any) => void;
+    @Mutation setRecordClients!: (recordClients: any) => void;
+
+    @Mutation setRecordActivityType!: (recordActivityType: {
+        account_id: number,
+        block: number,
+        color: string,
+        id: number,
+        name: string,
+    }) => void;
+    @Mutation setRecordHall!: (recordHall: {id: number, name: string}) => void;
 
     @Action initBaseTable!: () => void;
     @Action getListRecord!: ({venue_id, date, coach, client, mobile}: any) => void;
@@ -321,6 +328,75 @@ export default class Timetable extends Vue {
 
     set selectTimeEnd(value: string) {
         this.setRecordEndTime(value);
+    }
+
+    get selectTeacherModal(): {code: string, label: string}[] | null {
+        return this.recordCoaches;
+    }
+
+    set selectTeacherModal(value: {code: string, label: string}[] | null) {
+        if(!value) {
+            value = [{code: "", label: ""}];
+        }
+
+        this.setRecordCoaches(value);
+    }
+
+    get selectedChildModal(): {code: string, label: string}[] {
+        return this.recordClients;
+    }
+
+    set selectedChildModal(value: {code: string, label: string}[]) {
+        if(!value) {
+            value = [{code: "", label: ""}];
+        }
+
+        this.setRecordClients(value);
+    }
+
+    get currentHall(): {id: number, name: string} | null {
+        return this.recordHall;
+    }
+
+    set currentHall(value: {id: number, name: string} | null) {
+        if(!value) {
+            value = {
+                id: 0,
+                name: "",
+            };
+        }
+
+        this.setRecordHall(value);
+    }
+
+    get currentType(): {
+        account_id: number,
+        block: number,
+        color: string,
+        id: number,
+        name: string,
+    } {
+        return this.recordActivityType;
+    }
+
+    set currentType(value: {
+        account_id: number,
+        block: number,
+        color: string,
+        id: number,
+        name: string,
+    }) {
+        if(!value) {
+            value = {
+                account_id: 0,
+                block: 0,
+                color: "",
+                id: 0,
+                name: "",
+            };
+        }
+
+        this.setRecordActivityType(value);
     }
 
     get numHalls(): number {
@@ -408,23 +484,32 @@ export default class Timetable extends Vue {
     }
 
     showModal (currentRow: number, currentTd: number) {
-        this.dateModal =
         this.selectTimeStart = this.timeCurrent((currentRow));
         this.selectTimeEnd = this.timeCurrent((currentRow + 1));
 
         let currentDate = Math.floor(currentTd / this.numHalls);
         this.dateModal = this.dateArr[currentDate];
-        // this.currentHall = this.halls[this.halsTurn(currentTd)];
+        this.currentHall = this.halls[this.halsTurn(currentTd + 1) - 1];
+        this.selectTeacherModal = this.actualCoach!.label
+            ? [this.actualCoach!]
+            : [];
+
+        this.selectedChildModal = this.actualCustomer!.label
+            ? [this.actualCustomer!]
+            : [];
+
+        this.currentType = this.activitiesType[0];
+
         this.$modal.show('modal-add');
     }
 
     submitForm(): void {
         this.errorMessage = "";
 
-        const venue_object_id = this.currentHall,
-            activity_id = this.currentType,
-            coaches = this.selectTeacherModal,
-            clients = this.selectedChildModal;
+        const venue_object_id = this.recordHall.id,
+            activity_id = this.recordActivityType.id,
+            coaches = this.recordCoaches!.map((name: {code: string, label: string}) => name.code),
+            clients = this.recordClients!.map((name: {code: string, label: string}) => name.code);
 
         if (!this.dateModal || !this.selectTimeStart || !this.selectTimeEnd || !activity_id || !venue_object_id) {
             this.errorMessage = "Введите все обязательные поля";

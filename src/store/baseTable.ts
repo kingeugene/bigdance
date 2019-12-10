@@ -23,18 +23,25 @@ interface baseTableState {
     endTime: number,
     dataItem: any;
     dateTimeChoose: string;
-    coachChoose: {code?: string, label?: string};
-    customerChoose: {code?: string, label?: string};
+    coachChoose: {code: string, label: string};
+    customerChoose: {code: string, label: string};
     isMobileChoose: boolean;
-    recordActivityType: string;
+    recordActivityType: {
+        account_id: number,
+        block: number,
+        color: string,
+        id: number,
+        name: string,
+    };
+    recordHall: {id: number, name: string};
     recordColor: string;
     recordDate: string;
     recordStartTime: string;
     recordEndTime: string;
     recordStatus: string;
     recordCancelledAt: string;
-    recordCoaches: Array<any>;
-    recordClients: Array<any>;
+    recordCoaches: {code?: string, label?: string}[];
+    recordClients: {code?: string, label?: string}[];
     recordLoading: boolean;
 }
 
@@ -71,7 +78,6 @@ const module: Module<baseTableState, any> = {
         listRecord: {},
         dataItem: {},
         recordDate: "",
-        recordActivityType: "",
         recordColor: "#DC4141",
         recordStartTime: "",
         recordEndTime: "",
@@ -79,6 +85,17 @@ const module: Module<baseTableState, any> = {
         recordCancelledAt: "",
         recordCoaches: [],
         recordClients: [],
+        recordActivityType: {
+            account_id: 0,
+            block: 0,
+            color: "",
+            id: 0,
+            name: "",
+        },
+        recordHall: {
+            id: 0,
+            name: "",
+        },
         recordLoading: false,
 },
 
@@ -168,10 +185,14 @@ const module: Module<baseTableState, any> = {
         setRecordClients(state, data) {
             state.recordClients = data;
         },
-        //
-        // setRecordActivityType(state, data) {
-        //     state.recordActivityType = data;
-        // }
+
+        setRecordActivityType(state, data) {
+            state.recordActivityType = data;
+        },
+
+        setRecordHall(state, data) {
+            state.recordHall = data;
+        },
     },
 
     actions: {
