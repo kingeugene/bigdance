@@ -36,8 +36,8 @@ class ApiService {
         return axios.get(`${serverName}/v0/venues`);
     }
 
-    public showVenueObject(): any {
-        return axios.get(`${serverName}/v0/venues/objects`);
+    public showVenueObject(venue_id: number = 1): any {
+        return axios.get(`${serverName}/v0/venues/objects?venue_id=${venue_id}`);
     }
 
     public activitiesType(): any {

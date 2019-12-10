@@ -309,8 +309,8 @@ const module: Module<baseTableState, any> = {
             }
         },
 
-        async listVenueObject({commit}) {
-            const {data, status} = await api.showVenueObject();
+        async listVenueObject({commit, state}) {
+            const {data, status} = await api.showVenueObject(state.currentVenue);
 
             if (status === 200) {
                 commit("setListVenueObject", data);

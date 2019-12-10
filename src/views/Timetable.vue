@@ -251,6 +251,7 @@ export default class Timetable extends Vue {
     @Mutation setRecordHall!: (recordHall: {id: number, name: string}) => void;
 
     @Action initBaseTable!: () => void;
+    @Action listVenueObject!: () => void;
     @Action getListRecord!: ({venue_id, date, coach, client, mobile}: any) => void;
     @Action createRecord!: ({venue_object_id, activity_id, coaches, clients}: any) => void;
 
@@ -441,6 +442,7 @@ export default class Timetable extends Vue {
 
         this.setCurrentVenue(venueId);
         this.currentVenue = index;
+        this.listVenueObject();
     }
 
     halsTurn(i: number): number {
