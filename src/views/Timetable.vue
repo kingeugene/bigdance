@@ -63,6 +63,7 @@ include ../lib/pugDeps.pug
                 +e.TD.td-cell(
                     :id="classTd(indexTd, indexTr)"
                     v-for="(cell, indexTd) of allDays"
+                    :key="indexTd"
                     @click="showModal(indexTr, indexTd)"
                 )
                     +e.timeCurrent
@@ -155,7 +156,7 @@ include ../lib/pugDeps.pug
             +e.BUTTON.modalSubmit.btn.btn-success(@click="submitForm") Отправить
             +e.errorMessage {{errorMessage}}
     loading(
-        :active.sync="loadedComponent"
+        :active.sync="recordLoading"
         :is-full-page="fullPage"
     )
 </template>
@@ -229,6 +230,7 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.recordEndTime) recordEndTime!: any;
     @State(state => state.baseTable.recordCoaches) recordCoaches!: any;
     @State(state => state.baseTable.recordClients) recordClients!: any;
+    @State(state => state.baseTable.recordLoading) recordLoading!: boolean;
 
     @Mutation setDataTable!: ({}) => void;
     @Mutation setCurrentVenue!: (id: number) => void;
@@ -426,11 +428,12 @@ export default class Timetable extends Vue {
 
         if (!this.dateModal || !this.selectTimeStart || !this.selectTimeEnd || !activity_id || !venue_object_id) {
             this.errorMessage = "Введите все обязательные поля";
-
             return;
         }
 
         this.createRecord({venue_object_id, activity_id, coaches, clients});
+
+        this.$modal.hide('modal-add');
     }
 
     setScrollTable(): void {

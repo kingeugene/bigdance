@@ -50,7 +50,7 @@ export default class Login extends Vue {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 40px);
 
     &__subHeader {
         margin-bottom: 30px;

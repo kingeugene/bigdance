@@ -29,12 +29,13 @@ interface baseTableState {
     recordActivityType: string;
     recordColor: string;
     recordDate: string;
-    recordStartTime: string,
-    recordEndTime: string,
-    recordStatus: string,
-    recordCancelledAt: string,
-    recordCoaches: Array<any>,
-    recordClients: Array<any>,
+    recordStartTime: string;
+    recordEndTime: string;
+    recordStatus: string;
+    recordCancelledAt: string;
+    recordCoaches: Array<any>;
+    recordClients: Array<any>;
+    recordLoading: boolean;
 }
 
 const module: Module<baseTableState, any> = {
@@ -44,8 +45,14 @@ const module: Module<baseTableState, any> = {
         currentDate: "",
         currentVenue: 1,
         dateTimeChoose: "",
-        coachChoose: {},
-        customerChoose: {},
+        coachChoose: {
+            code:"",
+            label:""
+        },
+        customerChoose: {
+            code:"",
+            label:""
+        },
         isMobileChoose: false,
         currentColor: "#2f628e",
         gapTime: 30,
@@ -71,7 +78,8 @@ const module: Module<baseTableState, any> = {
         recordStatus: "",
         recordCancelledAt: "",
         recordCoaches: [],
-        recordClients: []
+        recordClients: [],
+        recordLoading: false,
 },
 
     mutations: {
@@ -148,13 +156,18 @@ const module: Module<baseTableState, any> = {
             state.recordEndTime = data;
         },
 
-        // setRecordCoaches(state, data) {
-        //     state.recordCoaches = data;
-        // },
-        //
-        // setRecordClients(state, data) {
-        //     state.recordClients = data;
-        // },
+        setRecordLoading(state, data) {
+            state.recordLoading = data;
+        },
+
+
+        setRecordCoaches(state, data) {
+            state.recordCoaches = data;
+        },
+
+        setRecordClients(state, data) {
+            state.recordClients = data;
+        },
         //
         // setRecordActivityType(state, data) {
         //     state.recordActivityType = data;
@@ -172,11 +185,7 @@ const module: Module<baseTableState, any> = {
             const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients });
 
             if (status === 200) {
-                const data = await dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null});
-
-                if (status === 200) {
-                    dispatch("dataForItem");
-                }
+                dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null});
             }
 
 
@@ -218,13 +227,18 @@ const module: Module<baseTableState, any> = {
 
 //GET
         async getListRecord({commit, dispatch}, {venue_id, date, coach, client, mobile}) {
+            commit("setRecordLoading", true);
+
             const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile});
 
             if (status === 200) {
                 await commit("setListRecord", data);
+                dispatch("dataForItem");
+            } else {
+                alert("Данные не загрузились!")
             }
 
-            dispatch("dataForItem");
+            commit("setRecordLoading", false);
         },
 
         dataForItem({commit, state}) {
