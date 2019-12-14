@@ -11,8 +11,10 @@ interface baseTableState {
     listVenueObject: [];
     activitiesType: [];
     allClients: [];
+    customers: [];
     allCoach: [];
     loadedComponent: boolean;
+    loadedCustomers: boolean;
     dateArr: string[];
     idItem: number[];
     listRecord: any;
@@ -70,8 +72,10 @@ const module: Module<baseTableState, any> = {
         listVenueObject: [],
         activitiesType: [],
         allClients: [],
+        customers: [],
         allCoach: [],
         loadedComponent: true,
+        loadedCustomers: true,
         dataTable: {},
         dateArr: [],
         idItem: [],
@@ -149,12 +153,20 @@ const module: Module<baseTableState, any> = {
             state.allClients = data;
         },
 
+        setCustomers(state, data) {
+            state.customers = data;
+        },
+
         setAllCoach(state, data) {
             state.allCoach = data;
         },
 
         setLoaded(state, data) {
             state.loadedComponent = data;
+        },
+
+        setLoadedCustomers(state, data) {
+            state.loadedCustomers = data;
         },
 
         setListRecord(state, data) {
@@ -270,6 +282,8 @@ const module: Module<baseTableState, any> = {
             for (let key in dataTable) {
                 dateArr.push(key);
 
+                debugger;
+
                 for (let indexItem = 0; indexItem < dataTable[key].length; indexItem++)  {
 
 
@@ -279,7 +293,8 @@ const module: Module<baseTableState, any> = {
                         endTrain = dataTable[key][indexItem]["end_time"],
                         activityColor = dataTable[key][indexItem]["color"],
                         nameCoach = dataTable[key][indexItem]["clients"],
-                        nameCustomer = dataTable[key][indexItem]["coaches"];
+                        nameCustomer = dataTable[key][indexItem]["coaches"],
+                        id = dataTable[key][indexItem]["id"];
 
                     const startPosition = (startTrain - state.startTime) * state.oneMinInPx,
                         heightRecord = (endTrain - startTrain) * state.oneMinInPx - 1;
@@ -292,6 +307,7 @@ const module: Module<baseTableState, any> = {
                         endTrain,
                         nameCoach,
                         nameCustomer,
+                        id,
                     ]
                 }
             }
@@ -325,10 +341,14 @@ const module: Module<baseTableState, any> = {
             }
         },
 
-        async allClients({commit}) {
+        async allClients({commit, state}) {
+            commit("setLoadedCustomers", true);
+
             const {data, status} = await api.createClient();
 
             if (status === 200) {
+                commit("setCustomers", data);
+
                 let arrName = [];
 
                 for (let i = 0; i < data.length; i++) {
@@ -336,6 +356,8 @@ const module: Module<baseTableState, any> = {
                 }
                 commit("setAllClients", arrName);
             }
+
+            commit("setLoadedCustomers", false);
         },
 
         async allCoach({commit}) {

@@ -62,7 +62,7 @@ include ../lib/pugDeps.pug
                     :id="classTd(indexTd, indexTr)"
                     v-for="(cell, indexTd) of allDays"
                     :key="indexTd"
-                    @click="showModal(indexTr, indexTd)"
+                    @click="showModal($event, indexTr, indexTd)"
                 )
                     +e.timeCurrent
                         +e.timeCurrentDefault
@@ -194,8 +194,6 @@ export default class Timetable extends Vue {
         "Воскресенье",
     ];
 
-    //modal changed
-    currentChangeArr: string = "loading";
 
     @State(state => state.baseTable.activitiesType) activitiesType!: Array<any>;
     @State(state => state.baseTable.show) showFilter!: boolean;
@@ -485,7 +483,15 @@ export default class Timetable extends Vue {
         this.scrollHead = document.querySelector(".Table__tbody")!.scrollLeft;
     }
 
-    showModal (currentRow: number, currentTd: number) {
+    showModal (event: any, currentRow: number, currentTd: number) {
+        const target = event.target;
+
+        if (target.classList.contains('is-record')) {
+            const id = event.target.getAttribute("data-id");
+            this.$router.push(`/record/${id}`)
+            return;
+        }
+
         this.selectTimeStart = this.timeCurrent((currentRow));
         this.selectTimeEnd = this.timeCurrent((currentRow + 1));
 
@@ -557,7 +563,8 @@ export default class Timetable extends Vue {
                 itemData!.style.top = value[key][0] + "px";
                 itemData!.style.height = value[key][1] + "px";
                 itemData!.style.background = value[key][2];
-                itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} <div>${value[key][5]} <br>${value[key][6]} </div>`;
+                itemData.setAttribute("data-id", value[key][7]);
+                itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} </br>${value[key][5]} <br>${value[key][6]}`;
                 itemData!.classList.add("is-record");
 
                 dataAdd!.appendChild(itemData);

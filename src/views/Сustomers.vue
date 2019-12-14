@@ -1,33 +1,35 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Clients
-    vue-good-table(
-        :columns="columns"
-        :rows="rows"
-        :search-options="optionSearch"
-        styleClass="vgt-table bordered"
-        :pagination-options="optionPagination"
-        @on-row-click="onRowClick"
-        :line-numbers="true"
-        row-style-class="Clients__row"
-        max-height="600px"
-        theme="black-rhino"
-    )
-        template(slot="table-row" slot-scope="props")
-            +e.iconWrap.SPAN(v-if="props.column.field == 'action'")
-                +e.iconEdit.I.fa.fa-edit(@click.prevent="edit(props)" title="Редактировать")
-                +e.iconEdit.I.fa.fa-trash(@click.prevent="showModalDelete(props.row.id)" title="Удалить")
+    template(v-if="!loadedCustomers")
+        vue-good-table(
+            :columns="columns"
+            :rows="customers"
+            :search-options="optionSearch"
+            styleClass="vgt-table bordered"
+            :pagination-options="optionPagination"
+            @on-row-click="onRowClick"
+            :line-numbers="true"
+            row-style-class="Clients__row"
+            max-height="600px"
+            theme="black-rhino"
+        )
+            template(slot="table-row" slot-scope="props")
+                +e.iconWrap.SPAN(v-if="props.column.field == 'action'")
+                    +e.iconEdit.I.fa.fa-edit(@click.prevent="edit(props)" title="Редактировать")
+                    +e.iconEdit.I.fa.fa-trash(@click.prevent="showModalDelete(props.row.id)" title="Удалить")
 
-    +e.VMODAL.modalDelete(
-        name="delete-coach"
-        height="260"
-        width="500"
-        adaptive
-    )
-        +e.H4.modalDeleteTitle Вы действительно хотите </br> Удалить Тренера
-        +e.modalDelete-btnWrap
-            +e.modalDelete-btnCancel(@click="$modal.hide('delete-coach')") Отмена
-            +e.modalDelete-btnOk(@click="deleteRow") Да
+        +e.VMODAL.modalDelete(
+            name="delete-coach"
+            height="260"
+            width="500"
+            adaptive
+        )
+            +e.H4.modalDeleteTitle Вы действительно хотите </br> Удалить Тренера
+            +e.modalDelete-btnWrap
+                +e.modalDelete-btnCancel(@click="$modal.hide('delete-coach')") Отмена
+                +e.modalDelete-btnOk(@click="deleteRow") Да
+    loading(:active.sync="loadedCustomers")
 
     +e.VMODAL.modalDetails(
         name="details-coach"
@@ -68,12 +70,16 @@ include ../lib/pugDeps.pug
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { State, Mutation } from "vuex-class";
+import { State, Mutation, Action } from "vuex-class";
 import 'vue-good-table/dist/vue-good-table.css'
 import { VueGoodTable } from 'vue-good-table';
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 
 @Component({
     components: {
+        Loading,
         VueGoodTable,
     }
 })
@@ -93,10 +99,39 @@ export default class Customers extends Vue {
         allLabel: 'Все',
     };
 
-    @State(state => state.baseClients.columns) columns!: any[];
-    @State(state => state.baseClients.rows) rows!: any[];
+    columns: any = [
+        {
+            label: 'Имя',
+            field: 'first_name',
+            filterable: true,
+        },
+        {
+            label: 'Фамилия',
+            field: 'second_name',
+            filterable: true,
+        },
+        {
+            label: 'Телефон',
+            field: 'phones',
+            filterable: true,
+        },
+        {
+            label: 'Ставка',
+            field: 'price',
+        },
+        {
+            label: 'Ред',
+            field: 'action',
+        },
+    ];
+
     @State(state => state.baseClients.columns2) columns2!: any[];
     @State(state => state.baseClients.rows2) rows2!: any[];
+    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
+    @State(state => state.baseTable.loadedCustomers) loadedCustomers!: boolean;
+    @State(state => state.baseTable.customers) customers!: string[];
+
+    @Action allClients!: () => void;
 
     @Mutation deleteRows!: (id: number) => void;
 
@@ -119,6 +154,12 @@ export default class Customers extends Vue {
     deleteRow(): void {
         this.deleteRows(this.numDeleteRow);
         this.$modal.hide('delete-coach');
+    }
+
+    created() {
+        if (this.loadedComponent) {
+            this.allClients();
+        }
     }
 
 }

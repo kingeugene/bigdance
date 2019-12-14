@@ -60,6 +60,10 @@ class ApiService {
 
         return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}`);
     }
+
+    public recordOne(id: number): any {
+        return axios.get(`${serverName}/v0/records/${id}`);
+    }
 }
 
 export default new ApiService();
