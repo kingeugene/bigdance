@@ -26,14 +26,8 @@ include ../lib/pugDeps.pug
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { State, Mutation, Getter, Action } from "vuex-class";
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
 
-@Component({
-    components: {
-        Loading,
-    }
-})
+@Component
 export default class Login extends Vue {
     email: string = "";
     password: string = "";

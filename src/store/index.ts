@@ -4,6 +4,7 @@ import baseTable from "./baseTable";
 import baseClients from "./baseClients";
 import login from "./login";
 import record from "./record";
+import customerAdd from "./customerAdd";
 
 Vue.use(Vuex);
 
@@ -13,5 +14,6 @@ export default new Vuex.Store<any>({
         baseClients,
         login,
         record,
+        customerAdd,
     },
 });

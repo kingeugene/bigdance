@@ -1,7 +1,9 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Clients
-    template(v-if="!loadedCustomers")
+    template(v-if="!loading")
+        +e.btnAddWrap
+            +e.btnAdd.btn.btn-success(@click="$router.push('/customers/add')") Добавить клиента
         vue-good-table(
             :columns="columns"
             :rows="customers"
@@ -29,7 +31,7 @@ include ../lib/pugDeps.pug
             +e.modalDelete-btnWrap
                 +e.modalDelete-btnCancel(@click="$modal.hide('delete-coach')") Отмена
                 +e.modalDelete-btnOk(@click="deleteRow") Да
-    loading(:active.sync="loadedCustomers")
+    loading(:active.sync="loading")
 
     +e.VMODAL.modalDetails(
         name="details-coach"
@@ -73,13 +75,9 @@ import { Component, Vue } from 'vue-property-decorator';
 import { State, Mutation, Action } from "vuex-class";
 import 'vue-good-table/dist/vue-good-table.css'
 import { VueGoodTable } from 'vue-good-table';
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
-
 
 @Component({
     components: {
-        Loading,
         VueGoodTable,
     }
 })
@@ -128,7 +126,7 @@ export default class Customers extends Vue {
     @State(state => state.baseClients.columns2) columns2!: any[];
     @State(state => state.baseClients.rows2) rows2!: any[];
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
-    @State(state => state.baseTable.loadedCustomers) loadedCustomers!: boolean;
+    @State(state => state.baseTable.loading) loading!: boolean;
     @State(state => state.baseTable.customers) customers!: string[];
 
     @Action allClients!: () => void;
@@ -170,6 +168,14 @@ export default class Customers extends Vue {
 <style lang="scss" scoped>
 .Clients {
     padding: 30px 0;
+
+    &__btnAdd {
+        &Wrap {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 30px;
+        }
+    }
 
     &__icon {
         &Wrap {

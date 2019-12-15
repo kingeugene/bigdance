@@ -48,6 +48,39 @@ class ApiService {
         return axios.get(`${serverName}/v0/clients`);
     }
 
+    public customerAdd({
+        email,
+        first_name,
+        second_name,
+        middle_name,
+        birth_date,
+        sex,
+        document_id,
+        notes,
+        switch_user,
+        username,
+        password,
+        price,
+        phones,
+    }: any ): any {
+        return axios.post(`${serverName}/v0/clients`, {
+            account_id: 1,
+            email: email,
+            first_name: first_name,
+            middle_name: middle_name,
+            second_name: second_name,
+            birth_date: birth_date,
+            sex: sex,
+            document_id: document_id,
+            notes: notes,
+            switch_user: switch_user,
+            username: username,
+            password: password,
+            price:  price,
+            phones: phones,
+        })
+    }
+
     public showAllCoach(): any {
         return axios.get(`${serverName}/v0/coaches`);
     }

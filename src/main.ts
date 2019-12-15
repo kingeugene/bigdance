@@ -29,6 +29,7 @@ import loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 // Init plugin
 Vue.use(loading);
+Vue.component('loading', loading);
 
 const app = new Vue({
   router,

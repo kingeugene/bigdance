@@ -44,7 +44,7 @@ include ../lib/pugDeps.pug
             +e.TR.th-row.is-daysWeek(:style="{'background':  currentColor}")
                 +e.TH.th-cell(
                     :colspan="numHalls"
-                    v-for="(cell, index) of allDays"
+                    v-for="(cell, index) of 7"
                 )
                     +e.headDate
                         div {{ daysWeek[index] }}
@@ -160,13 +160,10 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 import {State, Mutation, Action} from "vuex-class";
 import datepicker2 from "vue2-datepicker";
 import { throttle } from "lodash";
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
 
 @Component({
     components: {
         datepicker2,
-        Loading,
     },
 })
 export default class Timetable extends Vue {

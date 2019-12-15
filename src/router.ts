@@ -51,6 +51,15 @@ const router = new Router({
       beforeEnter: ifAuthenticated,
     },
     {
+      path: '/customers/add',
+      name: 'customersAdd',
+      meta: {
+        title: "Добавить клиента",
+      },
+      component: () => import(/* webpackChunkName: "about" */ './views/CustomerAdd.vue'),
+      beforeEnter: ifAuthenticated,
+    },
+    {
       path: '/trainers',
       name: 'trainers',
       meta: {

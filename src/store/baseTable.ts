@@ -13,7 +13,9 @@ interface baseTableState {
     allClients: [];
     customers: [];
     allCoach: [];
+    coach: [];
     loadedComponent: boolean;
+    loading: boolean;
     loadedCustomers: boolean;
     dateArr: string[];
     idItem: number[];
@@ -74,7 +76,9 @@ const module: Module<baseTableState, any> = {
         allClients: [],
         customers: [],
         allCoach: [],
+        coach: [],
         loadedComponent: true,
+        loading: false,
         loadedCustomers: true,
         dataTable: {},
         dateArr: [],
@@ -161,12 +165,16 @@ const module: Module<baseTableState, any> = {
             state.allCoach = data;
         },
 
+        setCoach(state, data) {
+            state.coach = data;
+        },
+
         setLoaded(state, data) {
             state.loadedComponent = data;
         },
 
-        setLoadedCustomers(state, data) {
-            state.loadedCustomers = data;
+        setLoading(state, data) {
+            state.loading = data;
         },
 
         setListRecord(state, data) {
@@ -282,8 +290,6 @@ const module: Module<baseTableState, any> = {
             for (let key in dataTable) {
                 dateArr.push(key);
 
-                debugger;
-
                 for (let indexItem = 0; indexItem < dataTable[key].length; indexItem++)  {
 
 
@@ -342,7 +348,7 @@ const module: Module<baseTableState, any> = {
         },
 
         async allClients({commit, state}) {
-            commit("setLoadedCustomers", true);
+            commit("setLoading", true);
 
             const {data, status} = await api.createClient();
 
@@ -357,13 +363,17 @@ const module: Module<baseTableState, any> = {
                 commit("setAllClients", arrName);
             }
 
-            commit("setLoadedCustomers", false);
+            commit("setLoading", false);
         },
 
         async allCoach({commit}) {
+            commit("setLoading", true);
+
             const {data, status} = await api.showAllCoach();
 
             if (status === 200) {
+                commit("setCoach", data);
+
                 let arrName = [];
 
                 for (let i = 0; i < data.length; i++) {
@@ -372,6 +382,8 @@ const module: Module<baseTableState, any> = {
 
                 commit("setAllCoach", arrName);
             }
+
+            commit("setLoading", false);
         },
     }
 };
