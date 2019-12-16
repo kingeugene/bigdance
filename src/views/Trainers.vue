@@ -3,7 +3,7 @@ include ../lib/pugDeps.pug
 +b.Coach
     template(v-if="!loading")
         +e.btnAddWrap
-            +e.btnAdd.btn.btn-success(@click="$router.push('/customers/add')") Добавить клиента
+            +e.btnAdd.btn.btn-success(@click="$router.push('/trainers/add')") Добавить тренера
         vue-good-table(
             :columns="columns"
             :rows="coach"
@@ -34,39 +34,11 @@ include ../lib/pugDeps.pug
     loading(:active.sync="loading")
 
     +e.VMODAL.modalDetails(
-        name="details-coach"
+        name="change-coach"
         height="auto"
         width="85%"
         adaptive
     )
-        +e.modalDetails-info
-            .d-flex
-                +e.IMG.modalDetails-infoIcon(src="../assets/coach.jpeg")
-                div
-                    +e.modalDetails-infoTitle Левицкий <br> Александр <br> Леонидович
-                    +e.modalDetails-infoBottom Главный Тренер <br> Бальные танцы
-            div
-                div Доступное свободное время
-                div Пн: 09:00 - 21:00
-                div Вт: 09:00 - 21:00
-                div Ср: 09:00 - 21:00
-                div Чт: 09:00 - 21:00
-                div Пт: 09:00 - 21:00
-                div Сб: 09:00 - 21:00
-                div Вс: 09:00 - 21:00
-
-        div
-            +e.modalDetails-table
-                +e.modalDetails-tableTitle Ближайшие записи
-                +e.modalDetails-tableBtn Просмотреть все записи
-            vue-good-table(
-                :columns="columns2"
-                :rows="rows2"
-                :search-options="optionSearch"
-                styleClass="vgt-table bordered"
-                :pagination-options="optionPagination"
-                max-height="400px"
-            )
 
 </template>
 
@@ -123,25 +95,53 @@ export default class Trainers extends Vue {
         },
     ];
 
+    // changeCustomer: {
+    //     account_id: number
+    //     availability: []
+    //     birth_date: string
+    //     document_id: string
+    //     email: string
+    //     first_name: string
+    //     id: number
+    //     middle_name: string
+    //     notes: string
+    //     originalIndex: number
+    //     person_id: number
+    //     phones: []
+    //     photo: string | null
+    //     position: number
+    //     price: number
+    //     second_name: string
+    //     sex: string
+    //     style_id: number
+    //     user_id: number
+    //     vgt_id: number
+    //     wage: number
+    // } = {
+    //
+    // }
+
     @State(state => state.baseClients.columns2) columns2!: any[];
     @State(state => state.baseClients.rows2) rows2!: any[];
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
+    @State(state => state.baseTable.loadedCoach) loadedCoach!: boolean;
     @State(state => state.baseTable.loading) loading!: boolean;
+
     @State(state => state.baseTable.coach) coach!: string[];
 
     @Action allCoach!: () => void;
+    @Action coachDelete!: (id: number) => void;
 
     @Mutation deleteRows!: (id: number) => void;
 
     onRowClick(params: any) {
-        if (params.event.target.classList[0] !== "Clients__iconEdit") {
+        if (params.event.target.classList[0] !== "Coach__iconEdit") {
             this.$modal.show('details-coach');
         }
-        console.error(params);
     }
 
-    edit(name: any): void {
-        console.error(name);
+    edit(props: any): void {
+        console.error(props.row);
     }
 
     showModalDelete(id: number): void {
@@ -150,12 +150,21 @@ export default class Trainers extends Vue {
     }
 
     deleteRow(): void {
-        this.deleteRows(this.numDeleteRow);
+        this.coachDelete(this.numDeleteRow);
         this.$modal.hide('delete-coach');
     }
 
+    submitChangeCoach(): void {
+        // delete this.changeCustomer.user_id;
+        // delete this.changeCustomer.vgt_id;
+        // delete this.changeCustomer.originalIndex;
+        // delete this.changeCustomer.account_id;
+        // delete this.changeCustomer.person_id;
+        // delete this.changeCustomer.photo;
+    }
+
     created() {
-        if (this.loadedComponent) {
+        if (this.loadedComponent && !this.loadedCoach) {
             this.allCoach();
         }
     }
@@ -235,7 +244,7 @@ export default class Trainers extends Vue {
 }
 </style>
 <style lang="scss">
-.Clients {
+.Coach {
     &__row {
         transition: .3s;
 

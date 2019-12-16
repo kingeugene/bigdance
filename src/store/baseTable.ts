@@ -47,6 +47,8 @@ interface baseTableState {
     recordCoaches: {code?: string, label?: string}[];
     recordClients: {code?: string, label?: string}[];
     recordLoading: boolean;
+    loadedCustomer: boolean;
+    loadedCoach: boolean;
 }
 
 const module: Module<baseTableState, any> = {
@@ -105,7 +107,9 @@ const module: Module<baseTableState, any> = {
             name: "",
         },
         recordLoading: false,
-},
+        loadedCustomer: false,
+        loadedCoach: false,
+    },
 
     mutations: {
         setCurrentDate(state, data) {
@@ -212,6 +216,14 @@ const module: Module<baseTableState, any> = {
 
         setRecordHall(state, data) {
             state.recordHall = data;
+        },
+
+        setLoadedCustomer(state, data) {
+            state.loadedCustomer = data;
+        },
+
+        setLoadedCoach(state, data) {
+            state.loadedCoach = data;
         },
     },
 
@@ -360,13 +372,18 @@ const module: Module<baseTableState, any> = {
                 for (let i = 0; i < data.length; i++) {
                     arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].id}`})
                 }
+
                 commit("setAllClients", arrName);
+
+                if (!state.loadedCustomer) {
+                    commit("setLoadedCustomer", true);
+                }
             }
 
             commit("setLoading", false);
         },
 
-        async allCoach({commit}) {
+        async allCoach({commit, state}) {
             commit("setLoading", true);
 
             const {data, status} = await api.showAllCoach();
@@ -380,6 +397,9 @@ const module: Module<baseTableState, any> = {
                     arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].id}`})
                 }
 
+                if (!state.loadedCoach) {
+                    commit("setLoadedCoach", true);
+                }
                 commit("setAllCoach", arrName);
             }
 

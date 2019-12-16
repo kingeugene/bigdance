@@ -81,8 +81,132 @@ class ApiService {
         })
     }
 
+    public customerDelete(id: number) {
+        return axios.delete(`${serverName}/v0/clients/${id}`);
+    }
+
+    public customerUpdate({
+              id,
+              email,
+              first_name,
+              second_name,
+              middle_name,
+              birth_date,
+              sex,
+              document_id,
+              notes,
+              price,
+              phones,
+        }: any) {
+        return axios.put(`${serverName}/v0/clients/${id}`, {
+            account_id: 1,
+            email: email,
+            first_name: first_name,
+            middle_name: middle_name,
+            second_name: second_name,
+            birth_date: birth_date,
+            sex: sex,
+            document_id: document_id,
+            notes: notes,
+            switch_user: false,
+            price:  price,
+            phones: phones,
+        });
+    }
+
+    public coachAdd({
+        email,
+        first_name,
+        second_name,
+        middle_name,
+        birth_date,
+        sex,
+        document_id,
+        notes,
+        switch_user,
+        username,
+        password,
+        position,
+        wage,
+        price,
+        style_id,
+        phones,
+        availability,
+    }: any ): any {
+        return axios.post(`${serverName}/v0/coaches`, {
+            account_id: 1,
+            email: email,
+            first_name: first_name,
+            middle_name: middle_name,
+            second_name: second_name,
+            birth_date: birth_date,
+            sex: sex,
+            document_id: document_id,
+            notes: notes,
+            switch_user: switch_user,
+            username: username,
+            password: password,
+            position: position,
+            wage: wage,
+            price:  price,
+            style_id: style_id,
+            phones: phones,
+            availability: availability,
+        })
+    }
+
+    public coachUpdate({
+        id,
+        email,
+        first_name,
+        second_name,
+        middle_name,
+        birth_date,
+        sex,
+        document_id,
+        notes,
+        switch_user,
+        username,
+        password,
+        position,
+        wage,
+        price,
+        style_id,
+        phones,
+        availability,
+    }: any) {
+        return axios.put(`${serverName}/v0/coaches/${id}`, {
+            account_id: 1,
+            email,
+            first_name,
+            second_name,
+            middle_name,
+            birth_date,
+            sex,
+            document_id,
+            notes,
+            switch_user,
+            username,
+            password,
+            position,
+            wage,
+            price,
+            style_id,
+            phones,
+            availability,
+        });
+    }
+
+    public coachDelete(id: number) {
+        return axios.delete(`${serverName}/v0/coaches/${id}`);
+    }
+
     public showAllCoach(): any {
         return axios.get(`${serverName}/v0/coaches`);
+    }
+
+    public activityStyle(): any {
+        return axios.get(`${serverName}/v0/activities/style`);
     }
 
     public listRecord({venue_id = 1, date, coach, client, mobile}: any): any {

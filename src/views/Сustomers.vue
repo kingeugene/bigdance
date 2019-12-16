@@ -22,51 +22,69 @@ include ../lib/pugDeps.pug
                     +e.iconEdit.I.fa.fa-trash(@click.prevent="showModalDelete(props.row.id)" title="Удалить")
 
         +e.VMODAL.modalDelete(
-            name="delete-coach"
+            name="delete-customer"
             height="260"
             width="500"
             adaptive
         )
-            +e.H4.modalDeleteTitle Вы действительно хотите </br> Удалить Тренера
+            +e.H4.modalDeleteTitle Вы действительно хотите </br> Удалить Клиента
             +e.modalDelete-btnWrap
-                +e.modalDelete-btnCancel(@click="$modal.hide('delete-coach')") Отмена
+                +e.modalDelete-btnCancel(@click="$modal.hide('delete-customer')") Отмена
                 +e.modalDelete-btnOk(@click="deleteRow") Да
     loading(:active.sync="loading")
 
     +e.VMODAL.modalDetails(
-        name="details-coach"
+        name="change-customer"
         height="auto"
         width="85%"
         adaptive
     )
-        +e.modalDetails-info
-            .d-flex
-                +e.IMG.modalDetails-infoIcon(src="../assets/coach.jpeg")
-                div
-                    +e.modalDetails-infoTitle Левицкий <br> Александр <br> Леонидович
-                    +e.modalDetails-infoBottom Главный Тренер <br> Бальные танцы
-            div
-                div Доступное свободное время
-                div Пн: 09:00 - 21:00
-                div Вт: 09:00 - 21:00
-                div Ср: 09:00 - 21:00
-                div Чт: 09:00 - 21:00
-                div Пт: 09:00 - 21:00
-                div Сб: 09:00 - 21:00
-                div Вс: 09:00 - 21:00
+        +e.FORM.form(@submit.prevent="submitChangeCustomer")
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="email") Email*
+                    +e.INPUT.input#email(type="email" v-model="changeCustomer.email" required)
 
-        div
-            +e.modalDetails-table
-                +e.modalDetails-tableTitle Ближайшие записи
-                +e.modalDetails-tableBtn Просмотреть все записи
-            vue-good-table(
-                :columns="columns2"
-                :rows="rows2"
-                :search-options="optionSearch"
-                styleClass="vgt-table bordered"
-                :pagination-options="optionPagination"
-                max-height="400px"
-            )
+                +e.labelWrap
+                    +e.LABEL.label(for="firstName") Фамилия*
+                    +e.INPUT.input#firstName(v-model="changeCustomer.first_name" required)
+
+                +e.labelWrap
+                    +e.LABEL.label(for="middleName") Отчество
+                    +e.INPUT.input#middleName(v-model="changeCustomer.middle_name")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="secondName") Имя*
+                    +e.INPUT.input#secondName(v-model="changeCustomer.second_name" required)
+
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="birthDate") Дата Рождения
+                    +e.INPUT.input#birthDate(v-model="changeCustomer.birth_date" placeholder="YYYY-MM-DD")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="sex") Пол
+                    +e.V-SELECT.select#sex(
+                        :options="sexOption"
+                        v-model="changeCustomer.sex"
+                    )
+
+                +e.labelWrap
+                    +e.LABEL.label(for="document") Документ
+                    +e.INPUT.input#document(v-model="changeCustomer.document_id")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="notes") Заметки
+                    +e.TEXTAREA.textarea#notes(v-model="changeCustomer.notes")
+
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="price") Прайс
+                    +e.INPUT.input#price(type="number" v-model="changeCustomer.price")
+
+
+            +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
+
 
 </template>
 
@@ -123,39 +141,89 @@ export default class Customers extends Vue {
         },
     ];
 
-    @State(state => state.baseClients.columns2) columns2!: any[];
-    @State(state => state.baseClients.rows2) rows2!: any[];
+    sexOption: Array<any> = [ "m", "f" ];
+
+    changeCustomer: {
+        account_id: number,
+        birth_date: string,
+        document_id: string,
+        email: string,
+        first_name: string,
+        id: number,
+        middle_name: string | null,
+        notes: string,
+        originalIndex: number,
+        person_id: number,
+        phones: Array<string>,
+        photo: null,
+        price: number,
+        second_name: string,
+        sex: string | {},
+        user_id: number | null,
+        vgt_id: number,
+    } = {
+        account_id: 1,
+        birth_date: "",
+        document_id: "",
+        email: "",
+        first_name: "",
+        id: 1,
+        middle_name: null,
+        notes: "",
+        originalIndex: 0,
+        person_id: 1,
+        phones: ["0991190"],
+        photo: null,
+        price: 1,
+        second_name: "",
+        sex: "",
+        user_id: null,
+        vgt_id: 0,
+    };
+
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
     @State(state => state.baseTable.loading) loading!: boolean;
+    @State(state => state.baseTable.loadedCustomer) loadedCustomer!: boolean;
     @State(state => state.baseTable.customers) customers!: string[];
 
     @Action allClients!: () => void;
-
-    @Mutation deleteRows!: (id: number) => void;
+    @Action customerDelete!: (id: number) => void;
+    @Action customerUpdate!: ({}: any) => void;
 
     onRowClick(params: any) {
         if (params.event.target.classList[0] !== "Clients__iconEdit") {
-            this.$modal.show('details-coach');
         }
-        console.error(params);
     }
 
-    edit(name: any): void {
-        console.error(name);
+    edit(item: any): void {
+        this.changeCustomer = item.row;
+        this.$modal.show('change-customer');
     }
 
     showModalDelete(id: number): void {
-        this.$modal.show('delete-coach');
+        this.$modal.show('delete-customer');
         this.numDeleteRow = id;
     }
 
     deleteRow(): void {
-        this.deleteRows(this.numDeleteRow);
-        this.$modal.hide('delete-coach');
+        this.customerDelete(this.numDeleteRow);
+        this.$modal.hide('delete-customer');
+    }
+
+    submitChangeCustomer(): void {
+        delete this.changeCustomer.user_id;
+        delete this.changeCustomer.vgt_id;
+        delete this.changeCustomer.originalIndex;
+        delete this.changeCustomer.account_id;
+        delete this.changeCustomer.person_id;
+        delete this.changeCustomer.photo;
+
+        this.$modal.hide('change-customer');
+        this.customerUpdate(this.changeCustomer);
     }
 
     created() {
-        if (this.loadedComponent) {
+        if (this.loadedComponent && !this.loadedCustomer) {
             this.allClients();
         }
     }
@@ -193,6 +261,36 @@ export default class Customers extends Vue {
                 transform: translateY(-2px);
             }
         }
+    }
+
+    &__form {
+        width: 100%;
+
+        &Wrap {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+    }
+
+    &__label {
+        display: block;
+
+        &Wrap {
+            max-width: 200px;
+            width: 100%;
+
+            &:not(:last-child) {
+                margin-right: 60px;
+            }
+        }
+    }
+
+    &__input,
+    &__select,
+    &__textarea {
+        width: 100%;
     }
 
     &__modalDelete {

@@ -2,15 +2,13 @@ import { Module } from 'vuex';
 import api from "@/lib/api";
 import router from "@/router";
 
-interface clientsState {
+interface coachState {
     loading: boolean;
-    loadedComponentCustomer: boolean;
 }
 
-const module: Module<clientsState, any> = {
+const module: Module<coachState, any> = {
     state: {
         loading: false,
-        loadedComponentCustomer: false,
     },
 
     mutations: {
@@ -20,21 +18,21 @@ const module: Module<clientsState, any> = {
     },
 
     actions: {
-        async customerDelete({commit, dispatch, state}, id: number) {
+        async coachDelete({commit, dispatch}, id: number) {
             commit("setLoading", true);
 
-            const {data, status} = await api.customerDelete(id);
+            const {data, status} = await api.coachDelete(id);
 
             if (status === 200) {
-                await dispatch("allClients");
+                await dispatch("allCoach");
             } else {
-                alert("Клиент не удален")
+                alert("Тренер не удален")
             }
 
             commit("setLoading", false);
         },
 
-        async customerUpdate({commit, dispatch}, {
+        async coachUpdate({commit, dispatch}, {
             id,
             email,
             first_name,
@@ -44,12 +42,19 @@ const module: Module<clientsState, any> = {
             sex,
             document_id,
             notes,
+            switch_user,
+            username,
+            password,
+            position,
+            wage,
             price,
+            style_id,
             phones,
+            availability,
         }) {
             commit("setLoading", true);
 
-            const {data, status} = await api.customerUpdate({
+            const {data, status} = await api.coachUpdate({
                 id,
                 email,
                 first_name,
@@ -59,14 +64,21 @@ const module: Module<clientsState, any> = {
                 sex,
                 document_id,
                 notes,
+                switch_user,
+                username,
+                password,
+                position,
+                wage,
                 price,
+                style_id,
                 phones,
+                availability,
             });
 
             if (status === 200) {
-                await dispatch("allClients");
+                await dispatch("allCoach");
             } else {
-                alert("Пользователь не обнавлен")
+                alert("Тренер не обнавлен")
             }
 
             commit("setLoading", false);

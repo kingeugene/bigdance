@@ -64,15 +64,15 @@ export default class BaseHeader extends Vue {
         },
         {
             name: "Клиенты",
-            link: "customers",
+            link: "/customers",
         },
         {
             name: "Тренеры",
-            link: "trainers",
+            link: "/trainers",
         },
         {
             name: "Справка",
-            link: "reference",
+            link: "/reference",
         },
     ];
 }

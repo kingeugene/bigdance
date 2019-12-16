@@ -69,6 +69,15 @@ const router = new Router({
       beforeEnter: ifAuthenticated,
     },
     {
+      path: '/trainers/add',
+      name: 'trainersAdd',
+      meta: {
+        title: "Добавить тренера",
+      },
+      component: () => import(/* webpackChunkName: "about" */ './views/TrainerAdd.vue'),
+      beforeEnter: ifAuthenticated,
+    },
+    {
       path: '/reference',
       name: 'reference',
       meta: {

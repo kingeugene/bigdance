@@ -10,7 +10,6 @@ include ../../lib/pugDeps.pug
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import baseheader from "@/components/base/BaseHeader.vue";
-import basefooter from "@/components/base/BaseFooter.vue";
 
 @Component({
     components: {
@@ -19,15 +18,14 @@ import basefooter from "@/components/base/BaseFooter.vue";
 })
 export default class BaseLayout extends Vue {
     get haveContainerClass(): boolean {
-        switch (this.$route.name) {
-            case "timetable":
-                document.body.style.overflow = "hidden";
-                return false;
-            default:
-                return true;
+        if(this.$route.name === "timetable") {
+            document.body.style.overflow = "hidden";
+            return false;
+        } else {
+            document.body.style.overflow = "";
+            return true;
         }
     }
-
 }
 </script>
 
@@ -37,7 +35,8 @@ export default class BaseLayout extends Vue {
 
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
+    padding-top: 60px;
     overflow-x: hidden;
 
     &__header {
@@ -46,7 +45,6 @@ export default class BaseLayout extends Vue {
     }
 
     &__main {
-        padding-top: 80px;
         flex-grow: 1;
         display: flex;
         flex-direction: column;

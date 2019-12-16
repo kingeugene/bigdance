@@ -592,6 +592,7 @@ export default class Timetable extends Vue {
 .Timetable {
     $root: &;
     display: flex;
+    height: calc(100vh - 60px);
     overflow: hidden;
 
     &__filter {
