@@ -49,6 +49,7 @@ interface baseTableState {
     recordLoading: boolean;
     loadedCustomer: boolean;
     loadedCoach: boolean;
+    loadedListVenue: boolean;
 }
 
 const module: Module<baseTableState, any> = {
@@ -109,6 +110,7 @@ const module: Module<baseTableState, any> = {
         recordLoading: false,
         loadedCustomer: false,
         loadedCoach: false,
+        loadedListVenue: false,
     },
 
     mutations: {
@@ -225,6 +227,9 @@ const module: Module<baseTableState, any> = {
         setLoadedCoach(state, data) {
             state.loadedCoach = data;
         },
+        setLoadedListVenue(state, data) {
+            state.loadedListVenue = data;
+        },
     },
 
     actions: {
@@ -338,8 +343,11 @@ const module: Module<baseTableState, any> = {
             const {data, status} = await api.listVenues();
 
             if (status === 200) {
-
                 commit("setListVenue", data);
+
+                if (!state.loadedListVenue) {
+                    commit("setLoadedListVenue", true);
+                }
             }
         },
 

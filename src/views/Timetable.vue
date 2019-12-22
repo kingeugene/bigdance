@@ -10,7 +10,6 @@ include ../lib/pugDeps.pug
                 :style="{background:  item.color}"
                 @click="handleSwitchVenue(item.id, i)"
             ) {{ item.name }}
-
         datepicker2(
             lang="ru"
             v-model="dateTime"
@@ -20,21 +19,18 @@ include ../lib/pugDeps.pug
             width="100%"
             format="YYYY-MM-DD"
         )
-
         +e.select
             +e.selectName Выбрать учителя
             v-select(
                 :options="coach"
                 v-model="actualCoach"
             )
-
         +e.select
             +e.selectName Выбрать клиента
             v-select(
                 :options="clients"
                 v-model="actualCustomer"
             )
-
     +e.time
         +e.dataTable(:style="{'background':  currentColor}") Data
         +e.timeBlock(:style="{'top': `-${scrollTime}px`, 'background':  currentColor}")
@@ -76,83 +72,77 @@ include ../lib/pugDeps.pug
         scrollable
         resizable
     )
-
-        +e.modalWrap
-            +e.modalDate
-                | Дата*
-                datepicker2(
-                    lang="ru"
-                    v-model="dateModal"
-                    valueType="format"
-                    clearable
-                    :first-day-of-week="1"
-                    format="YYYY-MM-DD"
-                )
-            +e.modalTime
-                | Начало*
-                input(
-                    type="tel"
-                    v-mask="'##:##'"
-                    v-model="selectTimeStart"
-                )
-
-            +e.modalTime
-                | Окончания*
-                input(
-                    type="tel"
-                    v-mask="'##:##'"
-                    v-model="selectTimeEnd"
-                )
-
-        +e.modalWrap
-            +e.select
-                +e.selectName Выбрать учителя
-                v-select(
-                    multiple
-                    :options="coach"
-                    v-model="selectTeacherModal"
-                )
-
-            +e.select
-                +e.selectName Выбрать клиента
-                v-select(
-                    multiple
-                    :options="clients"
-                    v-model="selectedChildModal"
-                )
-        +e.modalWrap
-            +e.select.is-type
-                +e.selectName Тип занятия*
-                v-select(
-                    label="name"
-                    :options="activitiesType"
-                    v-model="currentType"
-                )
-
-            +e.select.is-halls
-                +e.selectName Зал*
-                v-select(
-                    label="name"
-                    :options="halls"
-                    v-model="currentHall"
-                )
-        +e.modalWrap.d-none
-            +e.modalWeek
-                +e.modalWeekName Кол-во недель
-                +e.INPUT(type="text" v-model="quantityWeek")
-            +e.modalStatus
-                +e.INPUT(type="checkbox" v-model="statusModal") Статус
-            +e.modalNotes
-                +e.modalNotesName Справка
-                +e.TEXTAREA.modalNotesText(v-model="modalNotes")
-
-        +e.errorMessageWrap
-            +e.BUTTON.modalSubmit.btn.btn-success(@click="submitForm") Отправить
-            +e.errorMessage {{errorMessage}}
-    loading(
-        :active.sync="recordLoading"
-        :is-full-page="fullPage"
-    )
+        +e.FORM.form(@submit.prevent="submitForm")
+            +e.modalWrap
+                +e.modalDate
+                    | Дата*
+                    datepicker2(
+                        lang="ru"
+                        v-model="dateModal"
+                        valueType="format"
+                        clearable
+                        :first-day-of-week="1"
+                        format="YYYY-MM-DD"
+                    )
+                +e.modalTime
+                    | Начало*
+                    input(
+                        type="tel"
+                        v-mask="'##:##'"
+                        v-model="selectTimeStart"
+                        required
+                    )
+                +e.modalTime
+                    | Окончания*
+                    input(
+                        type="tel"
+                        v-mask="'##:##'"
+                        v-model="selectTimeEnd"
+                        required
+                    )
+            +e.modalWrap
+                +e.select
+                    +e.selectName Выбрать учителя
+                    v-select(
+                        multiple
+                        :options="coach"
+                        v-model="selectTeacherModal"
+                    )
+                +e.select
+                    +e.selectName Выбрать клиента
+                    v-select(
+                        multiple
+                        :options="clients"
+                        v-model="selectedChildModal"
+                    )
+            +e.modalWrap
+                +e.select.is-type
+                    +e.selectName Тип занятия*
+                    v-select(
+                        label="name"
+                        :options="activitiesType"
+                        v-model="currentType"
+                    )
+                +e.select.is-halls
+                    +e.selectName Зал*
+                    v-select(
+                        label="name"
+                        :options="halls"
+                        v-model="currentHall"
+                    )
+            +e.modalWrap.d-none
+                +e.modalWeek
+                    +e.modalWeekName Кол-во недель
+                    +e.INPUT(type="text" v-model="quantityWeek")
+                +e.modalStatus
+                    +e.INPUT(type="checkbox" v-model="statusModal") Статус
+                +e.modalNotes
+                    +e.modalNotesName Справка
+                    +e.TEXTAREA.modalNotesText(v-model="modalNotes")
+            +e.errorMessageWrap
+                +e.BUTTON.modalSubmit.btn.btn-success(type="submit") Отправить
+                +e.errorMessage {{errorMessage}}
+    loading(:active.sync="recordLoading")
 </template>
 
 <script lang="ts">

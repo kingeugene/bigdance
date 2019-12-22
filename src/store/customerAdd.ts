@@ -99,6 +99,20 @@ const module: Module<customerAddState, any> = {
 
         setLoading(state, data) {
             state.loading = data;
+        },
+
+        clearAll(state) {
+            state.email = "";
+            state.first_name = "";
+            state.middle_name = "";
+            state.second_name = "";
+            state.birth_date = "";
+            state.document_id = "";
+            state.notes = "";
+            state.username = "";
+            state.password = "";
+            state.price = "";
+            state.phones = "";
         }
     },
 
@@ -125,6 +139,7 @@ const module: Module<customerAddState, any> = {
 
             if (status === 200) {
                 await dispatch("allClients");
+                commit("clearAll");
                 router.push('/customers').catch(err => {});
             } else {
                 alert("Данные введены не верно")

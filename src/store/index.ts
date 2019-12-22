@@ -7,6 +7,7 @@ import login from "./login";
 import record from "./record";
 import customerAdd from "./customerAdd";
 import trainersAdd from "./trainersAdd";
+import settings from "./settings";
 
 Vue.use(Vuex);
 
@@ -19,5 +20,6 @@ export default new Vuex.Store<any>({
         record,
         customerAdd,
         trainersAdd,
+        settings,
     },
 });

@@ -33,6 +33,15 @@ const router = new Router({
       beforeEnter: ifAuthenticated,
     },
     {
+      path: '/settings',
+      name: 'settings',
+      meta: {
+        title: "Настройки",
+      },
+      component: () => import(/* webpackChunkName: "about" */ './views/Settings.vue'),
+      beforeEnter: ifAuthenticated,
+    },
+    {
       path: '/record/:id',
       name: 'record',
       meta: {

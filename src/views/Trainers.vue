@@ -39,6 +39,81 @@ include ../lib/pugDeps.pug
         width="85%"
         adaptive
     )
+        +e.FORM.form(@submit.prevent="submitChangeCoach")
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="email") Email*
+                    +e.INPUT.input#email(type="email" v-model="changeCoach.email" required)
+
+                +e.labelWrap
+                    +e.LABEL.label(for="firstName") Фамилия*
+                    +e.INPUT.input#firstName(v-model="changeCoach.first_name" required)
+
+                +e.labelWrap
+                    +e.LABEL.label(for="middleName") Отчество
+                    +e.INPUT.input#middleName(v-model="changeCoach.middle_name")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="secondName") Имя*
+                    +e.INPUT.input#secondName(v-model="changeCoach.second_name" required)
+
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="birthDate") Дата Рождения
+                    +e.INPUT.input#birthDate(v-model="changeCoach.birth_date" placeholder="YYYY-MM-DD")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="sex") Пол
+                    +e.V-SELECT.select#sex(
+                        :options="sexOption"
+                        v-model="changeCoach.sex"
+                    )
+
+                +e.labelWrap
+                    +e.LABEL.label(for="document") Документ
+                    +e.INPUT.input#document(v-model="changeCoach.document_id")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="notes") Заметки
+                    +e.TEXTAREA.textarea#notes(v-model="changeCoach.notes")
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="position") Документ
+                    +e.INPUT.input#position(v-model="changeCoach.position")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="wage") Зарплата
+                    +e.INPUT.input#wage(type="number" v-model="changeCoach.wage")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="price") Прайс
+                    +e.INPUT.input#price(type="number" v-model="changeCoach.price")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="styleId") Тип танца
+                    +e.V-SELECT.select#styleId(
+                        label="name"
+                        :options="activityStyle"
+                        v-model="changeCoach.style_id"
+                    )
+            +e.formWrap
+                +e.V-SELECT.select#styleId(
+                    label="slot"
+                    multiple
+                    :options="availabilityDayOption"
+                    v-model="changeCoach.availability"
+                )
+
+                +e.availabilityList(v-for="(item, index) in changeCoach.availability" :key="index")
+                    +e.availabilityWrap
+                        +e.availabilityName {{item.slot}}
+                        +e.LABEL(for="switchUserFalse") C
+                            +e.INPUT.switch(v-model="changeCoach.availability[index].from" )
+                        +e.LABEL(for="switchUserTrue") Дo
+                            +e.INPUT.switch(v-model="changeCoach.availability[index].to" )
+
+
+            +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
 
 </template>
 
@@ -95,31 +170,98 @@ export default class Trainers extends Vue {
         },
     ];
 
-    // changeCustomer: {
-    //     account_id: number
-    //     availability: []
-    //     birth_date: string
-    //     document_id: string
-    //     email: string
-    //     first_name: string
-    //     id: number
-    //     middle_name: string
-    //     notes: string
-    //     originalIndex: number
-    //     person_id: number
-    //     phones: []
-    //     photo: string | null
-    //     position: number
-    //     price: number
-    //     second_name: string
-    //     sex: string
-    //     style_id: number
-    //     user_id: number
-    //     vgt_id: number
-    //     wage: number
-    // } = {
-    //
-    // }
+    changeCoach: {
+        account_id: number
+        availability: []
+        birth_date: string
+        document_id: string
+        email: string
+        first_name: string
+        id: number
+        middle_name: string
+        notes: string
+        originalIndex: number
+        person_id: number
+        phones: []
+        photo: string | null
+        position: string
+        price: number
+        second_name: string
+        sex: string
+        style_id: number
+        user_id: number
+        vgt_id: number
+        wage: number
+    } = {
+        person_id: 0,
+        position: "",
+        wage: 0,
+        price: 0,
+        style_id: 1,
+        id: 1,
+        user_id: 1,
+        email: "",
+        first_name: "",
+        middle_name: "Maria",
+        second_name: "Alexander",
+        account_id: 1,
+        birth_date: "1999-10-10",
+        sex: "f",
+        photo: null,
+        document_id: "kasjhdihasd",
+        notes: "Bla Bla Bla",
+        phones: [],
+        availability: [],
+        vgt_id: 0,
+        originalIndex: 0,
+    };
+
+    sexOption: Array<any> = [ "m", "f" ];
+
+    availabilityDayOption: Array<{label: string, slot: string, from: string, to: string}> = [
+        {
+            label: "Понедельник",
+            slot: "monday",
+            from: "",
+            to: "",
+        },
+        {
+            label: "Вторник",
+            slot: "tuesday",
+            from: "",
+            to: "",
+        },
+        {
+            label: "Среда",
+            slot: "wednesday",
+            from: "",
+            to: "",
+        },
+        {
+            label: "Четверг",
+            slot: "thursday",
+            from: "",
+            to: "",
+        },
+        {
+            label: "Пятницы",
+            slot: "friday",
+            from: "",
+            to: "",
+        },
+        {
+            label: "Суббота",
+            slot: "saturday",
+            from: "",
+            to: "",
+        },
+        {
+            label: "Воскресенье",
+            slot: "sunday",
+            from: "",
+            to: "",
+        },
+    ];
 
     @State(state => state.baseClients.columns2) columns2!: any[];
     @State(state => state.baseClients.rows2) rows2!: any[];
@@ -128,20 +270,25 @@ export default class Trainers extends Vue {
     @State(state => state.baseTable.loading) loading!: boolean;
 
     @State(state => state.baseTable.coach) coach!: string[];
+    @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
+    @State(state => state.trainersAdd.loadingStyle) loadingStyle!: boolean;
 
     @Action allCoach!: () => void;
+    @Action activityStyleTrain!: () => void;
     @Action coachDelete!: (id: number) => void;
+    @Action coachUpdate!: ({}: any) => void;
 
     @Mutation deleteRows!: (id: number) => void;
 
     onRowClick(params: any) {
         if (params.event.target.classList[0] !== "Coach__iconEdit") {
-            this.$modal.show('details-coach');
+            // this.$modal.show('details-coach');
         }
     }
 
-    edit(props: any): void {
-        console.error(props.row);
+    edit(item: any): void {
+        this.changeCoach = item.row;
+        this.$modal.show('change-coach');
     }
 
     showModalDelete(id: number): void {
@@ -155,17 +302,24 @@ export default class Trainers extends Vue {
     }
 
     submitChangeCoach(): void {
-        // delete this.changeCustomer.user_id;
-        // delete this.changeCustomer.vgt_id;
-        // delete this.changeCustomer.originalIndex;
-        // delete this.changeCustomer.account_id;
-        // delete this.changeCustomer.person_id;
-        // delete this.changeCustomer.photo;
+        delete this.changeCoach.user_id;
+        delete this.changeCoach.vgt_id;
+        delete this.changeCoach.originalIndex;
+        delete this.changeCoach.account_id;
+        delete this.changeCoach.person_id;
+        delete this.changeCoach.photo;
+
+        this.$modal.hide('change-coach');
+        this.coachUpdate(this.changeCoach);
     }
 
     created() {
         if (this.loadedComponent && !this.loadedCoach) {
             this.allCoach();
+        }
+
+        if (!this.loadingStyle) {
+            this.activityStyleTrain();
         }
     }
 
@@ -202,6 +356,36 @@ export default class Trainers extends Vue {
                 transform: translateY(-2px);
             }
         }
+    }
+
+    &__form {
+        width: 100%;
+
+        &Wrap {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+    }
+
+    &__label {
+        display: block;
+
+        &Wrap {
+            max-width: 200px;
+            width: 100%;
+
+            &:not(:last-child) {
+                margin-right: 60px;
+            }
+        }
+    }
+
+    &__input,
+    &__select,
+    &__textarea {
+        width: 100%;
     }
 
     &__modalDelete {

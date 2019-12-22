@@ -74,6 +74,10 @@ export default class BaseHeader extends Vue {
             name: "Справка",
             link: "/reference",
         },
+        {
+            name: "Настройки",
+            link: "/settings",
+        },
     ];
 }
 </script>
