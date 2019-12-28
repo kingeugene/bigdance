@@ -735,8 +735,9 @@ export default class Timetable extends Vue {
             &Date {
                 display: flex;
                 justify-content: space-between;
-                flex-wrap: wrap;
                 margin: 0 20px;
+                white-space: nowrap;
+                overflow-x: auto;
             }
         }
 
@@ -756,6 +757,7 @@ export default class Timetable extends Vue {
 
         &__th-cell, &__td-cell {
             min-width: 150px;
+            max-width: 150px;
             text-align: center;
 
             &.is-number {

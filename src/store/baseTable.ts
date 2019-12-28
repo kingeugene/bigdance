@@ -309,7 +309,6 @@ const module: Module<baseTableState, any> = {
 
                 for (let indexItem = 0; indexItem < dataTable[key].length; indexItem++)  {
 
-
                     const venueID = dataTable[key][indexItem]["venue_object_id"],
                         tdId = `${(key + venueID)}`,
                         startTrain = dataTable[key][indexItem]["start_time"],
