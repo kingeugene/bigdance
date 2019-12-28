@@ -34,9 +34,9 @@ include ../lib/pugDeps.pug
                         div(v-else-if="field.block")
                             div {{field.name}}
                             +e.LABEL.radio Нет
-                                +e.INPUT.switch(type="radio" :value="false" v-model="field.value")
+                                +e.INPUT.switch(type="radio" :value="0" v-model="field.value")
                             +e.LABEL.radio Да
-                                +e.INPUT.switch(type="radio" :value="true" v-model="field.value")
+                                +e.INPUT.switch(type="radio" :value="1" v-model="field.value")
 
                         +e.labelWrap(v-else)
                             +e.label {{field.name}}
@@ -66,35 +66,41 @@ export default class Settings extends Vue {
                 {
                     name: "Название*",
                     value:  "",
+                    code: "name",
                     required: true,
                 },
                 {
                     name: "Адресс",
                     value: "",
+                    code: "location",
                     required: false,
 
                 },
                 {
                     name: "Цвет",
                     value: "",
+                    code: "color",
                     required: false,
 
                 },
                 {
                     name: "Начало работы*",
                     value: "",
+                    code: "start_time",
                     required: true,
 
                 },
                 {
                     name: "Окончание работы*",
                     value: "",
+                    code: "end_time",
                     required: true,
 
                 },
                 {
                     name: "Интервал в минутах*",
                     value: "",
+                    code: "interval",
                     required: true,
                 },
 
@@ -108,11 +114,13 @@ export default class Settings extends Vue {
                     venue_id: true,
                     name: "Студия*",
                     value: "",
+                    code: "venue_id",
                     required: true,
                 },
                 {
                     name: "Название Зала*",
                     value: "",
+                    code: "name",
                     required: true,
                 },
 
@@ -125,6 +133,7 @@ export default class Settings extends Vue {
                 {
                     name: "Название стиля танца*",
                     value: "",
+                    code: "name",
                     required: true,
                 },
             ]
@@ -135,19 +144,22 @@ export default class Settings extends Vue {
             data: [
                 {
                     name: "Название типа танца*",
+                    code: "name",
                     value: "",
                     required: true,
                 },
                 {
                     name: "Цвет",
                     value: "",
+                    code: "color",
                     required: false,
                 },
                 {
                     block: true,
                     name: "Только одна бронь",
-                    value: false,
-                    required: true,
+                    value: 0,
+                    code: "block",
+                    required: false,
                 },
             ]
 
@@ -160,15 +172,29 @@ export default class Settings extends Vue {
     @State(state => state.settings.loadingVenue) loadingVenue!: boolean;
 
     @Action listVenue!: () => void;
-    @Action venueCreate!: () => void;
+    @Action venueCreate!: ({name, location, color, start_time, end_time, interval}: any) => void;
+    @Action hallCreate!: ({venue_id, name}: any) => void;
+    @Action styleDanceCreate!: ({name}: any) => void;
+    @Action typeDanceCreate!: ({name, color, block}: any) => void;
 
     showModalAdd(item: string): void {
         this.$modal.show(`modal-${item}Add`);
     }
 
     submitSettings(nameSettings: string): void {
-        this[`${nameSettings}Create`]({});
-        this.$modal.hide(`modal-${nameSettings}Add`);
+        let dataArr:any = {};
+
+        for(let key in this.tabs) {
+            if (this.tabs[key]["code"] === nameSettings) {
+                for(let keyData in this.tabs[key]["data"]) {
+                    dataArr[`${this.tabs[key]["data"][keyData]["code"]}`] = `${this.tabs[key]["data"][keyData]["value"]}`
+                }
+
+                this[`${nameSettings}Create`](dataArr);
+                this.$modal.hide(`modal-${nameSettings}Add`);
+                return;
+            }
+        }
     }
 
     created() {

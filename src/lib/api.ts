@@ -32,6 +32,18 @@ class ApiService {
         return axios.post(`${serverName}/v0/venues`, dataArr);
     }
 
+    public createHall({venue_id, name}: any):any {
+        return axios.post(`${serverName}/v0/venues/objects`, {venue_id, name});
+    }
+
+    public createStyleDance({name}: any): any {
+        return axios.post(`${serverName}/v0/activities/style`, {"account_id": 1, name});
+    }
+
+    public createTypeDance({name, color, block}: any): any {
+        return axios.post(`${serverName}/v0/activities/type`, {"account_id": 1, name, color, block});
+    }
+
     public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients}: any): any {
         return axios.post(`${serverName}/v0/records`, {
             venue_object_id: venue_object_id,
@@ -43,7 +55,7 @@ class ApiService {
             cancelled_at: cancelled_at,
             coaches: coaches,
             clients: clients
-        })
+        });
     }
 
     public listVenues(): any {
