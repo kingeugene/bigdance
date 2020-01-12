@@ -23,8 +23,8 @@ interface baseTableState {
     dataTable: any;
     gapTime: number;
     oneMinInPx: number;
-    startTime: number,
-    endTime: number,
+    startTime: number;
+    endTime: number;
     dataItem: any;
     dateTimeChoose: string;
     coachChoose: {code: string, label: string};
@@ -61,11 +61,11 @@ const module: Module<baseTableState, any> = {
         dateTimeChoose: "",
         coachChoose: {
             code:"",
-            label:""
+            label:"",
         },
         customerChoose: {
             code:"",
-            label:""
+            label:"",
         },
         isMobileChoose: false,
         currentColor: "#2f628e",

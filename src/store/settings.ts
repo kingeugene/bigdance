@@ -5,16 +5,22 @@ const axios = require('axios').default;
 
 interface settingsState {
     loadingVenue: boolean;
+    loading: boolean;
 }
 
 const module: Module<settingsState, any> = {
     state: {
         loadingVenue: false,
+        loading: false,
     },
 
     mutations: {
         setLoadingVenue(state, data) {
             state.loadingVenue = data;
+        },
+
+        setLoading(state, data) {
+            state.loading = data;
         },
     },
 
@@ -50,11 +56,11 @@ const module: Module<settingsState, any> = {
 
             const {data, status} = await api.createStyleDance({name});
 
-            // if (status === 200) {
-            //
-            // } else {
-            //     alert("Студия не создана");
-            // }
+            if (status === 200) {
+                dispatch("activityStyleTrain");
+            } else {
+                alert("стиль танца не создана");
+            }
 
             commit("setLoadingVenue", false);
         },
@@ -72,8 +78,63 @@ const module: Module<settingsState, any> = {
 
             commit("setLoadingVenue", false);
         },
-    },
 
+        async venueDelete({state, commit, dispatch}, id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.deleteVenue(id);
+
+            if (status === 200) {
+                dispatch("listVenue");
+            } else {
+                alert("Студия не удалена");
+            }
+
+            commit("setLoading", false);
+        },
+
+        async hallDelete({state, commit, dispatch}, id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.deleteHall(id);
+
+            if (status === 200) {
+                dispatch("listVenueObject");
+            } else {
+                alert("Зал не удален");
+            }
+
+            commit("setLoading", false);
+        },
+
+        async styleDanceDelete({state, commit, dispatch}, id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.deleteStyleDance(id);
+
+            if (status === 200) {
+                dispatch("activityStyleTrain");
+            } else {
+                alert("Стиль танца не удален");
+            }
+
+            commit("setLoading", false);
+        },
+
+        async typeDanceDelete({state, commit, dispatch}, id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.deleteTypeDance(id);
+
+            if (status === 200) {
+                dispatch("activitiesType");
+            } else {
+                alert("Тип занятия не удален");
+            }
+
+            commit("setLoading", false);
+        },
+    },
 };
 
 export default module;

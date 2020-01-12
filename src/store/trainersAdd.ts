@@ -17,14 +17,14 @@ interface coachAddState {
     switch_user: boolean;
     username: string;
     password: string;
-    position: string,
-    wage: string,
-    price:  string;
+    position: string;
+    wage: string;
+    price: string;
     phones: string;
     style_id: {
         id: number,
         account_id: number,
-        "name": string
+        "name": string,
     };
     availability: Array<{slot: string, from: string, to: string}>;
     activityStyle: [];

@@ -263,8 +263,6 @@ export default class Trainers extends Vue {
         },
     ];
 
-    @State(state => state.baseClients.columns2) columns2!: any[];
-    @State(state => state.baseClients.rows2) rows2!: any[];
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
     @State(state => state.baseTable.loadedCoach) loadedCoach!: boolean;
     @State(state => state.baseTable.loading) loading!: boolean;

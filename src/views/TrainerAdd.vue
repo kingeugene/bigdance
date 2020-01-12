@@ -96,9 +96,6 @@ include ../lib/pugDeps.pug
                             +e.INPUT.switch(v-model="setAvailabilityDay[index].from" )
                         +e.LABEL(for="switchUserTrue") Дo
                             +e.INPUT.switch(v-model="setAvailabilityDay[index].to" )
-
-
-
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
     loading(:active.sync="loading")
 </template>

@@ -18,7 +18,7 @@ class ApiService {
             });
     }
 
-    public createVenue({name, location, color, start_time, end_time, interval}: any):any {
+    public createVenue({name, location, color, start_time, end_time, interval}: any, update: boolean = false):any {
         let dataArr: any = {};
         dataArr["account_id"] = 1;
         dataArr["name"] = name;
@@ -29,19 +29,39 @@ class ApiService {
         if (location) dataArr["location"] = location;
         if (color) dataArr["color"] = color;
 
+        if (update) {
+            return axios.put(`${serverName}/v0/venues`, dataArr);
+        }
+
         return axios.post(`${serverName}/v0/venues`, dataArr);
+    }
+
+    public deleteVenue(id: number) {
+        return axios.delete(`${serverName}/v0/venues/${id}`);
     }
 
     public createHall({venue_id, name}: any):any {
         return axios.post(`${serverName}/v0/venues/objects`, {venue_id, name});
     }
 
+    public deleteHall(id: number) {
+        return axios.delete(`${serverName}/v0/venues/objects/${id}`);
+    }
+
     public createStyleDance({name}: any): any {
         return axios.post(`${serverName}/v0/activities/style`, {"account_id": 1, name});
     }
 
+    public deleteStyleDance(id: number) {
+        return axios.delete(`${serverName}/v0/activities/style/${id}`);
+    }
+
     public createTypeDance({name, color, block}: any): any {
         return axios.post(`${serverName}/v0/activities/type`, {"account_id": 1, name, color, block});
+    }
+
+    public deleteTypeDance(id: number) {
+        return axios.delete(`${serverName}/v0/activities/type/${id}`);
     }
 
     public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients}: any): any {
