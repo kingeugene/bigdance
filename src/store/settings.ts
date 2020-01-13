@@ -25,9 +25,10 @@ const module: Module<settingsState, any> = {
     },
 
     actions: {
-        async venueCreate({state, commit, dispatch}, {name, location, color, start_time, end_time, interval}) {
+        async venueCreate({state, commit, dispatch}, {name, location, color, start_time, end_time, interval, id}) {
             commit("setLoadingVenue", true);
-            const {data, status} = await api.createVenue({name, location, color, start_time, end_time, interval});
+
+            const {data, status} = await api.createVenue({name, location, color, start_time, end_time, interval, id});
 
             if (status === 200) {
                 dispatch("listVenue");
@@ -38,12 +39,12 @@ const module: Module<settingsState, any> = {
             commit("setLoadingVenue", false);
         },
 
-        async hallCreate({state, commit, dispatch}, {venue_id, name}) {
+        async hallCreate({state, commit, dispatch}, {venue_id, name, id}) {
             commit("setLoadingVenue", true);
-            const {data, status} = await api.createHall({venue_id, name});
+            const {data, status} = await api.createHall({venue_id, name, id});
 
             if (status === 200) {
-                dispatch("listVenueObject");
+                dispatch("listVenueObjectAll");
             } else {
                 alert("Студия не создана");
             }
@@ -51,10 +52,10 @@ const module: Module<settingsState, any> = {
             commit("setLoadingVenue", false);
         },
 
-        async styleDanceCreate({state, commit, dispatch}, {name}) {
+        async styleDanceCreate({state, commit, dispatch}, {label, id}) {
             commit("setLoadingVenue", true);
 
-            const {data, status} = await api.createStyleDance({name});
+            const {data, status} = await api.createStyleDance({label, id});
 
             if (status === 200) {
                 dispatch("activityStyleTrain");
@@ -65,10 +66,10 @@ const module: Module<settingsState, any> = {
             commit("setLoadingVenue", false);
         },
 
-        async typeDanceCreate({state, commit, dispatch}, {name, color, block}) {
+        async typeDanceCreate({state, commit, dispatch}, {label, color, block, id}) {
             commit("setLoadingVenue", true);
 
-            const {data, status} = await api.createTypeDance({name, color, block: parseInt(block)});
+            const {data, status} = await api.createTypeDance({label, color, block: parseInt(block), id});
 
             if (status === 200) {
                 dispatch("activitiesType");

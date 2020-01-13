@@ -18,7 +18,7 @@ class ApiService {
             });
     }
 
-    public createVenue({name, location, color, start_time, end_time, interval}: any, update: boolean = false):any {
+    public createVenue({name, location, color, start_time, end_time, interval, id}: any):any {
         let dataArr: any = {};
         dataArr["account_id"] = 1;
         dataArr["name"] = name;
@@ -29,8 +29,8 @@ class ApiService {
         if (location) dataArr["location"] = location;
         if (color) dataArr["color"] = color;
 
-        if (update) {
-            return axios.put(`${serverName}/v0/venues`, dataArr);
+        if (id) {
+            return axios.put(`${serverName}/v0/venues/${id}`, dataArr);
         }
 
         return axios.post(`${serverName}/v0/venues`, dataArr);
@@ -40,7 +40,11 @@ class ApiService {
         return axios.delete(`${serverName}/v0/venues/${id}`);
     }
 
-    public createHall({venue_id, name}: any):any {
+    public createHall({venue_id, name, id}: any):any {
+        if (id) {
+            return axios.put(`${serverName}/v0/venues/objects/${id}`, {venue_id, name});
+        }
+
         return axios.post(`${serverName}/v0/venues/objects`, {venue_id, name});
     }
 
@@ -48,16 +52,24 @@ class ApiService {
         return axios.delete(`${serverName}/v0/venues/objects/${id}`);
     }
 
-    public createStyleDance({name}: any): any {
-        return axios.post(`${serverName}/v0/activities/style`, {"account_id": 1, name});
+    public createStyleDance({label, id}: any): any {
+        if (id) {
+            return axios.put(`${serverName}/v0/activities/style/${id}`, {"account_id": 1, name: label});
+        }
+
+        return axios.post(`${serverName}/v0/activities/style`, {"account_id": 1, name: label});
     }
 
     public deleteStyleDance(id: number) {
         return axios.delete(`${serverName}/v0/activities/style/${id}`);
     }
 
-    public createTypeDance({name, color, block}: any): any {
-        return axios.post(`${serverName}/v0/activities/type`, {"account_id": 1, name, color, block});
+    public createTypeDance({label, color, block, id}: any): any {
+        if (id) {
+            return axios.put(`${serverName}/v0/activities/type/${id}`, {"account_id": 1, name: label, color, block});
+        }
+
+        return axios.post(`${serverName}/v0/activities/type`, {"account_id": 1, name: label, color, block});
     }
 
     public deleteTypeDance(id: number) {

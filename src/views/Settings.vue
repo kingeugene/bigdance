@@ -85,8 +85,7 @@ import { VueGoodTable } from 'vue-good-table';
 export default class Settings extends Vue {
     deleteRow: any = null;
     activeTab: string = "venue";
-    editSettings: boolean = false;
-    editId: number = 1;
+    editId: number = 0;
     tabs: Array<{name: string, code: string, data: Array<{}>}> = [
         {
             name: "Cтудии",
@@ -162,7 +161,7 @@ export default class Settings extends Vue {
                 {
                     name: "Название стиля танца*",
                     value: "",
-                    code: "name",
+                    code: "label",
                     required: true,
                 },
             ]
@@ -173,7 +172,7 @@ export default class Settings extends Vue {
             data: [
                 {
                     name: "Название типа танца*",
-                    code: "name",
+                    code: "label",
                     value: "",
                     required: true,
                 },
@@ -250,7 +249,7 @@ export default class Settings extends Vue {
         },
         {
             label: 'Студия',
-            field: 'id',
+            field: 'venue_id',
         },
         {
             label: 'Ред',
@@ -261,7 +260,7 @@ export default class Settings extends Vue {
     typeDanceColumns: any = [
         {
             label: 'Тип занятия',
-            field: 'name',
+            field: 'label',
             filterable: true,
         },
         {
@@ -281,7 +280,7 @@ export default class Settings extends Vue {
     styleDanceColumns: any = [
         {
             label: 'Стиль танца',
-            field: 'name',
+            field: 'label',
             filterable: true,
         },
         {
@@ -291,7 +290,7 @@ export default class Settings extends Vue {
     ];
 
     @State(state => state.baseTable.listVenue) venueList!: string[];
-    @State(state => state.baseTable.listVenueObject) hallList!: string[];
+    @State(state => state.baseTable.listVenueObjectAll) hallList!: string[];
     @State(state => state.baseTable.activitiesType) typeDanceList!: string[];
     @State(state => state.trainersAdd.activityStyle) styleDanceList!: [];
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
@@ -337,7 +336,7 @@ export default class Settings extends Vue {
     }
 
     editSetting(row: any) {
-        this.editSettings = true;
+        this.editId = row.id;
 
         let currentData: any = null;
 
@@ -365,12 +364,11 @@ export default class Settings extends Vue {
                     dataArr[`${this.tabs[key]["data"][keyData]["code"]}`] = `${this.tabs[key]["data"][keyData]["value"]}`
                 }
 
-                // dataArr.id = this.editId;
-                // dataArr.update = this.editSettings;
+                dataArr.id = this.editId;
 
                 this[`${nameSettings}Create`](dataArr);
                 this.$modal.hide(`modal-${nameSettings}Add`);
-                return;
+                this.editId = 0;
             }
         }
     }

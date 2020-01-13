@@ -9,6 +9,7 @@ interface baseTableState {
     currentColor: string;
     listVenue: [];
     listVenueObject: [];
+    listVenueObjectAll: [];
     activitiesType: [];
     allClients: [];
     customers: [];
@@ -75,6 +76,7 @@ const module: Module<baseTableState, any> = {
         endTime: 1320,
         listVenue: [],
         listVenueObject: [],
+        listVenueObjectAll: [],
         activitiesType: [],
         allClients: [],
         customers: [],
@@ -153,6 +155,10 @@ const module: Module<baseTableState, any> = {
 
         setListVenueObject(state, data) {
             state.listVenueObject = data;
+        },
+
+        setListVenueObjectAll(state, data) {
+            state.listVenueObjectAll = data;
         },
 
         setActivitiesType(state, data) {
@@ -275,6 +281,7 @@ const module: Module<baseTableState, any> = {
                 dispatch("activitiesType"),
                 dispatch("allClients"),
                 dispatch("allCoach"),
+                dispatch("listVenueObjectAll"),
                 dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null}),
             ];
 
@@ -347,6 +354,14 @@ const module: Module<baseTableState, any> = {
                 if (!state.loadedListVenue) {
                     commit("setLoadedListVenue", true);
                 }
+            }
+        },
+
+        async listVenueObjectAll({commit, state}) {
+            const {data, status} = await api.listVenueObject();
+
+            if (status === 200) {
+                commit("setListVenueObjectAll", data);
             }
         },
 
