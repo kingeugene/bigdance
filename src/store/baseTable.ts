@@ -240,6 +240,8 @@ const module: Module<baseTableState, any> = {
 
     actions: {
         async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients})  {
+            commit("setLoading", true);
+
             const color = state.currentColor,
                 start_time = `${state.recordDate} ${state.recordStartTime}:00`,
                 end_time = `${state.recordDate} ${state.recordEndTime}:00`,
@@ -252,7 +254,7 @@ const module: Module<baseTableState, any> = {
                 dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null});
             }
 
-
+            commit("setLoading", false);
         },
 
         currentDate({commit}) {
@@ -293,6 +295,7 @@ const module: Module<baseTableState, any> = {
 //GET
         async getListRecord({commit, dispatch}, {venue_id, date, coach, client, mobile}) {
             commit("setRecordLoading", true);
+            commit("setLoading", true);
 
             const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile});
 
@@ -303,6 +306,7 @@ const module: Module<baseTableState, any> = {
                 alert("Данные не загрузились!")
             }
 
+            commit("setLoading", false);
             commit("setRecordLoading", false);
         },
 
@@ -346,6 +350,8 @@ const module: Module<baseTableState, any> = {
         },
 
         async listVenue({commit, state}) {
+            commit("setLoading", true);
+
             const {data, status} = await api.listVenues();
 
             if (status === 200) {
@@ -355,30 +361,44 @@ const module: Module<baseTableState, any> = {
                     commit("setLoadedListVenue", true);
                 }
             }
+
+            commit("setLoading", false);
         },
 
         async listVenueObjectAll({commit, state}) {
+            commit("setLoading", true);
+
             const {data, status} = await api.listVenueObject();
 
             if (status === 200) {
                 commit("setListVenueObjectAll", data);
             }
+
+            commit("setLoading", false);
         },
 
         async listVenueObject({commit, state}) {
+            commit("setLoading", true);
+
             const {data, status} = await api.showVenueObject(state.currentVenue);
 
             if (status === 200) {
                 commit("setListVenueObject", data);
             }
+
+            commit("setLoading", false);
         },
 
         async activitiesType({commit}) {
+            commit("setLoading", true);
+
             const {data, status} = await api.activitiesType();
 
             if (status === 200) {
                 commit("setActivitiesType", data);
             }
+
+            commit("setLoading", false);
         },
 
         async allClients({commit, state}) {

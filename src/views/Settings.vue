@@ -249,7 +249,19 @@ export default class Settings extends Vue {
         },
         {
             label: 'Студия',
-            field: 'venue_id',
+            field: 'venue_name',
+        },
+        {
+            label: 'Ред',
+            field: 'action',
+        },
+    ];
+
+    styleDanceColumns: any = [
+        {
+            label: 'Стиль танца',
+            field: 'label',
+            filterable: true,
         },
         {
             label: 'Ред',
@@ -270,18 +282,6 @@ export default class Settings extends Vue {
         {
             label: 'Бронь всего зала',
             field: 'block',
-        },
-        {
-            label: 'Ред',
-            field: 'action',
-        },
-    ];
-
-    styleDanceColumns: any = [
-        {
-            label: 'Стиль танца',
-            field: 'label',
-            filterable: true,
         },
         {
             label: 'Ред',

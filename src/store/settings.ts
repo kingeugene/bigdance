@@ -100,7 +100,7 @@ const module: Module<settingsState, any> = {
             const {data, status} = await api.deleteHall(id);
 
             if (status === 200) {
-                dispatch("listVenueObject");
+                dispatch("listVenueObjectAll");
             } else {
                 alert("Зал не удален");
             }
