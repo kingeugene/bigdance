@@ -4,20 +4,40 @@ import router from "@/router";
 
 interface coachState {
     loading: boolean;
+    showCoach: Array<any>;
 }
 
 const module: Module<coachState, any> = {
     state: {
         loading: false,
+        showCoach: [],
     },
 
     mutations: {
         setLoading(state, data) {
             state.loading = data;
         },
+
+        setShowCoach(state, data) {
+          state.showCoach = data;
+        },
     },
 
     actions: {
+        async getCoach({commit, dispatch}, coach_id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.showAllCoach(coach_id);
+
+            if (status === 200) {
+
+            } else {
+                alert("Тренер не загружен");
+            }
+
+            commit("setLoading", false);
+        },
+
         async coachDelete({commit, dispatch}, id: number) {
             commit("setLoading", true);
 

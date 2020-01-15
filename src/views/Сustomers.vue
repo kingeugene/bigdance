@@ -192,6 +192,7 @@ export default class Customers extends Vue {
 
     onRowClick(params: any) {
         if (params.event.target.classList[0] !== "Clients__iconEdit") {
+            alert("wrwer");
         }
     }
 

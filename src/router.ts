@@ -7,17 +7,17 @@ Vue.use(Router);
 const ifNotAuthenticated = (to: any, from: any, next: any) => {
   if (!store.getters.isAuthenticated) {
     next();
-    return
+    return;
   }
-  next('/')
+  next('/');
 };
 
 const ifAuthenticated = (to: any, from: any, next: any) => {
   if (store.getters.isAuthenticated) {
     next();
-    return
+    return;
   }
-  next('/login')
+  next('/login');
 };
 
 const router = new Router({
@@ -48,6 +48,15 @@ const router = new Router({
         title: "Записи",
       },
       component: () => import(/* webpackChunkName: "about" */ './views/Record.vue'),
+      beforeEnter: ifAuthenticated,
+    },
+    {
+      path: '/coach-page/:id',
+      name: 'coach-page',
+      meta: {
+        title: "Тренер",
+      },
+      component: () => import(/* webpackChunkName: "about" */ './views/CoachPage.vue'),
       beforeEnter: ifAuthenticated,
     },
     {

@@ -271,8 +271,10 @@ class ApiService {
         return axios.delete(`${serverName}/v0/coaches/${id}`);
     }
 
-    public showAllCoach(): any {
-        return axios.get(`${serverName}/v0/coaches`);
+    public showAllCoach(coach_id?: number): any {
+        return coach_id
+            ? axios.get(`${serverName}/v0/coaches/${coach_id}`)
+            : axios.get(`${serverName}/v0/coaches`);
     }
 
     public activityStyle(): any {

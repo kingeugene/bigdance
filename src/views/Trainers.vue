@@ -279,7 +279,7 @@ export default class Trainers extends Vue {
 
     onRowClick(params: any) {
         if (params.event.target.classList[0] !== "Coach__iconEdit") {
-            // this.$modal.show('details-coach');
+            this.$router.push(`/coach-page/${params.row.id}`)
         }
     }
 
