@@ -94,7 +94,7 @@ class ApiService {
         return axios.get(`${serverName}/v0/venues`);
     }
 
-    public showVenueObject(venue_id: number = 1): any {
+    public showVenueObject(venue_id: number): any {
         return axios.get(`${serverName}/v0/venues/objects?venue_id=${venue_id}`);
     }
 

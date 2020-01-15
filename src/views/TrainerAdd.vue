@@ -6,8 +6,8 @@ include ../lib/pugDeps.pug
         +e.FORM.form(@submit.prevent="submitForm")
             +e.formWrap
                 +e.labelWrap
-                    +e.LABEL.label(for="email") Email*
-                    +e.INPUT.input#email(type="email" v-model="emailAdd" required)
+                    +e.LABEL.label(for="email") Номер карты*
+                    +e.INPUT.input#email(type="text" v-model="emailAdd" required)
 
                 +e.labelWrap
                     +e.LABEL.label(for="firstName") Фамилия*
@@ -78,7 +78,6 @@ include ../lib/pugDeps.pug
                 +e.labelWrap
                     +e.LABEL.label(for="styleId") Тип танца
                     +e.V-SELECT.select#styleId(
-                        label="name"
                         :options="activityStyle"
                         v-model="styleIdAdd"
                     )

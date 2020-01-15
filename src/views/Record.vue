@@ -48,7 +48,7 @@ include ../lib/pugDeps.pug
                     +e.data {{item.sex}}
 
                 +e.labelWrap
-                    +e.label Email
+                    +e.label Номер карты
                     +e.data {{item.email}}
                 +e.labelWrap
                     +e.label Дата Рождения
@@ -80,7 +80,7 @@ include ../lib/pugDeps.pug
                     +e.data {{item.sex}}
 
                 +e.labelWrap
-                    +e.label Email
+                    +e.label Номер карты
                     +e.data {{item.email}}
                 +e.labelWrap
                     +e.label Дата Рождения

@@ -24,7 +24,7 @@ interface coachAddState {
     style_id: {
         id: number,
         account_id: number,
-        "name": string,
+        "label": string,
     };
     availability: Array<{slot: string, from: string, to: string}>;
     activityStyle: [];
@@ -55,7 +55,7 @@ const module: Module<coachAddState, any> = {
         style_id: {
             "id": 1,
             "account_id": 1,
-            "name": ""
+            "label": ""
         },
         availability: [],
         activityStyle: [],

@@ -119,7 +119,6 @@ include ../lib/pugDeps.pug
                 +e.select.is-type
                     +e.selectName Тип занятия*
                     v-select(
-                        label="name"
                         :options="activitiesType"
                         v-model="currentType"
                     )
@@ -158,7 +157,6 @@ import { throttle } from "lodash";
 })
 export default class Timetable extends Vue {
     scrollTable: any = null;
-    currentVenue: number = 0;
     initDataItem: boolean = true;
     startTime: number = 510;
     endTime: number = 1320;
@@ -214,6 +212,7 @@ export default class Timetable extends Vue {
     };
     @State(state => state.baseTable.recordHall) recordHall!: {id: number, name: string};
     @State(state => state.baseTable.recordLoading) recordLoading!: boolean;
+    @State(state => state.baseTable.currentVenueColor) currentVenue!: number;
 
     @Mutation setDataTable!: ({}) => void;
     @Mutation setCurrentVenue!: (id: number) => void;
@@ -225,6 +224,7 @@ export default class Timetable extends Vue {
     @Mutation setRecordEndTime!: (recordEndTime: string) => void;
     @Mutation setRecordCoaches!: (recordCoaches: any) => void;
     @Mutation setRecordClients!: (recordClients: any) => void;
+    @Mutation setCurrentVenueColor!: (colorId: number) => void;
 
     @Mutation setRecordActivityType!: (recordActivityType: {
         account_id: number,
@@ -426,7 +426,7 @@ export default class Timetable extends Vue {
         }
 
         this.setCurrentVenue(venueId);
-        this.currentVenue = index;
+        this.setCurrentVenueColor(index);
         this.listVenueObject();
     }
 

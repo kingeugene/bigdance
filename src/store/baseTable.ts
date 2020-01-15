@@ -5,6 +5,7 @@ interface baseTableState {
     show: boolean;
     account_id: number;
     currentDate: string;
+    currentVenueColor: number;
     currentVenue: number;
     currentColor: string;
     listVenue: [];
@@ -59,6 +60,7 @@ const module: Module<baseTableState, any> = {
         account_id: 1,
         currentDate: "",
         currentVenue: 1,
+        currentVenueColor: 0,
         dateTimeChoose: "",
         coachChoose: {
             code:"",
@@ -127,6 +129,10 @@ const module: Module<baseTableState, any> = {
 
         setDateTimeChoose(state, data) {
             state.dateTimeChoose = data;
+        },
+
+        setCurrentVenueColor(state, data) {
+          state.currentVenueColor = data;
         },
 
         setCoachChoose(state, data) {
@@ -251,7 +257,7 @@ const module: Module<baseTableState, any> = {
             const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients });
 
             if (status === 200) {
-                dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null});
+                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null});
             }
 
             commit("setLoading", false);
@@ -274,17 +280,17 @@ const module: Module<baseTableState, any> = {
             commit("setCurrentDate", `${year}-${month}-${day}`);
         },
 
-        async initBaseTable({dispatch, commit}) {
+        async initBaseTable({dispatch, commit, state}) {
             commit("setLoaded", true);
 
+            await dispatch("listVenue");
+
             let request = [
-                dispatch("listVenue"),
                 dispatch("listVenueObject"),
                 dispatch("activitiesType"),
                 dispatch("allClients"),
                 dispatch("allCoach"),
                 dispatch("listVenueObjectAll"),
-                dispatch("getListRecord", {venue_id: 1, date: null, coach: null, client: null, mobile: null}),
             ];
 
             await Promise.all(request);
@@ -356,6 +362,7 @@ const module: Module<baseTableState, any> = {
 
             if (status === 200) {
                 commit("setListVenue", data);
+                commit("setCurrentVenue", data[0].id);
 
                 if (!state.loadedListVenue) {
                     commit("setLoadedListVenue", true);
@@ -379,6 +386,7 @@ const module: Module<baseTableState, any> = {
 
         async listVenueObject({commit, state}) {
             commit("setLoading", true);
+
 
             const {data, status} = await api.showVenueObject(state.currentVenue);
 

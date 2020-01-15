@@ -42,8 +42,8 @@ include ../lib/pugDeps.pug
         +e.FORM.form(@submit.prevent="submitChangeCustomer")
             +e.formWrap
                 +e.labelWrap
-                    +e.LABEL.label(for="email") Email*
-                    +e.INPUT.input#email(type="email" v-model="changeCustomer.email" required)
+                    +e.LABEL.label(for="email") Номер карты*
+                    +e.INPUT.input#email(type="text" v-model="changeCustomer.email" required)
 
                 +e.labelWrap
                     +e.LABEL.label(for="firstName") Фамилия*

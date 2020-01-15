@@ -296,6 +296,7 @@ export default class Settings extends Vue {
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
     @State(state => state.trainersAdd.loadingStyle) loadingStyle!: boolean;
     @State(state => state.settings.loading) loadingDelete!: boolean;
+    @State(state => state.baseTable.loading) loading!: boolean;
 
     @Action initBaseTable!: () => void;
     @Action venueCreate!: ({name, location, color, start_time, end_time, interval}: any) => void;
@@ -317,7 +318,7 @@ export default class Settings extends Vue {
     }
 
     get loadingSetting(): boolean {
-        return this.loadedComponent || this.loadingDelete;
+        return this.loadedComponent || this.loadingDelete || this.loading;
     }
 
     showModalAdd(item: string): void {
