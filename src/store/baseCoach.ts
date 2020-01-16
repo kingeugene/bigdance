@@ -5,12 +5,14 @@ import router from "@/router";
 interface coachState {
     loading: boolean;
     showCoach: Array<any>;
+    recordCoach: Array<any>;
 }
 
 const module: Module<coachState, any> = {
     state: {
         loading: false,
         showCoach: [],
+        recordCoach: [],
     },
 
     mutations: {
@@ -21,6 +23,10 @@ const module: Module<coachState, any> = {
         setShowCoach(state, data) {
           state.showCoach = data;
         },
+
+        setRecordCoach(state, data) {
+            state.recordCoach = data;
+        },
     },
 
     actions: {
@@ -30,7 +36,21 @@ const module: Module<coachState, any> = {
             const {data, status} = await api.showAllCoach(coach_id);
 
             if (status === 200) {
+                commit("setShowCoach", data);
+            } else {
+                alert("Тренер не загружен");
+            }
 
+            commit("setLoading", false);
+        },
+
+        async getRecordCoach({commit, dispatch}, coach_id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.listRecord({coach: coach_id});
+
+            if (status === 200) {
+                commit("setRecordCoach", data);
             } else {
                 alert("Тренер не загружен");
             }
