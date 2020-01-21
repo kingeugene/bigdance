@@ -11,6 +11,17 @@ include ../lib/pugDeps.pug
                 +e.coachStyle {{coach.name}}
         +e.availableName Доступное рабочие время:
         +e.available(v-for="item in coach.availability") {{item.slot}}: {{item.from}} - {{item.to}}
+        vue-good-table(
+            :columns="columns"
+            :rows="recordCoach"
+            :search-options="optionSearch"
+            styleClass="vgt-table bordered"
+            :pagination-options="optionPagination"
+            :line-numbers="true"
+            row-style-class="CoachPage__row"
+            max-height="600px"
+            theme="black-rhino"
+        )
 
     loading(:active.sync="loadingCoach")
 </template>
@@ -18,8 +29,14 @@ include ../lib/pugDeps.pug
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import {State, Mutation, Action} from "vuex-class";
+import 'vue-good-table/dist/vue-good-table.css'
+import { VueGoodTable } from 'vue-good-table';
 
-@Component
+@Component({
+    components: {
+        VueGoodTable,
+    }
+})
 export default class CoachPage extends Vue {
     @Action getCoach!: (id: number) => void;
     @Action getRecordCoach!: (id: number) => void;
@@ -28,16 +45,50 @@ export default class CoachPage extends Vue {
     @State(state => state.baseCoach.showCoach) coach!: any;
     @State(state => state.baseCoach.loading) loadingCoach!: boolean;
     @State(state => state.baseTable.listVenue) listVenue!: string[];
+    @State(state => state.baseCoach.recordCoach) recordCoach!: string[];
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
+
+    columns: any = [
+        {
+            label: 'Дата/Время',
+            field: 'date',
+        },
+        {
+            label: 'Клиент',
+            field: 'coaches',
+            filterable: true,
+        },
+        {
+            label: 'Тип Занятия',
+            field: 'type',
+            filterable: true,
+        },
+
+        {
+            label: 'Филиал и зал',
+            field: 'location',
+        },
+    ];
+
+    optionPagination: object = {
+        enabled: true,
+        perPage: 20,
+        nextLabel: 'Вперед',
+        prevLabel: 'Назад',
+        rowsPerPageLabel: 'Количество страниц',
+        ofLabel: 'из',
+        allLabel: 'Все',
+    };
+
+    optionSearch: object = {
+        enabled: true,
+    };
 
     async created() {
         if (this.loadedComponent) {
             await this.initBaseTable();
         }
 
-        const listVenueId = this.listVenue.map((item) => item["id"]);
-
-        console.log(listVenueId);
         this.getCoach(parseInt(this.$route.params.id));
         this.getRecordCoach(parseInt(this.$route.params.id));
     }

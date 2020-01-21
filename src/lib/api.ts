@@ -281,7 +281,7 @@ class ApiService {
         return axios.get(`${serverName}/v0/activities/style`);
     }
 
-    public listRecord({venue_id = 1, date, coach, client, mobile}: any): any {
+    public listRecord({venue_id = 4, date, coach, client, mobile}: any): any {
         let dateR = date ? `&date=${date}` : "",
             coachR = coach ? `&coach=${coach}` : "",
             clientR = client ? `&client=${client}` : "",

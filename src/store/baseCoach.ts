@@ -45,14 +45,28 @@ const module: Module<coachState, any> = {
         },
 
         async getRecordCoach({commit, dispatch}, coach_id) {
+            let dataRecord: any[] = [];
             commit("setLoading", true);
 
             const {data, status} = await api.listRecord({coach: coach_id});
 
             if (status === 200) {
-                commit("setRecordCoach", data);
+                for (let key in data) {
+                    if (data[key].length) {
+                        data[key].forEach((item: any) => {
+                            dataRecord.push({
+                                date: `${item.date} ${minInTime(item.start_time)}-${minInTime(item.end_time)}`,
+                                coaches: item["coaches"].join(", "),
+                                type: item.color,
+                                location: item.venue_object_id,
+                            });
+                        });
+                    }
+                }
+
+                commit("setRecordCoach", dataRecord);
             } else {
-                alert("Тренер не загружен");
+                alert("Занятия не загружены");
             }
 
             commit("setLoading", false);
@@ -119,5 +133,17 @@ const module: Module<coachState, any> = {
         }
     }
 };
+
+export function minInTime(time: number): string {
+    let mins: number | string = time % 60,
+        hours: number | string  = (time - mins) / 60;
+
+    if (mins < 10)  mins = '0' + mins;
+    if (hours < 10) hours = '0' + hours;
+
+    return  hours + ':' + mins;
+}
+
+
 
 export default module;
