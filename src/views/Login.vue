@@ -1,13 +1,13 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Auth
-    +e.FORM.form(@submit.prevent="submitForm({email: email, password: password})")
+    +e.FORM.form(@submit.prevent="submitForm({name: name, password: password})")
         +e.H2.header Логин
         +e.subHeader заполните все поля
         +e.LABEL.label(for="Auth__login") Логин
         +e.INPUT.input#Auth__login(
-            type="email"
-            v-model="email"
+            type="text"
+            v-model="name"
         )
         +e.LABEL.label(for="Auth__password") Пароль
         +e.INPUT.input#Auth__password(
@@ -29,13 +29,13 @@ import { State, Mutation, Getter, Action } from "vuex-class";
 
 @Component
 export default class Login extends Vue {
-    email: string = "";
+    name: string = "";
     password: string = "";
 
     @State(state => state.login.validLogin) validLogin!: string;
     @State(state => state.login.status) isLoaded!: string;
 
-    @Action submitForm!: (o: {email: string; password: string;}) => void;
+    @Action submitForm!: (o: {name: string; password: string;}) => void;
 }
 </script>
 

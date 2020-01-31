@@ -18,6 +18,12 @@ import baseheader from "@/components/base/BaseHeader.vue";
 })
 export default class BaseLayout extends Vue {
     get haveContainerClass(): boolean {
+        // switch (this.$route.name) {
+        //     case "timetable":
+        // }
+
+
+
         if(this.$route.name === "timetable") {
             document.body.style.overflow = "hidden";
             return false;

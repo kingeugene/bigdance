@@ -6,7 +6,7 @@ include ../lib/pugDeps.pug
         +e.coachWrap
             +e.IMG.coach(src="https://sivator.com/uploads/posts/2017-08/1501737653_urodru20170803sheste_01.jpg")
             +e.coachName-wrap
-                +e.coachName {{coach.first_name}} <br> {{coach.middle_name}} <br> {{coach.second_name}}
+                +e.coachName {{coach.first_name}} <br> {{coach.second_name}}
                 +e.coachPosition {{coach.position}}
                 +e.coachStyle {{coach.name}}
         +e.availableName Доступное рабочие время:

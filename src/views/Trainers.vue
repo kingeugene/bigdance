@@ -50,10 +50,6 @@ include ../lib/pugDeps.pug
                     +e.INPUT.input#firstName(v-model="changeCoach.first_name" required)
 
                 +e.labelWrap
-                    +e.LABEL.label(for="middleName") Отчество
-                    +e.INPUT.input#middleName(v-model="changeCoach.middle_name")
-
-                +e.labelWrap
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="changeCoach.second_name" required)
 
@@ -177,7 +173,6 @@ export default class Trainers extends Vue {
         email: string
         first_name: string
         id: number
-        middle_name: string
         notes: string
         originalIndex: number
         person_id: number
@@ -201,7 +196,6 @@ export default class Trainers extends Vue {
         user_id: 1,
         email: "",
         first_name: "",
-        middle_name: "Maria",
         second_name: "Alexander",
         account_id: 1,
         birth_date: "1999-10-10",

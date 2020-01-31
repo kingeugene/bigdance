@@ -6,7 +6,6 @@ import router from "@/router";
 interface customerAddState {
     email: string;
     first_name: string;
-    middle_name: string;
     second_name: string;
     birth_date: string;
     sex: {
@@ -27,7 +26,6 @@ const module: Module<customerAddState, any> = {
     state: {
         email: "",
         first_name: "",
-        middle_name: "",
         second_name: "",
         birth_date: "",
         sex: {
@@ -51,10 +49,6 @@ const module: Module<customerAddState, any> = {
 
         setFirstName(state, data) {
             state.first_name = data;
-        },
-
-        setMiddleName(state, data) {
-            state.middle_name = data;
         },
 
         setSecondName(state, data) {
@@ -104,7 +98,6 @@ const module: Module<customerAddState, any> = {
         clearAll(state) {
             state.email = "";
             state.first_name = "";
-            state.middle_name = "";
             state.second_name = "";
             state.birth_date = "";
             state.document_id = "";
@@ -122,9 +115,8 @@ const module: Module<customerAddState, any> = {
 
             const {data, status} = await api.customerAdd({
                 "account_id": 1,
-                "email": state.email,
+                "id_card": state.email,
                 "first_name": state.first_name,
-                "middle_name": state.middle_name,
                 "second_name": state.second_name,
                 "birth_date": state.birth_date,
                 "sex": state.sex.code,

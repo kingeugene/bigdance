@@ -14,10 +14,6 @@ include ../lib/pugDeps.pug
                     +e.INPUT.input#firstName(v-model="firstNameAdd" required)
 
                 +e.labelWrap
-                    +e.LABEL.label(for="middleName") Отчество
-                    +e.INPUT.input#middleName(v-model="middleNameAdd")
-
-                +e.labelWrap
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="secondNameAdd" required)
 
@@ -171,9 +167,6 @@ export default class TrainersAdd extends Vue {
     @State(state => state.trainersAdd.first_name) first_name!: string;
     @Mutation setFirstName!: (firstName: string) => void;
 
-    @State(state => state.trainersAdd.middle_name) middle_name!: string;
-    @Mutation setMiddleName!: (middleName: string) => void;
-
     @State(state => state.trainersAdd.second_name) second_name!: string;
     @Mutation setSecondName!: (secondName: string) => void;
 
@@ -238,14 +231,6 @@ export default class TrainersAdd extends Vue {
 
     set firstNameAdd(firstName: string) {
         this.setFirstName(firstName);
-    }
-
-    get middleNameAdd(): string {
-        return this.middle_name;
-    }
-
-    set middleNameAdd(middleName: string) {
-        this.setMiddleName(middleName);
     }
 
     get secondNameAdd(): string {

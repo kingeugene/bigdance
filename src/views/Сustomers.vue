@@ -50,10 +50,6 @@ include ../lib/pugDeps.pug
                     +e.INPUT.input#firstName(v-model="changeCustomer.first_name" required)
 
                 +e.labelWrap
-                    +e.LABEL.label(for="middleName") Отчество
-                    +e.INPUT.input#middleName(v-model="changeCustomer.middle_name")
-
-                +e.labelWrap
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="changeCustomer.second_name" required)
 
@@ -150,7 +146,6 @@ export default class Customers extends Vue {
         email: string,
         first_name: string,
         id: number,
-        middle_name: string | null,
         notes: string,
         originalIndex: number,
         person_id: number,
@@ -168,7 +163,6 @@ export default class Customers extends Vue {
         email: "",
         first_name: "",
         id: 1,
-        middle_name: null,
         notes: "",
         originalIndex: 0,
         person_id: 1,

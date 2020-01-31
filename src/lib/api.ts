@@ -111,10 +111,9 @@ class ApiService {
     }
 
     public customerAdd({
-        email,
+        id_card,
         first_name,
         second_name,
-        middle_name,
         birth_date,
         sex,
         document_id,
@@ -127,7 +126,7 @@ class ApiService {
     }: any ): any {
         let data: any = {};
 
-        data["email"] = email;
+        data["id_card"] = id_card;
         data["account_id"] = 1;
         data["first_name"] = first_name;
         data["second_name"] = second_name;
@@ -137,7 +136,6 @@ class ApiService {
         data["phones"] = phones[0] ? phones : ["000"];
 
 
-        if (middle_name) data["middle_name"] = middle_name;
         if (birth_date) data["birth_date"] = birth_date;
         if (document_id) data["document_id"] = document_id;
         if (notes) data["notes"] = notes;
@@ -153,10 +151,9 @@ class ApiService {
 
     public customerUpdate({
               id,
-              email,
+              id_card,
               first_name,
               second_name,
-              middle_name,
               birth_date,
               sex,
               document_id,
@@ -166,9 +163,8 @@ class ApiService {
         }: any) {
         return axios.put(`${serverName}/v0/clients/${id}`, {
             account_id: 1,
-            email: email,
+            id_card,
             first_name: first_name,
-            middle_name: middle_name,
             second_name: second_name,
             birth_date: birth_date,
             sex: sex,
@@ -181,10 +177,9 @@ class ApiService {
     }
 
     public coachAdd({
-        email,
+        id_card,
         first_name,
         second_name,
-        middle_name,
         birth_date,
         sex,
         document_id,
@@ -201,7 +196,7 @@ class ApiService {
     }: any ): any {
         let data: any = {};
 
-        data["email"] = email;
+        data["id_card"] = id_card;
         data["account_id"] = 1;
         data["first_name"] = first_name;
         data["second_name"] = second_name;
@@ -219,7 +214,6 @@ class ApiService {
             },
         ];
 
-        if (middle_name) data["middle_name"] = middle_name;
         if (birth_date) data["birth_date"] = birth_date;
         if (document_id) data["document_id"] = document_id;
         if (notes) data["notes"] = notes;
@@ -232,10 +226,9 @@ class ApiService {
 
     public coachUpdate({
         id,
-        email,
+        id_card,
         first_name,
         second_name,
-        middle_name,
         birth_date,
         sex,
         document_id,
@@ -249,10 +242,9 @@ class ApiService {
     }: any) {
         return axios.put(`${serverName}/v0/coaches/${id}`, {
             account_id: 1,
-            email,
+            id_card,
             first_name,
             second_name,
-            middle_name,
             birth_date,
             sex,
             document_id,

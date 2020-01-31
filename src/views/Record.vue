@@ -39,10 +39,6 @@ include ../lib/pugDeps.pug
                     +e.label Имя
                     +e.data {{item.second_name}}
 
-                +e.labelWrap(v-if="item.middle_name")
-                    +e.label Отчество
-                    +e.data {{item.middle_name}}
-
                 +e.labelWrap
                     +e.label Пол
                     +e.data {{item.sex}}
@@ -70,10 +66,6 @@ include ../lib/pugDeps.pug
                 +e.labelWrap
                     +e.label Имя
                     +e.data {{item.second_name}}
-
-                +e.labelWrap(v-if="item.middle_name")
-                    +e.label Отчество
-                    +e.data {{item.middle_name}}
 
                 +e.labelWrap
                     +e.label Пол
