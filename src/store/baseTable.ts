@@ -291,6 +291,7 @@ const module: Module<baseTableState, any> = {
                 dispatch("allClients"),
                 dispatch("allCoach"),
                 dispatch("listVenueObjectAll"),
+                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null}),
             ];
 
             await Promise.all(request);
@@ -420,7 +421,7 @@ const module: Module<baseTableState, any> = {
                 let arrName = [];
 
                 for (let i = 0; i < data.length; i++) {
-                    arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].id}`})
+                    arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].person_id}`})
                 }
 
                 commit("setAllClients", arrName);
@@ -444,7 +445,7 @@ const module: Module<baseTableState, any> = {
                 let arrName = [];
 
                 for (let i = 0; i < data.length; i++) {
-                    arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].id}`})
+                    arrName.push({label: `${data[i].first_name} ${data[i].second_name}`, code: `${data[i].person_id}`})
                 }
 
                 if (!state.loadedCoach) {

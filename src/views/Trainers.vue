@@ -19,7 +19,7 @@ include ../lib/pugDeps.pug
             template(slot="table-row" slot-scope="props")
                 +e.iconWrap.SPAN(v-if="props.column.field == 'action'")
                     +e.iconEdit.I.fa.fa-edit(@click.prevent="edit(props)" title="Редактировать")
-                    +e.iconEdit.I.fa.fa-trash(@click.prevent="showModalDelete(props.row.id)" title="Удалить")
+                    +e.iconEdit.I.fa.fa-trash(@click.prevent="showModalDelete(props.row.person_id)" title="Удалить")
 
         +e.VMODAL.modalDelete(
             name="delete-coach"
@@ -43,7 +43,7 @@ include ../lib/pugDeps.pug
             +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="email") Номер карты**
-                    +e.INPUT.input#email(type="text" v-model="changeCoach.email" required)
+                    +e.INPUT.input#email(type="text" v-model="changeCoach.id_card" required)
 
                 +e.labelWrap
                     +e.LABEL.label(for="firstName") Фамилия*
@@ -170,7 +170,7 @@ export default class Trainers extends Vue {
         availability: []
         birth_date: string
         document_id: string
-        email: string
+        id_card: string
         first_name: string
         id: number
         notes: string
@@ -194,7 +194,7 @@ export default class Trainers extends Vue {
         style_id: 1,
         id: 1,
         user_id: 1,
-        email: "",
+        id_card: "",
         first_name: "",
         second_name: "Alexander",
         account_id: 1,
@@ -273,7 +273,7 @@ export default class Trainers extends Vue {
 
     onRowClick(params: any) {
         if (params.event.target.classList[0] !== "Coach__iconEdit") {
-            this.$router.push(`/coach-page/${params.row.id}`)
+            this.$router.push(`/coach-page/${params.row.person_id}`)
         }
     }
 
@@ -297,7 +297,6 @@ export default class Trainers extends Vue {
         delete this.changeCoach.vgt_id;
         delete this.changeCoach.originalIndex;
         delete this.changeCoach.account_id;
-        delete this.changeCoach.person_id;
         delete this.changeCoach.photo;
 
         this.$modal.hide('change-coach');

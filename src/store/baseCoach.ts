@@ -48,7 +48,7 @@ const module: Module<coachState, any> = {
             let dataRecord: any[] = [];
             commit("setLoading", true);
 
-            const {data, status} = await api.listRecord({coach: coach_id});
+            const {data, status} = await api.listRecordCoach({coach: coach_id});
 
             if (status === 200) {
                 for (let key in data) {
@@ -87,8 +87,8 @@ const module: Module<coachState, any> = {
         },
 
         async coachUpdate({commit, dispatch}, {
-            id,
-            email,
+            person_id,
+            id_card,
             first_name,
             second_name,
             birth_date,
@@ -104,9 +104,9 @@ const module: Module<coachState, any> = {
         }) {
             commit("setLoading", true);
 
-            const {data, status} = await api.coachUpdate({
-                id,
-                email,
+            const {data, error} = await api.coachUpdate({
+                person_id,
+                id_card,
                 first_name,
                 second_name,
                 birth_date,
@@ -121,10 +121,10 @@ const module: Module<coachState, any> = {
                 availability,
             });
 
-            if (status === 200) {
+            if (!error) {
                 await dispatch("allCoach");
             } else {
-                alert("Тренер не обнавлен")
+                alert("Тренер не обнавлен");
             }
 
             commit("setLoading", false);

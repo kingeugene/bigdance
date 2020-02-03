@@ -18,9 +18,14 @@ import baseheader from "@/components/base/BaseHeader.vue";
 })
 export default class BaseLayout extends Vue {
     get haveContainerClass(): boolean {
-        // switch (this.$route.name) {
-        //     case "timetable":
-        // }
+        switch (this.$route.name) {
+            case "timetable":
+            case "coach-page":
+                return false;
+                break;
+            default:
+              return true;
+        }
 
 
 
@@ -30,6 +35,14 @@ export default class BaseLayout extends Vue {
         } else {
             document.body.style.overflow = "";
             return true;
+        }
+    }
+
+    updated() {
+        if(this.$route.name === "timetable") {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
         }
     }
 }

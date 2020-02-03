@@ -475,7 +475,6 @@ export default class Timetable extends Vue {
 
         if (target.classList.contains('is-record')) {
             const id = target.getAttribute("data-id");
-            debugger;
             this.$router.push(`/record/${id}`)
             return;
         }

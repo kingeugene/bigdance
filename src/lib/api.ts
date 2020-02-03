@@ -225,7 +225,7 @@ class ApiService {
     }
 
     public coachUpdate({
-        id,
+        person_id,
         id_card,
         first_name,
         second_name,
@@ -240,7 +240,8 @@ class ApiService {
         phones,
         availability,
     }: any) {
-        return axios.put(`${serverName}/v0/coaches/${id}`, {
+        debugger;
+        return axios.put(`${serverName}/v0/coaches/${person_id}`, {
             account_id: 1,
             id_card,
             first_name,
@@ -273,13 +274,21 @@ class ApiService {
         return axios.get(`${serverName}/v0/activities/style`);
     }
 
-    public listRecord({venue_id = 4, date, coach, client, mobile}: any): any {
+    public listRecord({venue_id = 3, date, coach, client, mobile}: any): any {
         let dateR = date ? `&date=${date}` : "",
             coachR = coach ? `&coach=${coach}` : "",
             clientR = client ? `&client=${client}` : "",
             mobileR = mobile ? `&mobile=${mobile}` : "" ;
 
         return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}`);
+    }
+
+    public listRecordCoach({date, coach, client, mobile}: any): any {
+        let dateR = date ? `&date=${date}` : "",
+          clientR = client ? `&client=${client}` : "",
+          mobileR = mobile ? `&mobile=${mobile}` : "" ;
+
+        return axios.get(`${serverName}/v0?coach=${coach}${dateR}${clientR}${mobileR}`);
     }
 
     public recordOne(id: number): any {
