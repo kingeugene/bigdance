@@ -5,7 +5,9 @@ import router from "@/router";
 interface coachState {
     loading: boolean;
     showCoach: Array<any>;
+    customerChoose: {code: string, label: string};
     recordCoach: Array<any>;
+    dateTimeChoose: string;
 }
 
 const module: Module<coachState, any> = {
@@ -13,6 +15,11 @@ const module: Module<coachState, any> = {
         loading: false,
         showCoach: [],
         recordCoach: [],
+        customerChoose: {
+            code:"",
+            label:"",
+        },
+        dateTimeChoose: "",
     },
 
     mutations: {
@@ -26,6 +33,12 @@ const module: Module<coachState, any> = {
 
         setRecordCoach(state, data) {
             state.recordCoach = data;
+        },
+        setCustomerChoosePageCoach(state, data) {
+            state.customerChoose = data;
+        },
+        setDateTimeChoosePageCoach(state, data) {
+            state.dateTimeChoose = data;
         },
     },
 
@@ -44,11 +57,11 @@ const module: Module<coachState, any> = {
             commit("setLoading", false);
         },
 
-        async getRecordCoach({commit, dispatch}, coach_id) {
+        async getRecordCoach({commit, dispatch}, {date, coach, client }) {
             let dataRecord: any[] = [];
             commit("setLoading", true);
 
-            const {data, status} = await api.listRecordCoach({coach: coach_id});
+            const {data, status} = await api.listRecordCoach({date, coach, client});
 
             if (status === 200) {
                 for (let key in data) {
@@ -56,9 +69,9 @@ const module: Module<coachState, any> = {
                         data[key].forEach((item: any) => {
                             dataRecord.push({
                                 date: `${item.date} ${minInTime(item.start_time)}-${minInTime(item.end_time)}`,
-                                coaches: item["coaches"].join(", "),
-                                type: item.color,
-                                location: item.venue_object_id,
+                                clients: item["clients"].join(", "),
+                                type: item.activity_type_name,
+                                location: `${item.venue_name} ${item.venue_object_name}`,
                             });
                         });
                     }
@@ -110,7 +123,7 @@ const module: Module<coachState, any> = {
                 first_name,
                 second_name,
                 birth_date,
-                sex,
+                sex: sex["code"],
                 document_id,
                 notes,
                 position,

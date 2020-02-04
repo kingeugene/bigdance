@@ -21,6 +21,7 @@ export default class BaseLayout extends Vue {
         switch (this.$route.name) {
             case "timetable":
             case "coach-page":
+            case "customers-page":
                 return false;
                 break;
             default:

@@ -129,6 +129,18 @@ include ../lib/pugDeps.pug
                         :options="halls"
                         v-model="currentHall"
                     )
+            +e.modalWrap
+                +e.select.is-week
+                    +e.selectName Недель
+                    input(
+                        type="number"
+                        v-model="currentWeeks"
+                    )
+                +e.select.is-description
+                    +e.selectName Заметки
+                    textarea(
+                        v-model="currentDescriptionRecord"
+                    )
             +e.modalWrap.d-none
                 +e.modalWeek
                     +e.modalWeekName Кол-во недель
@@ -213,6 +225,8 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.recordHall) recordHall!: {id: number, name: string};
     @State(state => state.baseTable.recordLoading) recordLoading!: boolean;
     @State(state => state.baseTable.currentVenueColor) currentVenue!: number;
+    @State(state => state.baseTable.weeks) weeks!: number;
+    @State(state => state.baseTable.descriptionRecord) descriptionRecord!: string;
 
     @Mutation setDataTable!: ({}) => void;
     @Mutation setCurrentVenue!: (id: number) => void;
@@ -225,6 +239,8 @@ export default class Timetable extends Vue {
     @Mutation setRecordCoaches!: (recordCoaches: any) => void;
     @Mutation setRecordClients!: (recordClients: any) => void;
     @Mutation setCurrentVenueColor!: (colorId: number) => void;
+    @Mutation setWeeks!: (quantity: number) => void;
+    @Mutation setDescriptionRecord!: (text: string) => void;
 
     @Mutation setRecordActivityType!: (recordActivityType: {
         account_id: number,
@@ -238,7 +254,7 @@ export default class Timetable extends Vue {
     @Action initBaseTable!: () => void;
     @Action listVenueObject!: () => void;
     @Action getListRecord!: ({venue_id, date, coach, client, mobile}: any) => void;
-    @Action createRecord!: ({venue_object_id, activity_id, coaches, clients}: any) => void;
+    @Action createRecord!: ({venue_object_id, activity_id, coaches, clients, number_weeks, description}: any) => void;
 
     @Watch("dateTimeChoose")
     getActualRecords(value: any) {
@@ -353,6 +369,22 @@ export default class Timetable extends Vue {
         }
 
         this.setRecordHall(value);
+    }
+
+    get currentDescriptionRecord(): string {
+        return this.descriptionRecord;
+    }
+
+    set currentDescriptionRecord(value: string) {
+        this.setDescriptionRecord(value);
+    }
+
+    get currentWeeks(): number {
+        return this.weeks;
+    }
+
+    set currentWeeks(value: number) {
+        this.setWeeks(value);
     }
 
     get currentType(): {
@@ -504,14 +536,16 @@ export default class Timetable extends Vue {
         const venue_object_id = this.recordHall.id,
             activity_id = this.recordActivityType.id,
             coaches = this.recordCoaches!.map((name: {code: string, label: string}) => name.code),
-            clients = this.recordClients!.map((name: {code: string, label: string}) => name.code);
+            clients = this.recordClients!.map((name: {code: string, label: string}) => name.code),
+            number_weeks = this.weeks,
+            description = this.descriptionRecord;
 
         if (!this.dateModal || !this.selectTimeStart || !this.selectTimeEnd || !activity_id || !venue_object_id) {
             this.errorMessage = "Введите все обязательные поля";
             return;
         }
 
-        this.createRecord({venue_object_id, activity_id, coaches, clients});
+        this.createRecord({venue_object_id, activity_id, coaches, clients, number_weeks, description});
 
         this.$modal.hide('modal-add');
     }
@@ -539,19 +573,22 @@ export default class Timetable extends Vue {
                 oldRecord[i].remove();
             }
 
-            for (let key in value) {
-                let dataAdd = document.getElementById(key),
+            for (let key = 0; key < value.length; key++) {
+
+                let idRecord = Object.keys(value[key])[0],
+                    record = value[key][idRecord],
+                    dataAdd = document.getElementById(idRecord),
                     itemData = document.createElement("div");
 
                 if (!dataAdd) {
                     return;
                 }
 
-                itemData!.style.top = value[key][0] + "px";
-                itemData!.style.height = value[key][1] + "px";
-                itemData!.style.background = value[key][2];
-                itemData.setAttribute("data-id", value[key][7]);
-                itemData!.innerHTML = `${this.minInTime(value[key][3])}-${this.minInTime(value[key][4])} </br>${value[key][5]} <br>${value[key][6]}`;
+                itemData!.style.top = record[0] + "px";
+                itemData!.style.height = record[1] + "px";
+                itemData!.style.background = record[2];
+                itemData.setAttribute("data-id", record[7]);
+                itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])} </br>${record[5]} <br>${record[6]}`;
                 itemData!.classList.add("is-record");
 
                 dataAdd!.appendChild(itemData);

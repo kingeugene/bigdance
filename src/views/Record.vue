@@ -19,11 +19,15 @@ include ../lib/pugDeps.pug
 
                 +e.labelWrap
                     +e.label Зал
-                    +e.data {{record.venue_object_id}}
+                    +e.data {{record.venue_object_name}}
 
                 +e.labelWrap
                     +e.label Тип
-                    +e.data {{record.activity_id}}
+                    +e.data {{record.activity_type_name}}
+
+                +e.labelWrap
+                    +e.label Заметки
+                    +e.data {{record.description}}
 
                 +e.labelWrap
                     +e.label Статус
@@ -41,7 +45,7 @@ include ../lib/pugDeps.pug
 
                 +e.labelWrap
                     +e.label Пол
-                    +e.data {{item.sex}}
+                    +e.data {{item.sex_name}}
 
                 +e.labelWrap
                     +e.label Номер карты
@@ -69,7 +73,7 @@ include ../lib/pugDeps.pug
 
                 +e.labelWrap
                     +e.label Пол
-                    +e.data {{item.sex}}
+                    +e.data {{item.sex_name}}
 
                 +e.labelWrap
                     +e.label Номер карты

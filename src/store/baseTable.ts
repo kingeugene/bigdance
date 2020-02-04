@@ -27,7 +27,7 @@ interface baseTableState {
     oneMinInPx: number;
     startTime: number;
     endTime: number;
-    dataItem: any;
+    dataItem: [];
     dateTimeChoose: string;
     coachChoose: {code: string, label: string};
     customerChoose: {code: string, label: string};
@@ -52,6 +52,8 @@ interface baseTableState {
     loadedCustomer: boolean;
     loadedCoach: boolean;
     loadedListVenue: boolean;
+    weeks: number;
+    descriptionRecord: string,
 }
 
 const module: Module<baseTableState, any> = {
@@ -91,7 +93,7 @@ const module: Module<baseTableState, any> = {
         dateArr: [],
         idItem: [],
         listRecord: {},
-        dataItem: {},
+        dataItem: [],
         recordDate: "",
         recordColor: "#DC4141",
         recordStartTime: "",
@@ -111,6 +113,8 @@ const module: Module<baseTableState, any> = {
             id: 0,
             name: "",
         },
+        weeks: 1,
+        descriptionRecord: "",
         recordLoading: false,
         loadedCustomer: false,
         loadedCoach: false,
@@ -232,6 +236,14 @@ const module: Module<baseTableState, any> = {
             state.recordHall = data;
         },
 
+        setWeeks(state, data) {
+            state.weeks = data;
+        },
+
+        setDescriptionRecord(state, data) {
+            state.descriptionRecord = data;
+        },
+
         setLoadedCustomer(state, data) {
             state.loadedCustomer = data;
         },
@@ -245,7 +257,7 @@ const module: Module<baseTableState, any> = {
     },
 
     actions: {
-        async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients})  {
+        async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients, number_weeks, description})  {
             commit("setLoading", true);
 
             const color = state.currentColor,
@@ -254,10 +266,10 @@ const module: Module<baseTableState, any> = {
                 status_record = "confirmed",
                 cancelled_at = "";
 
-            const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients });
+            const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description });
 
             if (status === 200) {
-                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null});
+                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null,});
             }
 
             commit("setLoading", false);
@@ -320,7 +332,7 @@ const module: Module<baseTableState, any> = {
         dataForItem({commit, state}) {
             const dataTable = state.listRecord,
                 dateArr = [],
-                dataItem: any = {};
+                dataItem: any = [];
 
             for (let key in dataTable) {
                 dateArr.push(key);
@@ -339,7 +351,7 @@ const module: Module<baseTableState, any> = {
                     const startPosition = (startTrain - state.startTime) * state.oneMinInPx,
                         heightRecord = (endTrain - startTrain) * state.oneMinInPx - 1;
 
-                    dataItem[tdId] = [
+                    dataItem.push({[tdId]: [
                         startPosition,
                         heightRecord,
                         activityColor,
@@ -348,7 +360,7 @@ const module: Module<baseTableState, any> = {
                         nameCoach,
                         nameCustomer,
                         id,
-                    ]
+                    ]})
                 }
             }
 

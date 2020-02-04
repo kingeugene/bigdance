@@ -9,6 +9,7 @@ class ApiService {
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
+
     }
 
     public logout(): any {
@@ -76,7 +77,7 @@ class ApiService {
         return axios.delete(`${serverName}/v0/activities/type/${id}`);
     }
 
-    public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients}: any): any {
+    public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description}: any): any {
         return axios.post(`${serverName}/v0/records`, {
             venue_object_id: venue_object_id,
             activity_id: activity_id,
@@ -86,7 +87,9 @@ class ApiService {
             status: status_record,
             cancelled_at: cancelled_at,
             coaches: coaches,
-            clients: clients
+            clients: clients,
+            number_weeks: number_weeks,
+            description,
         });
     }
 
@@ -106,8 +109,10 @@ class ApiService {
         return axios.get(`${serverName}/v0/activities/type`);
     }
 
-    public createClient(): any {
-        return axios.get(`${serverName}/v0/clients`);
+    public createClient(customer_id?: number): any {
+        return customer_id
+            ? axios.get(`${serverName}/v0/clients/${customer_id}`)
+            : axios.get(`${serverName}/v0/clients`);
     }
 
     public customerAdd({
@@ -240,7 +245,6 @@ class ApiService {
         phones,
         availability,
     }: any) {
-        debugger;
         return axios.put(`${serverName}/v0/coaches/${person_id}`, {
             account_id: 1,
             id_card,
@@ -283,12 +287,18 @@ class ApiService {
         return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}`);
     }
 
-    public listRecordCoach({date, coach, client, mobile}: any): any {
+    public listRecordCoach({date, coach, client}: any): any {
         let dateR = date ? `&date=${date}` : "",
-          clientR = client ? `&client=${client}` : "",
-          mobileR = mobile ? `&mobile=${mobile}` : "" ;
+          clientR = client ? `&client=${client}` : "";
 
-        return axios.get(`${serverName}/v0?coach=${coach}${dateR}${clientR}${mobileR}`);
+        return axios.get(`${serverName}/v0?coach=${coach}${dateR}${clientR}`);
+    }
+
+    public listRecordCustomer({date, client, coach}: any): any {
+        let dateR = date ? `&date=${date}` : "",
+            coachR = coach ? `&coach=${coach}` : "";
+
+        return axios.get(`${serverName}/v0?client=${client}${dateR}${coachR}`);
     }
 
     public recordOne(id: number): any {

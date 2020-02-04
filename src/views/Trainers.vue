@@ -43,7 +43,7 @@ include ../lib/pugDeps.pug
             +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="email") Номер карты**
-                    +e.INPUT.input#email(type="text" v-model="changeCoach.id_card" required)
+                    +e.INPUT.input#email(type="text" v-model="changeCoach.id_card" disabled)
 
                 +e.labelWrap
                     +e.LABEL.label(for="firstName") Фамилия*
@@ -209,7 +209,16 @@ export default class Trainers extends Vue {
         originalIndex: 0,
     };
 
-    sexOption: Array<any> = [ "m", "f" ];
+    sexOption: Array<any> = [
+        {
+            label: "Мужчина",
+            code: "m",
+        },
+        {
+            label: "Женщина",
+            code: "f",
+        },
+    ];
 
     availabilityDayOption: Array<{label: string, slot: string, from: string, to: string}> = [
         {
@@ -279,6 +288,7 @@ export default class Trainers extends Vue {
 
     edit(item: any): void {
         this.changeCoach = item.row;
+        console.error(this.changeCoach);
         this.$modal.show('change-coach');
     }
 

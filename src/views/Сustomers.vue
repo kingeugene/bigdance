@@ -43,7 +43,7 @@ include ../lib/pugDeps.pug
             +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="email") Номер карты*
-                    +e.INPUT.input#email(type="text" v-model="changeCustomer.email" required)
+                    +e.INPUT.input#email(type="text" disabled v-model="changeCustomer.id_card" required)
 
                 +e.labelWrap
                     +e.LABEL.label(for="firstName") Фамилия*
@@ -53,11 +53,11 @@ include ../lib/pugDeps.pug
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="changeCustomer.second_name" required)
 
-            +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="birthDate") Дата Рождения
                     +e.INPUT.input#birthDate(v-model="changeCustomer.birth_date" placeholder="YYYY-MM-DD")
 
+            +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="sex") Пол
                     +e.V-SELECT.select#sex(
@@ -73,11 +73,9 @@ include ../lib/pugDeps.pug
                     +e.LABEL.label(for="notes") Заметки
                     +e.TEXTAREA.textarea#notes(v-model="changeCustomer.notes")
 
-            +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="price") Прайс
                     +e.INPUT.input#price(type="number" v-model="changeCustomer.price")
-
 
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
 
@@ -137,7 +135,16 @@ export default class Customers extends Vue {
         },
     ];
 
-    sexOption: Array<any> = [ "m", "f" ];
+    sexOption: Array<any> = [
+        {
+            label: "Мужчина",
+            code: "m",
+        },
+        {
+            label: "Женщина",
+            code: "f",
+        },
+    ];
 
     changeCustomer: {
         account_id: number,
@@ -186,7 +193,7 @@ export default class Customers extends Vue {
 
     onRowClick(params: any) {
         if (params.event.target.classList[0] !== "Clients__iconEdit") {
-            alert("wrwer");
+            this.$router.push(`/customers-page/${params.row.person_id}`);
         }
     }
 

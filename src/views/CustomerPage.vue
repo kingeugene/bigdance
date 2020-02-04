@@ -7,17 +7,12 @@ include ../lib/pugDeps.pug
             +e.coachWrap
                 +e.IMG.coach(src="https://sivator.com/uploads/posts/2017-08/1501737653_urodru20170803sheste_01.jpg")
                 +e.coachName-wrap
-                    +e.coachName {{coach.first_name}} <br> {{coach.second_name}}
-                    +e.coachPosition {{coach.position}}
-                    +e.coachStyle {{coach.name}}
-                    div Зарплата: {{coach.wage}}
-                    div Прайс: {{coach.price}}
-            +e.availableName Доступное рабочие время:
-            +e.available(v-for="item in coach.availability") {{item.slot}}: {{item.from}} - {{item.to}}
+                    +e.coachName {{customer.first_name}} <br> {{customer.second_name}}
+                    div Прайс: {{customer.price}}
         +e.tableWrap
             vue-good-table(
                 :columns="columns"
-                :rows="recordCoach"
+                :rows="recordCustomer"
                 :search-options="optionSearch"
                 styleClass="vgt-table bordered"
                 :pagination-options="optionPagination"
@@ -28,10 +23,10 @@ include ../lib/pugDeps.pug
             )
             +e.filter
                 +e.select
-                    +e.selectName Выбрать клиента
+                    +e.selectName Выбрать тренера
                     v-select(
-                        :options="clients"
-                        v-model="actualCustomer"
+                        :options="coach"
+                        v-model="actualCoach"
                     )
                 datepicker2(
                     lang="ru"
@@ -60,21 +55,21 @@ import datepicker2 from "vue2-datepicker";
     }
 })
 export default class CoachPage extends Vue {
-    @Action getCoach!: (id: number) => void;
-    @Action getRecordCoach!: ({date, coach, client}: any) => void;
+    @Action getCustomer!: (customer_id: number) => void;
+    @Action getRecordCustomer!: ({date, coach, client}: any) => void;
     @Action initBaseTable!: () => void;
 
-    @State(state => state.baseCoach.showCoach) coach!: any;
-    @State(state => state.baseTable.allClients) clients!: string[];
-    @State(state => state.baseCoach.loading) loadingCoach!: boolean;
+    @State(state => state.baseClients.showCustomer) customer!: any;
+    @State(state => state.baseTable.allCoach) coach!: string[];
+    @State(state => state.baseClients.loading) loadingCoach!: boolean;
     @State(state => state.baseTable.listVenue) listVenue!: string[];
-    @State(state => state.baseCoach.recordCoach) recordCoach!: string[];
-    @State(state => state.baseCoach.customerChoose) customerChoose!: any;
-    @State(state => state.baseCoach.dateTimeChoose) dateTimeChoose!: string;
+    @State(state => state.baseClients.recordCustomer) recordCustomer!: string[];
+    @State(state => state.baseClients.coachChoose) coachChoose!: any;
+    @State(state => state.baseClients.dateTimeChoose) dateTimeChoose!: string;
     @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
 
-    @Mutation setCustomerChoosePageCoach!: (customer: {code: string, label: string}) => void;
-    @Mutation setDateTimeChoosePageCoach!: (date: string) => void;
+    @Mutation setCoachChoosePageCustomer!: (customer: {code: string, label: string}) => void;
+    @Mutation setDateTimeChoosePageCustomer!: (date: string) => void;
 
     columns: any = [
         {
@@ -82,8 +77,8 @@ export default class CoachPage extends Vue {
             field: 'date',
         },
         {
-            label: 'Клиент',
-            field: 'clients',
+            label: 'Тренер',
+            field: 'coaches',
             filterable: true,
         },
         {
@@ -112,34 +107,34 @@ export default class CoachPage extends Vue {
         enabled: true,
     };
 
-    @Watch("customerChoose")
+    @Watch("coachChoose")
     getActualСustomer(value: any) {
-        this.getRecordCoach({
+        this.getRecordCustomer({
             date: this.dateTimeChoose,
-            coach: parseInt(this.$route.params.id),
-            client: value.code,
+            coach: value.code,
+            client: parseInt(this.$route.params.id) ,
         });
     }
 
     @Watch("dateTimeChoose")
     getActualRecords(value: string) {
-        this.getRecordCoach({
+        this.getRecordCustomer({
             date: value,
-            coach: parseInt(this.$route.params.id),
-            client: this.customerChoose.code,
+            coach: this.coachChoose.code ,
+            client: parseInt(this.$route.params.id),
         });
     }
 
-    get actualCustomer(): {code: string, label: string} {
-        return this.customerChoose;
+    get actualCoach(): {code: string, label: string} | null {
+        return this.coachChoose;
     }
 
-    set actualCustomer(value: {code: string, label: string}) {
+    set actualCoach(value: {code: string, label: string} | null) {
         if(!value) {
             value = {code: "", label: ""};
         }
 
-        this.setCustomerChoosePageCoach(value);
+        this.setCoachChoosePageCustomer(value);
     }
 
     get date(): string {
@@ -147,7 +142,7 @@ export default class CoachPage extends Vue {
     }
 
     set date(value: string) {
-        this.setDateTimeChoosePageCoach(value);
+        this.setDateTimeChoosePageCustomer(value);
     }
 
     async created() {
@@ -155,11 +150,11 @@ export default class CoachPage extends Vue {
             await this.initBaseTable();
         }
 
-        this.getCoach(parseInt(this.$route.params.id));
-        this.getRecordCoach({
+        this.getCustomer(parseInt(this.$route.params.id));
+        this.getRecordCustomer({
             date: "",
-            coach: parseInt(this.$route.params.id),
-            client: this.customerChoose.code,
+            coach: this.coachChoose.code ,
+            client: parseInt(this.$route.params.id),
         });
     }
 }
