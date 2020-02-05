@@ -1,107 +1,66 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
-+b.Record
-    +e.H1.title Запись
-    template(v-if="!recordLoading")
-        +e.block
+vmodal(
+    name="modal-record"
+    height="auto"
+    width="900"
+    draggable
+    adaptive
+    scrollable
+    resizable
+)
+    +b.Record
+        +e.H4.title Запись
+        template(v-if="!recordLoading")
             +e.wrap
                 +e.labelWrap
-                    +e.label Дата
-                    +e.data {{record.date}}
-
-                +e.labelWrap
-                    +e.label C
-                    +e.data {{minInTime(record.start_time)}}
-
-                +e.labelWrap
-                    +e.label До
-                    +e.data {{minInTime(record.end_time)}}
-
-                +e.labelWrap
-                    +e.label Зал
-                    +e.data {{record.venue_object_name}}
+                    +e.label Дата и Время
+                    +e.data {{record.date}} | {{minInTime(record.start_time)}} - {{minInTime(record.end_time)}}
 
                 +e.labelWrap
                     +e.label Тип
                     +e.data {{record.activity_type_name}}
 
+                +e.labelWrap(v-for="item in record.clients")
+                    +e.label Клиент
+                    +e.data {{item.first_name}} {{item.second_name}}
+
+                +e.labelWrap(v-for="item in record.coaches")
+                    +e.label Тренер
+                    +e.data {{item.first_name}} {{item.second_name}}
+
                 +e.labelWrap
                     +e.label Заметки
                     +e.data {{record.description}}
+            +e.btnEditWrap
+                +e.btnbtnEdit
+                    button.btn.btn-success(@click="editRecord") Редактировать
+                    button.btn.btn-danger(@click="recordDelete") Удалить
 
-                +e.labelWrap
-                    +e.label Статус
-                    +e.data {{record.status}}
-
-            +e.H3.subtitle Клиент
-            +e.wrapPerson(v-for="item in record.clients")
-                +e.labelWrap
-                    +e.label Фамилия
-                    +e.data {{item.first_name}}
-
-                +e.labelWrap
-                    +e.label Имя
-                    +e.data {{item.second_name}}
-
-                +e.labelWrap
-                    +e.label Пол
-                    +e.data {{item.sex_name}}
-
-                +e.labelWrap
-                    +e.label Номер карты
-                    +e.data {{item.email}}
-                +e.labelWrap
-                    +e.label Дата Рождения
-                    +e.data {{item.birth_date}}
-
-                +e.labelWrap
-                    +e.label Документ
-                    +e.data {{item.document_id}}
-                +e.labelWrap
-                    +e.label Заметки
-                    +e.data {{item.notes}}
-
-            +e.H3.subtitle Тренер
-            +e.wrapPerson(v-for="item in record.coaches")
-                +e.labelWrap
-                    +e.label Фамилия
-                    +e.data {{item.first_name}}
-
-                +e.labelWrap
-                    +e.label Имя
-                    +e.data {{item.second_name}}
-
-                +e.labelWrap
-                    +e.label Пол
-                    +e.data {{item.sex_name}}
-
-                +e.labelWrap
-                    +e.label Номер карты
-                    +e.data {{item.email}}
-                +e.labelWrap
-                    +e.label Дата Рождения
-                    +e.data {{item.birth_date}}
-
-                +e.labelWrap
-                    +e.label Документ
-                    +e.data {{item.document_id}}
-                +e.labelWrap
-                    +e.label Заметки
-                    +e.data {{item.notes}}
-    loading(:active.sync="recordLoading")
+        loading(:active.sync="recordLoading")
 
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
 import {State, Mutation, Action} from "vuex-class";
 
 @Component
 export default class Record extends Vue {
+    @Prop({type: Number, default: 1}) recordId!: string;
+
     @Action initChooseRecord!: (id: string) => void;
+    @Action deleteRecord!: (id: string) => void;
 
     @State(state => state.record.chooseRecord) record!: {};
     @State(state => state.record.recordLoading) recordLoading!: boolean;
+
+    @Watch("recordId")
+    handleRecordId(value: number) {
+        if (value) {
+            this.initChooseRecord(this.recordId);
+        }
+    }
 
     minInTime(time: number): string {
         let mins: number | string = time % 60,
@@ -113,19 +72,25 @@ export default class Record extends Vue {
         return  hours + ':' + mins;
     }
 
-    created() {
-        this.initChooseRecord(this.$route.params.id);
+    editRecord() {
+        this.$emit("editRecord");
+    }
+
+    recordDelete() {
+        if (window.confirm("Вы действительно хотите уалить Запись?")) {
+            this.deleteRecord(this.recordId);
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .Record {
-    padding: 20px 0;
+    padding: 20px;
 
     &__title {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 10px;
         color: $orange;
     }
 
@@ -135,23 +100,26 @@ export default class Record extends Vue {
         color: $orange;
     }
 
-    &__block {
-        margin: 0 -60px;
-        padding: 40px 60px;
-        box-shadow: 0 7px 60px rgba(0,0,0,0.06);
-        border-radius: 50px;
-    }
-
     &__wrap {
         display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
+        border: 1px solid #0b0e11;
     }
 
     &__wrapPerson {
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+    }
+
+    &__label {
+        border-bottom: 1px solid #0b0e11;
+        margin-bottom: 5px;
+
+        &Wrap {
+            border: 1px solid #0b0e11;
+            flex-basis: 100%;
+            padding: 5px;
+        }
     }
 }
 </style>

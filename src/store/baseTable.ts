@@ -257,7 +257,7 @@ const module: Module<baseTableState, any> = {
     },
 
     actions: {
-        async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients, number_weeks, description})  {
+        async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients, number_weeks, description, edit})  {
             commit("setLoading", true);
 
             const color = state.currentColor,
@@ -266,7 +266,19 @@ const module: Module<baseTableState, any> = {
                 status_record = "confirmed",
                 cancelled_at = "";
 
-            const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description });
+            const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description, edit });
+
+            if (status === 200) {
+                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null,});
+            }
+
+            commit("setLoading", false);
+        },
+
+        async deleteRecord({state, commit, dispatch}, id)  {
+            commit("setLoading", true);
+
+            const {data, status} = await api.deleteRecord(id);
 
             if (status === 200) {
                 dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null,});

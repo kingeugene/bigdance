@@ -153,6 +153,8 @@ include ../lib/pugDeps.pug
             +e.errorMessageWrap
                 +e.BUTTON.modalSubmit.btn.btn-success(type="submit") Отправить
                 +e.errorMessage {{errorMessage}}
+    // modall record
+    Record(:recordId="+currentRecord" @editRecord="editRecord")
     loading(:active.sync="recordLoading")
 </template>
 
@@ -162,9 +164,12 @@ import {State, Mutation, Action} from "vuex-class";
 import datepicker2 from "vue2-datepicker";
 import { throttle } from "lodash";
 
+import Record from "@/views/Record.vue";
+
 @Component({
     components: {
         datepicker2,
+        Record,
     },
 })
 export default class Timetable extends Vue {
@@ -180,6 +185,7 @@ export default class Timetable extends Vue {
     modalNotes: string = "";
     errorMessage: string = "";
     fullPage: boolean = true;
+    currentRecord: number = 0;
 
     daysWeek: string[] = [
         "Понедельник",
@@ -190,6 +196,7 @@ export default class Timetable extends Vue {
         "Суббота",
         "Воскресенье",
     ];
+    flagEditRecord: number = 0;
 
 
     @State(state => state.baseTable.activitiesType) activitiesType!: Array<any>;
@@ -220,13 +227,14 @@ export default class Timetable extends Vue {
         block: number,
         color: string,
         id: number,
-        name: string,
+        label: string,
     };
     @State(state => state.baseTable.recordHall) recordHall!: {id: number, name: string};
     @State(state => state.baseTable.recordLoading) recordLoading!: boolean;
     @State(state => state.baseTable.currentVenueColor) currentVenue!: number;
     @State(state => state.baseTable.weeks) weeks!: number;
     @State(state => state.baseTable.descriptionRecord) descriptionRecord!: string;
+    @State(state => state.record.chooseRecord) record!: {};
 
     @Mutation setDataTable!: ({}) => void;
     @Mutation setCurrentVenue!: (id: number) => void;
@@ -247,14 +255,14 @@ export default class Timetable extends Vue {
         block: number,
         color: string,
         id: number,
-        name: string,
+        label: string,
     }) => void;
     @Mutation setRecordHall!: (recordHall: {id: number, name: string}) => void;
 
     @Action initBaseTable!: () => void;
     @Action listVenueObject!: () => void;
     @Action getListRecord!: ({venue_id, date, coach, client, mobile}: any) => void;
-    @Action createRecord!: ({venue_object_id, activity_id, coaches, clients, number_weeks, description}: any) => void;
+    @Action createRecord!: ({venue_object_id, activity_id, coaches, clients, number_weeks, description, edit}: any) => void;
 
     @Watch("dateTimeChoose")
     getActualRecords(value: any) {
@@ -392,7 +400,7 @@ export default class Timetable extends Vue {
         block: number,
         color: string,
         id: number,
-        name: string,
+        label: string,
     } {
         return this.recordActivityType;
     }
@@ -402,7 +410,7 @@ export default class Timetable extends Vue {
         block: number,
         color: string,
         id: number,
-        name: string,
+        label: string,
     }) {
         if(!value) {
             value = {
@@ -410,7 +418,7 @@ export default class Timetable extends Vue {
                 block: 0,
                 color: "",
                 id: 0,
-                name: "",
+                label: "",
             };
         }
 
@@ -427,15 +435,6 @@ export default class Timetable extends Vue {
 
     get quantityTime(): number {
         return Math.round((this.endTime - this.startTime + this.gapTime) / this.gapTime);
-    }
-
-    get allTime(): string[] {
-        let arr = [];
-        for (let i = 0; i < this.quantityTime; i++) {
-            arr.push(this.timeCurrent(i));
-        }
-
-        return arr;
     }
 
     get currentColor(): string {
@@ -507,7 +506,8 @@ export default class Timetable extends Vue {
 
         if (target.classList.contains('is-record')) {
             const id = target.getAttribute("data-id");
-            this.$router.push(`/record/${id}`)
+            this.currentRecord = id;
+            this.$modal.show('modal-record');
             return;
         }
 
@@ -545,8 +545,9 @@ export default class Timetable extends Vue {
             return;
         }
 
-        this.createRecord({venue_object_id, activity_id, coaches, clients, number_weeks, description});
+        this.createRecord({venue_object_id, activity_id, coaches, clients, number_weeks, description, edit: this.flagEditRecord});
 
+        this.flagEditRecord = 0;
         this.$modal.hide('modal-add');
     }
 
@@ -556,6 +557,46 @@ export default class Timetable extends Vue {
         if (this.scrollTable) {
             this.scrollTable!.addEventListener("scroll", throttle(this.handleScroll, 50));
         }
+    }
+
+    editRecord() {
+        this.dateModal = this.record.date;
+        this.selectTimeStart = this.minInTime(this.record.start_time);
+        this.selectTimeEnd = this.minInTime(this.record.end_time);
+
+        let coaches = this.record.coaches.map(item => {
+            return {
+                code: item.person_id,
+                label: `${item.first_name} ${item.second_name}`,
+            };
+        });
+
+        let customer = this.record.clients.map(item => {
+            return {
+                code: item.person_id,
+                label: `${item.first_name} ${item.second_name}`,
+            };
+        });
+
+        this.selectTeacherModal = coaches;
+        this.selectedChildModal = customer;
+        this.currentType = {
+            account_id: 1,
+            block: 1,
+            color: "",
+            id: this.record.activity_id,
+            label: this.record.activity_type_name,
+        };
+        this.currentHall = {
+            name: this.record.venue_object_name,
+            id: this.record.venue_object_id,
+        };
+        this.currentWeeks = 1;
+        this.currentDescriptionRecord = this.record.description;
+
+        this.flagEditRecord = this.record.id;
+
+        this.$modal.show('modal-add');
     }
 
     @Watch("dataItem")

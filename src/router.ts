@@ -42,15 +42,6 @@ const router = new Router({
       beforeEnter: ifAuthenticated,
     },
     {
-      path: '/record/:id',
-      name: 'record',
-      meta: {
-        title: "Записи",
-      },
-      component: () => import(/* webpackChunkName: "about" */ './views/Record.vue'),
-      beforeEnter: ifAuthenticated,
-    },
-    {
       path: '/coach-page/:id',
       name: 'coach-page',
       meta: {

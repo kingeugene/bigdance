@@ -77,8 +77,8 @@ class ApiService {
         return axios.delete(`${serverName}/v0/activities/type/${id}`);
     }
 
-    public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description}: any): any {
-        return axios.post(`${serverName}/v0/records`, {
+    public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description, edit}: any): any {
+        return axios[edit ? "put" : "post"](`${serverName}/v0/records/${edit ? edit : ""}`, {
             venue_object_id: venue_object_id,
             activity_id: activity_id,
             color: color,
@@ -91,6 +91,10 @@ class ApiService {
             number_weeks: number_weeks,
             description,
         });
+    }
+
+    public deleteRecord(id): any {
+        return axios.delete(`${serverName}/v0/records/${id}`);
     }
 
     public listVenues(): any {

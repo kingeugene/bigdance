@@ -1,28 +1,29 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2015",
     "module": "esnext",
+    "skipLibCheck": true,
     "strict": true,
     "jsx": "preserve",
-    "importHelpers": true,
+    "lib": ["es5", "dom", "es2017", "es2017.object"],
     "moduleResolution": "node",
     "experimentalDecorators": true,
-    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "strictFunctionTypes": true,
     "sourceMap": true,
+    "allowJs": true,
+    "noImplicitAny": false,
     "baseUrl": ".",
     "types": [
       "webpack-env"
     ],
     "paths": {
       "@/*": ["src/*"]
-    },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
+    }
   },
   "typeRoots": [
     "./src/declarations"
