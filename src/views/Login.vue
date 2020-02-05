@@ -5,22 +5,11 @@ include ../lib/pugDeps.pug
         +e.H2.header Логин
         +e.subHeader заполните все поля
         +e.LABEL.label(for="Auth__login") Логин
-        +e.INPUT.input#Auth__login(
-            type="text"
-            v-model="name"
-        )
+        +e.INPUT.input#Auth__login(type="text" v-model="name")
         +e.LABEL.label(for="Auth__password") Пароль
-        +e.INPUT.input#Auth__password(
-            type="password"
-            v-model="password"
-        )
+        +e.INPUT.input#Auth__password(type="password" v-model="password")
         +e.valid {{ validLogin }}
-        +e.BUTTON.button.btn.btn-success(
-            type="submit"
-        ) Вход
-            loading(
-                :active.sync="isLoaded"
-            )
+        +e.BUTTON.button.btn.btn-success(type="submit") Вход
 </template>
 
 <script lang="ts">
@@ -33,7 +22,6 @@ export default class Login extends Vue {
     password: string = "";
 
     @State(state => state.login.validLogin) validLogin!: string;
-    @State(state => state.login.status) isLoaded!: string;
 
     @Action submitForm!: (o: {name: string; password: string;}) => void;
 }

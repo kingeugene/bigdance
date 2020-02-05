@@ -1,7 +1,7 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Clients
-    template(v-if="!loading")
+    template(v-if="loadedInit")
         +e.btnAddWrap
             +e.btnAdd.btn.btn-success(@click="$router.push('/customers/add')") Добавить клиента
         vue-good-table(
@@ -31,7 +31,6 @@ include ../lib/pugDeps.pug
             +e.modalDelete-btnWrap
                 +e.modalDelete-btnCancel(@click="$modal.hide('delete-customer')") Отмена
                 +e.modalDelete-btnOk(@click="deleteRow") Да
-    loading(:active.sync="loading")
 
     +e.VMODAL.modalDetails(
         name="change-customer"
@@ -78,8 +77,6 @@ include ../lib/pugDeps.pug
                     +e.INPUT.input#price(type="number" v-model="changeCustomer.price")
 
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
-
-
 </template>
 
 <script lang="ts">
@@ -182,12 +179,11 @@ export default class Customers extends Vue {
         vgt_id: 0,
     };
 
-    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
-    @State(state => state.baseTable.loading) loading!: boolean;
-    @State(state => state.baseTable.loadedCustomer) loadedCustomer!: boolean;
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.profile.loading) loading!: boolean;
     @State(state => state.baseTable.customers) customers!: string[];
 
-    @Action allClients!: () => void;
+    @Action initBaseTable!: () => void;
     @Action customerDelete!: (id: number) => void;
     @Action customerUpdate!: ({}: any) => void;
 
@@ -225,8 +221,8 @@ export default class Customers extends Vue {
     }
 
     created() {
-        if (this.loadedComponent && !this.loadedCustomer) {
-            this.allClients();
+        if (!this.loadedInit) {
+            this.initBaseTable();
         }
     }
 

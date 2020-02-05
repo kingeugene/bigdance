@@ -68,7 +68,6 @@ include ../lib/pugDeps.pug
         +e.modalDelete-btnWrap
             +e.modalDelete-btnCancel(@click="$modal.hide('delete-settings')") Отмена
             +e.modalDelete-btnOk(@click="deleteSettings") Да
-    loading(:active.sync="loadingSetting")
 </template>
 
 <script lang="ts">
@@ -293,17 +292,13 @@ export default class Settings extends Vue {
     @State(state => state.baseTable.listVenueObjectAll) hallList!: string[];
     @State(state => state.baseTable.activitiesType) typeDanceList!: string[];
     @State(state => state.trainersAdd.activityStyle) styleDanceList!: [];
-    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
-    @State(state => state.trainersAdd.loadingStyle) loadingStyle!: boolean;
-    @State(state => state.settings.loading) loadingDelete!: boolean;
-    @State(state => state.baseTable.loading) loading!: boolean;
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
 
     @Action initBaseTable!: () => void;
     @Action venueCreate!: ({name, location, color, start_time, end_time, interval}: any) => void;
     @Action hallCreate!: ({venue_id, name}: any) => void;
     @Action styleDanceCreate!: ({name}: any) => void;
     @Action typeDanceCreate!: ({name, color, block}: any) => void;
-    @Action activityStyleTrain!: () => void;
     @Action venueDelete!: (id: number) => void;
     @Action hallDelete!: (id: number) => void;
     @Action styleDanceDelete!: (id: number) => void;
@@ -315,10 +310,6 @@ export default class Settings extends Vue {
 
     get rows(): {} {
         return this[`${this.activeTab}List`];
-    }
-
-    get loadingSetting(): boolean {
-        return this.loadedComponent || this.loadingDelete || this.loading;
     }
 
     showModalAdd(item: string): void {
@@ -375,12 +366,8 @@ export default class Settings extends Vue {
     }
 
     created() {
-        if (this.loadedComponent) {
+        if (!this.loadedInit) {
             this.initBaseTable();
-        }
-
-        if (!this.loadingStyle) {
-            this.activityStyleTrain();
         }
     }
 }

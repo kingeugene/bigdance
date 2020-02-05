@@ -19,7 +19,6 @@ interface customerAddState {
     password: string;
     price:  string;
     phones: string;
-    loading: boolean;
 }
 
 const module: Module<customerAddState, any> = {
@@ -39,7 +38,6 @@ const module: Module<customerAddState, any> = {
         password: "",
         price:  "",
         phones: "",
-        loading: false,
     },
 
     mutations: {
@@ -89,10 +87,6 @@ const module: Module<customerAddState, any> = {
 
         setPhones(state, data) {
             state.phones = data;
-        },
-
-        setLoading(state, data) {
-            state.loading = data;
         },
 
         clearAll(state) {

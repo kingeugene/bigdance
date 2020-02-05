@@ -27,8 +27,6 @@ interface coachAddState {
     };
     availability: Array<{slot: string, from: string, to: string}>;
     activityStyle: [];
-    loading: boolean;
-    loadingStyle: boolean;
 }
 
 const module: Module<coachAddState, any> = {
@@ -57,8 +55,6 @@ const module: Module<coachAddState, any> = {
         },
         availability: [],
         activityStyle: [],
-        loading: false,
-        loadingStyle: false,
     },
 
     mutations: {
@@ -130,14 +126,6 @@ const module: Module<coachAddState, any> = {
             state.activityStyle = data;
         },
 
-        setLoading(state, data) {
-            state.loading = data;
-        },
-
-        setLoadingStyle(state, data) {
-            state.loadingStyle = data;
-        },
-
         clearAll(state) {
             state.email = "";
             state.first_name = "";
@@ -203,7 +191,6 @@ const module: Module<coachAddState, any> = {
             }
 
             commit("setLoading", false);
-            commit("setLoadingStyle", true);
         },
     }
 };

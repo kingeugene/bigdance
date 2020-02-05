@@ -2,7 +2,7 @@
 include ../lib/pugDeps.pug
 +b.TrainersAdd
     +e.H1.title Добавить тренера
-    template(v-if="!loading")
+    template(v-if="loadedInit")
         +e.FORM.form(@submit.prevent="submitForm")
             +e.formWrap
                 +e.labelWrap
@@ -92,7 +92,6 @@ include ../lib/pugDeps.pug
                         +e.LABEL(for="switchUserTrue") Дo
                             +e.INPUT.switch(v-model="setAvailabilityDay[index].to" )
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
-    loading(:active.sync="loading")
 </template>
 
 <script lang="ts">
@@ -209,13 +208,12 @@ export default class TrainersAdd extends Vue {
     @Mutation setPhones!: (phones: string) => void;
 
     @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
-    @State(state => state.trainersAdd.loading) loading!: boolean;
-    @State(state => state.trainersAdd.loadingStyle) loadingStyle!: boolean;
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
 
     @Mutation setAvailability!: (availability: {slot: string, from: string, to: string}[] ) => void;
 
     @Action submitTrainers!: () => void;
-    @Action activityStyleTrain!: () => void;
+    @Action initBaseTable!: () => void;
 
     get emailAdd(): string {
         return this.email;
@@ -349,8 +347,8 @@ export default class TrainersAdd extends Vue {
     }
 
     created() {
-        if (!this.loadingStyle) {
-            this.activityStyleTrain();
+        if (!this.loadedInit) {
+            this.initBaseTable();
         }
     }
 }

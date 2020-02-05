@@ -2,7 +2,7 @@
 include ../lib/pugDeps.pug
 +b.CustomerAdd
     +e.H1.title Добавить клиента
-    template(v-if="!loading")
+    template(v-if="loadedInit")
         +e.FORM.form(@submit.prevent="submitForm")
             +e.formWrap
                 +e.labelWrap
@@ -63,7 +63,6 @@ include ../lib/pugDeps.pug
                         +e.INPUT.input#password(type="password" v-model="passwordAdd")
 
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
-    loading(:active.sync="loading")
 </template>
 
 <script lang="ts">
@@ -121,8 +120,9 @@ export default class CustomerAdd extends Vue {
     @State(state => state.customerAdd.phones) phones!: string;
     @Mutation setPhones!: (phones: string) => void;
 
-    @State(state => state.customerAdd.loading) loading!: boolean;
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
 
+    @Action initBaseTable!: () => void;
     @Action submit!: () => void;
 
     get emailAdd(): string {
@@ -223,6 +223,12 @@ export default class CustomerAdd extends Vue {
 
     submitForm(): void {
         this.submit();
+    }
+
+    created() {
+        if (!this.loadedInit) {
+            this.initBaseTable();
+        }
     }
 }
 </script>

@@ -25,9 +25,7 @@ Vue.use(VModal, {componentName: "vmodal" });
 Vue.component('v-select', vSelect);
 
 import loading from 'vue-loading-overlay';
-// Import stylesheet
 import 'vue-loading-overlay/dist/vue-loading.css';
-// Init plugin
 Vue.use(loading);
 Vue.component('loading', loading);
 

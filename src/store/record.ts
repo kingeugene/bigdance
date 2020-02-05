@@ -5,32 +5,22 @@ const axios = require('axios').default;
 
 interface recordState {
     chooseRecord: {},
-    recordLoading: boolean,
 }
 
 const module: Module<recordState, any> = {
     state: {
         chooseRecord: {},
-        recordLoading: false,
-    },
-
-    getters: {
-
     },
 
     mutations: {
         setChooseRecord(state, data) {
             state.chooseRecord = data;
         },
-
-        setRecordLoading(state, data) {
-            state.recordLoading = data;
-        }
     },
 
     actions: {
         async initChooseRecord({commit}, id) {
-            commit("setRecordLoading", true);
+            commit("setLoading", true);
             const {data, status} = await api.recordOne(id);
 
             if (status === 200) {
@@ -38,7 +28,7 @@ const module: Module<recordState, any> = {
             } else {
                 alert("Данные не загрузились!")
             }
-            commit("setRecordLoading", false);
+            commit("setLoading", false);
         }
     }
 };

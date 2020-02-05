@@ -4,8 +4,6 @@ import router from "@/router";
 import {minInTime} from "@/store/baseCoach";
 
 interface clientsState {
-    loading: boolean;
-    loadedComponentCustomer: boolean;
     showCustomer: Array<any>;
     recordCustomer: Array<any>;
     coachChoose: {code: string, label: string};
@@ -14,8 +12,6 @@ interface clientsState {
 
 const module: Module<clientsState, any> = {
     state: {
-        loading: false,
-        loadedComponentCustomer: false,
         showCustomer: [],
         recordCustomer: [],
         coachChoose: {
@@ -26,9 +22,6 @@ const module: Module<clientsState, any> = {
 },
 
     mutations: {
-        setLoading(state, data) {
-            state.loading = data;
-        },
         setShowCustomer(state, data) {
             state.showCustomer = data;
         },

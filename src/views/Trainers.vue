@@ -1,7 +1,7 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Coach
-    template(v-if="!loading")
+    template(v-if="loadedInit")
         +e.btnAddWrap
             +e.btnAdd.btn.btn-success(@click="$router.push('/trainers/add')") Добавить тренера
         vue-good-table(
@@ -31,7 +31,6 @@ include ../lib/pugDeps.pug
             +e.modalDelete-btnWrap
                 +e.modalDelete-btnCancel(@click="$modal.hide('delete-coach')") Отмена
                 +e.modalDelete-btnOk(@click="deleteRow") Да
-    loading(:active.sync="loading")
 
     +e.VMODAL.modalDetails(
         name="change-coach"
@@ -265,16 +264,11 @@ export default class Trainers extends Vue {
         },
     ];
 
-    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
-    @State(state => state.baseTable.loadedCoach) loadedCoach!: boolean;
-    @State(state => state.baseTable.loading) loading!: boolean;
-
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
     @State(state => state.baseTable.coach) coach!: string[];
     @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
-    @State(state => state.trainersAdd.loadingStyle) loadingStyle!: boolean;
 
-    @Action allCoach!: () => void;
-    @Action activityStyleTrain!: () => void;
+    @Action initBaseTable!: () => void;
     @Action coachDelete!: (id: number) => void;
     @Action coachUpdate!: ({}: any) => void;
 
@@ -288,7 +282,6 @@ export default class Trainers extends Vue {
 
     edit(item: any): void {
         this.changeCoach = item.row;
-        console.error(this.changeCoach);
         this.$modal.show('change-coach');
     }
 
@@ -314,15 +307,10 @@ export default class Trainers extends Vue {
     }
 
     created() {
-        if (this.loadedComponent && !this.loadedCoach) {
-            this.allCoach();
-        }
-
-        if (!this.loadingStyle) {
-            this.activityStyleTrain();
+        if (!this.loadedInit) {
+            this.initBaseTable();
         }
     }
-
 }
 
 

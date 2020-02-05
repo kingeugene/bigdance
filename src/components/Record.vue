@@ -11,7 +11,7 @@ vmodal(
 )
     +b.Record
         +e.H4.title Запись
-        template(v-if="!recordLoading")
+        template(v-if="!loading")
             +e.wrap
                 +e.labelWrap
                     +e.label Дата и Время
@@ -32,13 +32,11 @@ vmodal(
                 +e.labelWrap
                     +e.label Заметки
                     +e.data {{record.description}}
-            +e.btnEditWrap
-                +e.btnbtnEdit
-                    button.btn.btn-success(@click="editRecord") Редактировать
-                    button.btn.btn-danger(@click="recordDelete") Удалить
+            +e.btnEdit
+                button.btn.btn-warning(@click="editRecord") Редактировать
+                button.btn.btn-danger(@click="recordDelete") Удалить
 
-        loading(:active.sync="recordLoading")
-
+            button.btn.btn-success(@click="addRecord") Добавить Запись
 </template>
 
 <script lang="ts">
@@ -52,8 +50,10 @@ export default class Record extends Vue {
     @Action initChooseRecord!: (id: string) => void;
     @Action deleteRecord!: (id: string) => void;
 
+
+    @State(state => state.profile.loading) loading!: boolean;
     @State(state => state.record.chooseRecord) record!: {};
-    @State(state => state.record.recordLoading) recordLoading!: boolean;
+
 
     @Watch("recordId")
     handleRecordId(value: number) {
@@ -74,6 +74,10 @@ export default class Record extends Vue {
 
     editRecord() {
         this.$emit("editRecord");
+    }
+
+    addRecord() {
+        this.$emit("addRecord");
     }
 
     recordDelete() {
@@ -119,6 +123,16 @@ export default class Record extends Vue {
             border: 1px solid #0b0e11;
             flex-basis: 100%;
             padding: 5px;
+        }
+    }
+
+    &__btnEdit {
+        display: flex;
+        justify-content: flex-end;
+        margin: 20px 0;
+
+        button {
+            margin: 0 10px;
         }
     }
 }

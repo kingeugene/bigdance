@@ -71,6 +71,7 @@ include ../lib/pugDeps.pug
         adaptive
         scrollable
         resizable
+        @closed="flagEditRecord = 0"
     )
         +e.FORM.form(@submit.prevent="submitForm")
             +e.modalWrap
@@ -151,11 +152,10 @@ include ../lib/pugDeps.pug
                     +e.modalNotesName Справка
                     +e.TEXTAREA.modalNotesText(v-model="modalNotes")
             +e.errorMessageWrap
-                +e.BUTTON.modalSubmit.btn.btn-success(type="submit") Отправить
+                +e.BUTTON.modalSubmit.btn.btn-success(type="submit") {{flagEditRecord ? "Редактировать" : "Отправить"}}
                 +e.errorMessage {{errorMessage}}
     // modall record
-    Record(:recordId="+currentRecord" @editRecord="editRecord")
-    loading(:active.sync="recordLoading")
+    Record(:recordId="+currentRecord" @editRecord="editRecord" @addRecord="addRecord")
 </template>
 
 <script lang="ts">
@@ -164,7 +164,7 @@ import {State, Mutation, Action} from "vuex-class";
 import datepicker2 from "vue2-datepicker";
 import { throttle } from "lodash";
 
-import Record from "@/views/Record.vue";
+import Record from "@/components/Record.vue";
 
 @Component({
     components: {
@@ -198,7 +198,6 @@ export default class Timetable extends Vue {
     ];
     flagEditRecord: number = 0;
 
-
     @State(state => state.baseTable.activitiesType) activitiesType!: Array<any>;
     @State(state => state.baseTable.show) showFilter!: boolean;
     @State(state => state.baseTable.dateArr) dateArr!: string[];
@@ -209,7 +208,7 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.listVenue) listVenue!: string[];
     @State(state => state.baseTable.listRecord) listRecord!: any;
     @State(state => state.baseTable.currentVenue) actualVenue!: any;
-    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
     @State(state => state.baseTable.gapTime) gapTime!: number;
     @State(state => state.baseTable.oneMinInPx) oneMinInPx!: number;
     @State(state => state.baseTable.dataItem) dataItem!: any;
@@ -230,7 +229,6 @@ export default class Timetable extends Vue {
         label: string,
     };
     @State(state => state.baseTable.recordHall) recordHall!: {id: number, name: string};
-    @State(state => state.baseTable.recordLoading) recordLoading!: boolean;
     @State(state => state.baseTable.currentVenueColor) currentVenue!: number;
     @State(state => state.baseTable.weeks) weeks!: number;
     @State(state => state.baseTable.descriptionRecord) descriptionRecord!: string;
@@ -547,8 +545,9 @@ export default class Timetable extends Vue {
 
         this.createRecord({venue_object_id, activity_id, coaches, clients, number_weeks, description, edit: this.flagEditRecord});
 
-        this.flagEditRecord = 0;
+        this.currentRecord = 0;
         this.$modal.hide('modal-add');
+        this.$modal.hide('modal-record');
     }
 
     setScrollTable(): void {
@@ -572,6 +571,7 @@ export default class Timetable extends Vue {
         });
 
         let customer = this.record.clients.map(item => {
+
             return {
                 code: item.person_id,
                 label: `${item.first_name} ${item.second_name}`,
@@ -599,10 +599,30 @@ export default class Timetable extends Vue {
         this.$modal.show('modal-add');
     }
 
+    addRecord() {
+        this.dateModal = this.record.date;
+        this.selectTimeStart = this.minInTime(this.record.start_time);
+        this.selectTimeEnd = this.minInTime(this.record.end_time);
+        this.currentHall = {
+            name: this.record.venue_object_name,
+            id: this.record.venue_object_id,
+        };
+        this.currentWeeks = 1;
+        this.$modal.show('modal-add');
+    }
+
     @Watch("dataItem")
     getDataItem(value: any) {
         this.initDataItem = true;
         this.setDataItem();
+    }
+
+    @Watch("loadedInit")
+    updateDataItem(value: any) {
+        if (value) {
+            this.initDataItem = true;
+            this.setDataItem();
+        }
     }
 
     setDataItem() {
@@ -640,16 +660,12 @@ export default class Timetable extends Vue {
     }
 
     created() {
-        if (this.loadedComponent) {
+        if (!this.loadedInit) {
             this.initBaseTable();
         }
     }
 
     mounted() {
-        this.setScrollTable();
-    }
-
-    updated() {
         this.setScrollTable();
         this.setDataItem();
     }

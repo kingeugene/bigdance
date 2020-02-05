@@ -3,7 +3,6 @@ import api from "@/lib/api";
 import router from "@/router";
 
 interface coachState {
-    loading: boolean;
     showCoach: Array<any>;
     customerChoose: {code: string, label: string};
     recordCoach: Array<any>;
@@ -12,7 +11,6 @@ interface coachState {
 
 const module: Module<coachState, any> = {
     state: {
-        loading: false,
         showCoach: [],
         recordCoach: [],
         customerChoose: {
@@ -23,10 +21,6 @@ const module: Module<coachState, any> = {
     },
 
     mutations: {
-        setLoading(state, data) {
-            state.loading = data;
-        },
-
         setShowCoach(state, data) {
           state.showCoach = data;
         },

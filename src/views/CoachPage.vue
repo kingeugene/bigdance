@@ -2,7 +2,7 @@
 include ../lib/pugDeps.pug
 +b.CoachPage
     +e.H1.title Тренер
-    +e.wrap(v-if="!loadingCoach")
+    +e.wrap(v-if="loadedInit")
         div
             +e.coachWrap
                 +e.IMG.coach(src="https://sivator.com/uploads/posts/2017-08/1501737653_urodru20170803sheste_01.jpg")
@@ -42,8 +42,6 @@ include ../lib/pugDeps.pug
                     width="100%"
                     format="YYYY-MM-DD"
                 )
-
-    loading(:active.sync="loadingCoach")
 </template>
 
 <script lang="ts">
@@ -66,12 +64,11 @@ export default class CoachPage extends Vue {
 
     @State(state => state.baseCoach.showCoach) coach!: any;
     @State(state => state.baseTable.allClients) clients!: string[];
-    @State(state => state.baseCoach.loading) loadingCoach!: boolean;
     @State(state => state.baseTable.listVenue) listVenue!: string[];
     @State(state => state.baseCoach.recordCoach) recordCoach!: string[];
     @State(state => state.baseCoach.customerChoose) customerChoose!: any;
     @State(state => state.baseCoach.dateTimeChoose) dateTimeChoose!: string;
-    @State(state => state.baseTable.loadedComponent) loadedComponent!: boolean;
+    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
 
     @Mutation setCustomerChoosePageCoach!: (customer: {code: string, label: string}) => void;
     @Mutation setDateTimeChoosePageCoach!: (date: string) => void;
@@ -151,7 +148,7 @@ export default class CoachPage extends Vue {
     }
 
     async created() {
-        if (this.loadedComponent) {
+        if (!this.loadedInit) {
             await this.initBaseTable();
         }
 

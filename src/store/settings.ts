@@ -4,29 +4,21 @@ import router from "@/router";
 const axios = require('axios').default;
 
 interface settingsState {
-    loadingVenue: boolean;
-    loading: boolean;
+
 }
 
 const module: Module<settingsState, any> = {
     state: {
-        loadingVenue: false,
-        loading: false,
+
     },
 
     mutations: {
-        setLoadingVenue(state, data) {
-            state.loadingVenue = data;
-        },
 
-        setLoading(state, data) {
-            state.loading = data;
-        },
     },
 
     actions: {
         async venueCreate({state, commit, dispatch}, {name, location, color, start_time, end_time, interval, id}) {
-            commit("setLoadingVenue", true);
+            commit("setLoading", true);
 
             const {data, status} = await api.createVenue({name, location, color, start_time, end_time, interval, id});
 
@@ -36,11 +28,11 @@ const module: Module<settingsState, any> = {
                 alert("Студия не создана");
             }
 
-            commit("setLoadingVenue", false);
+            commit("setLoading", false);
         },
 
         async hallCreate({state, commit, dispatch}, {venue_id, name, id}) {
-            commit("setLoadingVenue", true);
+            commit("setLoading", true);
             const {data, status} = await api.createHall({venue_id, name, id});
 
             if (status === 200) {
@@ -49,11 +41,11 @@ const module: Module<settingsState, any> = {
                 alert("Студия не создана");
             }
 
-            commit("setLoadingVenue", false);
+            commit("setLoading", false);
         },
 
         async styleDanceCreate({state, commit, dispatch}, {label, id}) {
-            commit("setLoadingVenue", true);
+            commit("setLoading", true);
 
             const {data, status} = await api.createStyleDance({label, id});
 
@@ -63,11 +55,11 @@ const module: Module<settingsState, any> = {
                 alert("стиль танца не создана");
             }
 
-            commit("setLoadingVenue", false);
+            commit("setLoading", false);
         },
 
         async typeDanceCreate({state, commit, dispatch}, {label, color, block, id}) {
-            commit("setLoadingVenue", true);
+            commit("setLoading", true);
 
             const {data, status} = await api.createTypeDance({label, color, block: parseInt(block), id});
 
@@ -77,7 +69,7 @@ const module: Module<settingsState, any> = {
                 alert("Студия не создана");
             }
 
-            commit("setLoadingVenue", false);
+            commit("setLoading", false);
         },
 
         async venueDelete({state, commit, dispatch}, id) {

@@ -7,6 +7,7 @@ interface loginState {
     token: any,
     validLogin: string,
     status: boolean,
+    loading: boolean,
 }
 
 const module: Module<loginState, any> = {
@@ -14,6 +15,7 @@ const module: Module<loginState, any> = {
         token: localStorage.getItem('user-token') || '',
         status: false,
         validLogin: "",
+        loading: false,
     },
 
     getters: {
@@ -43,6 +45,7 @@ const module: Module<loginState, any> = {
     actions: {
         async submitForm({commit, state}, body) {
             commit("auth_request");
+            commit("setLoading", true);
             const { data, errors, status } = await api.login(body);
 
             if (errors) {
@@ -50,6 +53,7 @@ const module: Module<loginState, any> = {
 
                 commit("changeValidLogin", "Неправильные доступы");
                 commit("auth_error");
+                commit("setLoading", false);
                 return;
             } else {
                 const token = data.access_token;
@@ -59,6 +63,7 @@ const module: Module<loginState, any> = {
                 commit("auth_succes", data.access_token);
 
                 router.push('/').catch(err => {});
+                commit("setLoading", false);
             }
         },
         async logout({commit, state}) {

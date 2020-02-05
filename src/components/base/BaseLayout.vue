@@ -5,11 +5,13 @@ include ../../lib/pugDeps.pug
     +e.BASEHEADER.header
     +e.MAIN.main
         +e.container(:class="{'container': haveContainerClass}"): slot/
+    loading(:active.sync="loading")
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import baseheader from "@/components/base/BaseHeader.vue";
+import {State} from "vuex-class";
 
 @Component({
     components: {
@@ -17,25 +19,16 @@ import baseheader from "@/components/base/BaseHeader.vue";
     },
 })
 export default class BaseLayout extends Vue {
+    @State(state => state.profile.loading) loading!: boolean;
+
     get haveContainerClass(): boolean {
         switch (this.$route.name) {
             case "timetable":
             case "coach-page":
             case "customers-page":
                 return false;
-                break;
             default:
-              return true;
-        }
-
-
-
-        if(this.$route.name === "timetable") {
-            document.body.style.overflow = "hidden";
-            return false;
-        } else {
-            document.body.style.overflow = "";
-            return true;
+                return true;
         }
     }
 
