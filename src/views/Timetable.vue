@@ -669,6 +669,10 @@ export default class Timetable extends Vue {
         this.setScrollTable();
         this.setDataItem();
     }
+
+    updated() {
+        this.setDataItem();
+    }
 }
 </script>
 
