@@ -155,7 +155,14 @@ include ../lib/pugDeps.pug
                 +e.BUTTON.modalSubmit.btn.btn-success(type="submit") {{flagEditRecord ? "Редактировать" : "Отправить"}}
                 +e.errorMessage {{errorMessage}}
     // modall record
-    Record(:recordId="+currentRecord" @editRecord="editRecord" @addRecord="addRecord")
+    Record(
+        :id="+currentRecord"
+        :time="clickTime"
+        :date="dateModal"
+        :venue_object_id="currentHall.id"
+        @editRecord="editRecord"
+        @addRecord="addRecord"
+    )
 </template>
 
 <script lang="ts">
@@ -175,8 +182,7 @@ import Record from "@/components/Record.vue";
 export default class Timetable extends Vue {
     scrollTable: any = null;
     initDataItem: boolean = true;
-    startTime: number = 510;
-    endTime: number = 1320;
+    currentTime: number | string = 1;
     scrollHead: number = 0;
     scrollTime: number = 0;
 
@@ -209,7 +215,6 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.listRecord) listRecord!: any;
     @State(state => state.baseTable.currentVenue) actualVenue!: any;
     @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
-    @State(state => state.baseTable.gapTime) gapTime!: number;
     @State(state => state.baseTable.oneMinInPx) oneMinInPx!: number;
     @State(state => state.baseTable.dataItem) dataItem!: any;
     @State(state => state.baseTable.dateTimeChoose) dateTimeChoose!: any;
@@ -232,6 +237,7 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.currentVenueColor) currentVenue!: number;
     @State(state => state.baseTable.weeks) weeks!: number;
     @State(state => state.baseTable.descriptionRecord) descriptionRecord!: string;
+    @State(state => state.baseTable.settingsVenue) settingsVenue!: {};
     @State(state => state.record.chooseRecord) record!: {};
 
     @Mutation setDataTable!: ({}) => void;
@@ -281,6 +287,33 @@ export default class Timetable extends Vue {
     setActualVenue(value: any) {
         this.serActualDataItem();
     }
+
+    get clickTime(): string | number {
+        return this.minInTime(this.currentTime as number);
+    }
+
+    set clickTime(value: string | number) {
+        this.currentTime = this.startTime + +value;
+    }
+
+    get startTime(): number {
+        return this.settingsVenue[this.actualVenue]
+            ? this.settingsVenue[this.actualVenue].start_time
+            : 510;
+    }
+
+    get endTime(): number {
+        return this.settingsVenue[this.actualVenue]
+            ? this.settingsVenue[this.actualVenue].end_time
+            : 1320;
+    }
+
+    get gapTime(): number {
+        return this.settingsVenue[this.actualVenue]
+            ? this.settingsVenue[this.actualVenue].interval
+            : 30;
+    }
+
 
     get dateTime(): string {
         return this.dateTimeChoose;
@@ -502,7 +535,12 @@ export default class Timetable extends Vue {
     showModal (event: any, currentRow: number, currentTd: number) {
         const target = event.target;
 
+        let currentDate = Math.floor(currentTd / this.numHalls);
+        this.dateModal = this.dateArr[currentDate];
+        this.currentHall = this.halls[this.halsTurn(currentTd + 1) - 1];
+
         if (target.classList.contains('is-record')) {
+            this.clickTime = Math.round((event.offsetY + parseInt(target.style.top)) / (60 / this.gapTime));
             const id = target.getAttribute("data-id");
             this.currentRecord = id;
             this.$modal.show('modal-record');
@@ -512,9 +550,6 @@ export default class Timetable extends Vue {
         this.selectTimeStart = this.timeCurrent((currentRow));
         this.selectTimeEnd = this.timeCurrent((currentRow + 1));
 
-        let currentDate = Math.floor(currentTd / this.numHalls);
-        this.dateModal = this.dateArr[currentDate];
-        this.currentHall = this.halls[this.halsTurn(currentTd + 1) - 1];
         this.selectTeacherModal = this.actualCoach!.label
             ? [this.actualCoach!]
             : [];
@@ -767,7 +802,7 @@ export default class Timetable extends Vue {
     }
 
     &__td-data {
-        height: 101px;
+        height: 60px;
     }
 
     .Table {
@@ -785,7 +820,7 @@ export default class Timetable extends Vue {
         }
 
         td {
-            height: 101px;
+            height: 60px;
             position: relative;
         }
 
@@ -854,8 +889,8 @@ export default class Timetable extends Vue {
         }
 
         &__th-cell, &__td-cell {
-            min-width: 150px;
-            max-width: 150px;
+            min-width: 100px;
+            max-width: 100px;
             text-align: center;
 
             &.is-number {

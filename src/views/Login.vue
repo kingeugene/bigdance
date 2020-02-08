@@ -1,11 +1,11 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.Auth
-    +e.FORM.form(@submit.prevent="submitForm({name: name, password: password})")
+    +e.FORM.form(@submit.prevent="submitForm({name: name, password: password})" novalidate="novalidate")
         +e.H2.header Логин
         +e.subHeader заполните все поля
         +e.LABEL.label(for="Auth__login") Логин
-        +e.INPUT.input#Auth__login(type="text" v-model="name")
+        +e.INPUT.input#Auth__login(type="text" v-model="name" autocomplete="off")
         +e.LABEL.label(for="Auth__password") Пароль
         +e.INPUT.input#Auth__password(type="password" v-model="password")
         +e.valid {{ validLogin }}

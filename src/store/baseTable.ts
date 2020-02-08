@@ -20,10 +20,6 @@ interface baseTableState {
     idItem: number[];
     listRecord: any;
     dataTable: any;
-    gapTime: number;
-    oneMinInPx: number;
-    startTime: number;
-    endTime: number;
     dataItem: [];
     dateTimeChoose: string;
     coachChoose: {code: string, label: string};
@@ -48,6 +44,7 @@ interface baseTableState {
     weeks: number;
     descriptionRecord: string,
     loadedInit: boolean;
+    settingsVenue: {};
 }
 
 const module: Module<baseTableState, any> = {
@@ -68,10 +65,6 @@ const module: Module<baseTableState, any> = {
         },
         isMobileChoose: false,
         currentColor: "#2f628e",
-        gapTime: 30,
-        oneMinInPx: 101 / 30,
-        startTime: 510,
-        endTime: 1320,
         listVenue: [],
         listVenueObject: [],
         listVenueObjectAll: [],
@@ -107,7 +100,8 @@ const module: Module<baseTableState, any> = {
         },
         weeks: 1,
         descriptionRecord: "",
-    },
+        settingsVenue: {},
+},
 
     mutations: {
         setCurrentDate(state, data) {
@@ -222,6 +216,10 @@ const module: Module<baseTableState, any> = {
         setDescriptionRecord(state, data) {
             state.descriptionRecord = data;
         },
+
+        setSettingsVenue(state, data) {
+            state.settingsVenue = data;
+        },
     },
 
     actions: {
@@ -328,10 +326,12 @@ const module: Module<baseTableState, any> = {
                         activityColor = dataTable[key][indexItem]["color"],
                         nameCoach = dataTable[key][indexItem]["clients"],
                         nameCustomer = dataTable[key][indexItem]["coaches"],
-                        id = dataTable[key][indexItem]["id"];
+                        id = dataTable[key][indexItem]["id"],
+                        startVenue = state.settingsVenue[state.currentVenue].start_time,
+                        oneMinInPx = 60 / state.settingsVenue[state.currentVenue].interval;
 
-                    const startPosition = (startTrain - state.startTime) * state.oneMinInPx,
-                        heightRecord = (endTrain - startTrain) * state.oneMinInPx - 1;
+                    const startPosition = (startTrain - startVenue) * oneMinInPx,
+                        heightRecord = (endTrain - startTrain) * oneMinInPx - 1;
 
                     dataItem.push({[tdId]: [
                         startPosition,
@@ -356,6 +356,19 @@ const module: Module<baseTableState, any> = {
             const {data, status} = await api.listVenues();
 
             if (status === 200) {
+                const arrSettings = {};
+
+                for (let key in data) {
+                    const id = data[key].id;
+
+                    arrSettings[id] = {
+                        interval: data[key].interval,
+                        start_time: data[key].start_time,
+                        end_time: data[key].end_time,
+                    }
+                }
+
+                commit("setSettingsVenue", arrSettings);
                 commit("setListVenue", data);
                 commit("setCurrentVenue", data[0].id);
             }
