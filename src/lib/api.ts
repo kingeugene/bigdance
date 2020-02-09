@@ -390,8 +390,8 @@ class ApiService {
             });
     }
 
-    public recordOne({id, date, time, venue_object_id}): any {
-        return axios.get(`${serverName}/v0/records/${id}?date=${date}&time=${time}&venue_object_id=${venue_object_id}`)
+    public recordOne({date, time, venue_object_id}): any {
+        return axios.get(`${serverName}/v0/records?date=${date}&time=${time}&venue_object_id=${venue_object_id}`)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });

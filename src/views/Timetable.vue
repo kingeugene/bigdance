@@ -40,10 +40,10 @@ include ../lib/pugDeps.pug
             +e.TR.th-row.is-daysWeek(:style="{'background':  currentColor}")
                 +e.TH.th-cell(
                     :colspan="numHalls"
-                    v-for="(cell, index) of 7"
+                    v-for="(cell, index) of quantityDay"
                 )
                     +e.headDate
-                        div {{ daysWeek[index] }}
+                        div(v-if="!isMobileChoose") {{ daysWeek[index] }}
                         div {{dateArr[index]}}
                 +e.TR.th-row.is-halls(:style="{'background':  currentColor}")
                     +e.TH.th-cell(
@@ -73,6 +73,7 @@ include ../lib/pugDeps.pug
         resizable
         @closed="flagEditRecord = 0"
     )
+        .close-modal(@click="$modal.hide('modal-add')") +
         +e.FORM.form(@submit.prevent="submitForm")
             +e.modalWrap
                 +e.modalDate
@@ -156,7 +157,6 @@ include ../lib/pugDeps.pug
                 +e.errorMessage {{errorMessage}}
     // modall record
     Record(
-        :id="+currentRecord"
         :time="clickTime"
         :date="dateModal"
         :venue_object_id="currentHall.id"
@@ -265,7 +265,7 @@ export default class Timetable extends Vue {
 
     @Action initBaseTable!: () => void;
     @Action listVenueObject!: () => void;
-    @Action getListRecord!: ({venue_id, date, coach, client, mobile}: any) => void;
+    @Action getListRecord!: ({venue_id, date, coach, client}: any) => void;
     @Action createRecord!: ({venue_object_id, activity_id, coaches, clients, number_weeks, description, edit}: any) => void;
 
     @Watch("dateTimeChoose")
@@ -287,6 +287,13 @@ export default class Timetable extends Vue {
     setActualVenue(value: any) {
         this.serActualDataItem();
     }
+
+    get quantityDay(): number {
+        return this.isMobileChoose
+            ? 1
+            : 7;
+    }
+
 
     get clickTime(): string | number {
         return this.minInTime(this.currentTime as number);
@@ -461,7 +468,7 @@ export default class Timetable extends Vue {
     }
 
     get allDays(): number {
-        return this.numHalls * 7;
+        return this.numHalls * this.quantityDay;
     }
 
     get quantityTime(): number {
@@ -476,10 +483,9 @@ export default class Timetable extends Vue {
         let venue_id = this.actualVenue,
             date = this.dateTimeChoose,
             coach = this.coachChoose.code,
-            client = this.customerChoose.code,
-            mobile = this.isMobileChoose;
+            client = this.customerChoose.code;
 
-        this.getListRecord({ venue_id, date, coach, client, mobile});
+        this.getListRecord({ venue_id, date, coach, client});
     }
 
     handleSwitchVenue(venueId: number, index: number): void {
@@ -674,7 +680,8 @@ export default class Timetable extends Vue {
                 let idRecord = Object.keys(value[key])[0],
                     record = value[key][idRecord],
                     dataAdd = document.getElementById(idRecord),
-                    itemData = document.createElement("div");
+                    itemData = document.createElement("div"),
+                    itemDataChild = document.createElement("div");
 
                 if (!dataAdd) {
                     return;
@@ -684,8 +691,25 @@ export default class Timetable extends Vue {
                 itemData!.style.height = record[1] + "px";
                 itemData!.style.background = record[2];
                 itemData.setAttribute("data-id", record[7]);
-                itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])} </br>${record[5]} <br>${record[6]}`;
+                itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])} `;
                 itemData!.classList.add("is-record");
+
+                if (record[5].length || record[6].length) {
+                    let customer = "",
+                        coach = "";
+
+                    if (record[5].length) {
+                        customer = `<div>Кл: ${record[5]}</div>`;
+                    }
+
+                    if (record[6].length) {
+                        coach = `<div>Тр: ${record[6]}</div>`
+                    }
+
+                    itemDataChild!.innerHTML = `${customer}${coach}`;
+                    itemDataChild!.classList.add("is-record-tooltip");
+                    itemData!.appendChild(itemDataChild);
+                }
 
                 dataAdd!.appendChild(itemData);
             }
@@ -882,6 +906,7 @@ export default class Timetable extends Vue {
 
         &__timeCurrent {
             color: grey;
+            font-size: 10px;
 
             &Modal {
                 display: none;
@@ -922,19 +947,30 @@ export default class Timetable extends Vue {
         &Wrap {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             justify-content: space-between;
             margin-bottom: 20px;
+
+            input {
+                width: 100%;
+                height: 34px;
+                padding: 0 8px 4px;
+                background: none;
+                border: 1px solid rgba(60,60,60,.26);
+                border-radius: 4px;
+                white-space: normal;
+            }
 
             #{$root}__select {
                 width: 48%;
                 margin: 0;
 
                 &.is-type {
-                    width: 70%;
+                    width: 60%;
                 }
 
                 &.is-halls {
-                    width: 25%;
+                    width: 40%;
                 }
             }
         }
@@ -946,16 +982,6 @@ export default class Timetable extends Vue {
 
         &Time {
             width: 25%;
-
-            input {
-                width: 100%;
-                height: 34px;
-                padding: 0 8px 4px;
-                background: none;
-                border: 1px solid rgba(60,60,60,.26);
-                border-radius: 4px;
-                white-space: normal;
-            }
         }
 
         &Status {
@@ -1032,10 +1058,48 @@ export default class Timetable extends Vue {
                 z-index: 9;
                 transition: .2s;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+                @include Semibold($c-header, 10);
 
                 &:hover {
                     transform: translateY(-2px);
                     box-shadow: 0 2px 20px rgba(0, 0, 0, .5);
+
+                    & > .is-record-tooltip {
+                        opacity: 1;
+                        transition: opacity .2s .5s;
+                        visibility: visible;
+                    }
+                }
+
+                &-tooltip {
+                    display: block;
+                    position: absolute;
+                    bottom: 68px;
+                    transition: .3s;
+                    box-shadow: 0 0 12px 0 rgba(0,0,0,.2);
+                    padding: 6px;
+                    z-index: 2;
+                    font-size: 12px;
+                    visibility: hidden;
+                    opacity: 0;
+                    background: $white;
+                    width: auto;
+
+                    & > div {
+                        white-space: nowrap;
+                    }
+
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        bottom: -10px;
+                        left: 50%;
+                        width: 12px;
+                        height: 12px;
+                        transform: rotate(45deg) translateX(-50%);
+                        box-shadow: 5px 5px 10px 0 rgba(0,0,0,.2);
+                        background: $white;
+                    }
                 }
             }
         }

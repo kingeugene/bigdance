@@ -24,7 +24,7 @@ interface baseTableState {
     dateTimeChoose: string;
     coachChoose: {code: string, label: string};
     customerChoose: {code: string, label: string};
-    isMobileChoose: boolean;
+    isMobileChoose: number;
     recordActivityType: {
         account_id: number,
         block: number,
@@ -63,7 +63,7 @@ const module: Module<baseTableState, any> = {
             code:"",
             label:"",
         },
-        isMobileChoose: false,
+        isMobileChoose: 0,
         currentColor: "#2f628e",
         listVenue: [],
         listVenueObject: [],
@@ -220,6 +220,10 @@ const module: Module<baseTableState, any> = {
         setSettingsVenue(state, data) {
             state.settingsVenue = data;
         },
+
+        setIsMobileChoose(state, data) {
+            state.isMobileChoose = data;
+        }
     },
 
     actions: {
@@ -274,6 +278,10 @@ const module: Module<baseTableState, any> = {
             commit("setLoadedInit", false);
             commit("setLoading", true);
 
+            if (window.innerWidth < 768) {
+                commit("setIsMobileChoose", 1);
+            }
+
             await dispatch("listVenue");
 
             let request = [
@@ -283,7 +291,7 @@ const module: Module<baseTableState, any> = {
                 dispatch("allCoach"),
                 dispatch("listVenueObjectAll"),
                 dispatch("activityStyleTrain"),
-                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null}),
+                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code}),
             ];
 
             await Promise.all(request);
@@ -293,10 +301,10 @@ const module: Module<baseTableState, any> = {
         },
 
 //GET
-        async getListRecord({commit, dispatch}, {venue_id, date, coach, client, mobile}) {
+        async getListRecord({commit, state, dispatch}, {venue_id, date, coach, client}) {
             commit("setLoading", true);
 
-            const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile});
+            const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile: state.isMobileChoose});
 
             if (status === 200) {
                 await commit("setListRecord", data);

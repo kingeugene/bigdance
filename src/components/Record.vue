@@ -9,6 +9,7 @@ vmodal(
     scrollable
     resizable
 )
+    .close-modal(@click="$modal.hide('modal-record')") +
     +b.Record
         +e.H4.title Запись
         template(v-if="!loading")
@@ -45,12 +46,11 @@ import {State, Mutation, Action} from "vuex-class";
 
 @Component
 export default class Record extends Vue {
-    @Prop({type: Number, default: 1}) id!: string;
     @Prop({type: String, default: ""}) time!: string;
     @Prop({type: String, default: 1}) date!: string;
     @Prop({type: Number, default: 1}) venue_object_id!: number;
 
-    @Action initChooseRecord!: ({id, date, time, venue_object_id}: any) => void;
+    @Action initChooseRecord!: ({date, time, venue_object_id}: any) => void;
     @Action deleteRecord!: (id: string) => void;
 
 
@@ -58,11 +58,10 @@ export default class Record extends Vue {
     @State(state => state.record.chooseRecord) record!: {};
 
 
-    @Watch("id")
+    @Watch("time")
     handleRecordId(value: number) {
         if (value) {
             this.initChooseRecord({
-                id: this.id,
                 date: this.date,
                 time: this.time,
                 venue_object_id: this.venue_object_id,

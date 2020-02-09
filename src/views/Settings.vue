@@ -21,6 +21,7 @@ include ../lib/pugDeps.pug
             scrollable
             resizable
         )
+            .close-modal(@click="$modal.hide('modal-' + item.code + 'Add')") +
             +e.FORM.form(@submit.prevent="submitSettings(item.code)")
                 +e.formWrap
                     template(v-for="field in item.data")

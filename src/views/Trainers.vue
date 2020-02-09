@@ -38,6 +38,7 @@ include ../lib/pugDeps.pug
         width="85%"
         adaptive
     )
+        .close-modal(@click="$modal.hide('change-coach')") +
         +e.FORM.form(@submit.prevent="submitChangeCoach")
             +e.formWrap
                 +e.labelWrap

@@ -38,6 +38,7 @@ include ../lib/pugDeps.pug
         width="85%"
         adaptive
     )
+        .close-modal(@click="$modal.hide('change-customer')") +
         +e.FORM.form(@submit.prevent="submitChangeCustomer")
             +e.formWrap
                 +e.labelWrap
