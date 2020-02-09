@@ -94,7 +94,7 @@ export default class CoachPage extends Vue {
         perPage: 20,
         nextLabel: 'Вперед',
         prevLabel: 'Назад',
-        rowsPerPageLabel: 'Количество страниц',
+        rowsPerPageLabel: 'Кол-во стр: ',
         ofLabel: 'из',
         allLabel: 'Все',
     };
@@ -162,6 +162,7 @@ export default class CoachPage extends Vue {
 
     &__wrap {
         display: flex;
+        flex-wrap: wrap;
     }
 
     &__title {
@@ -172,11 +173,18 @@ export default class CoachPage extends Vue {
 
     &__tableWrap {
         display: flex;
+        flex-wrap: wrap;
         width: 100%;
     }
 
     &__filter {
-        margin-left: 30px;
+        width: 100%;
+        order: -1;
+
+        @include bp(m) {
+            order: 1;
+            margin-left: 30px;
+        }
     }
 
     &__select {
@@ -188,6 +196,7 @@ export default class CoachPage extends Vue {
 
         &Wrap {
             display: flex;
+            flex-wrap: wrap;
             margin-bottom: 40px;
         }
 
@@ -196,8 +205,10 @@ export default class CoachPage extends Vue {
             margin-bottom: 50px;
 
             &-wrap {
-                margin: 10px 50px;
-                min-width: 168px;
+                @include bp(m) {
+                    margin: 10px 50px;
+                    min-width: 168px;
+                }
             }
         }
 

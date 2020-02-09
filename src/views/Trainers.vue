@@ -26,6 +26,7 @@ include ../lib/pugDeps.pug
             height="260"
             width="500"
             adaptive
+            scrollable
         )
             +e.H4.modalDeleteTitle Вы действительно хотите </br> Удалить Тренера
             +e.modalDelete-btnWrap
@@ -34,7 +35,7 @@ include ../lib/pugDeps.pug
 
     +e.VMODAL.modalDetails(
         name="change-coach"
-        height="auto"
+        height="555"
         width="85%"
         adaptive
     )
@@ -134,7 +135,7 @@ export default class Trainers extends Vue {
         perPage: 20,
         nextLabel: 'Вперед',
         prevLabel: 'Назад',
-        rowsPerPageLabel: 'Количество страниц',
+        rowsPerPageLabel: 'Кол-во стр: ',
         ofLabel: 'из',
         allLabel: 'Все',
     };
@@ -333,6 +334,7 @@ export default class Trainers extends Vue {
         &Wrap {
             display: flex;
             justify-content: space-around;
+            min-width: 60px;
         }
 
         &Edit {
@@ -354,7 +356,10 @@ export default class Trainers extends Vue {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 40px;
+
+            @include bp(m) {
+                margin-bottom: 40px;
+            }
         }
     }
 
@@ -362,11 +367,16 @@ export default class Trainers extends Vue {
         display: block;
 
         &Wrap {
-            max-width: 200px;
             width: 100%;
 
+            @include bp(m) {
+                max-width: 200px;
+            }
+
             &:not(:last-child) {
-                margin-right: 60px;
+                @include bp(m) {
+                    margin-right: 60px;
+                }
             }
         }
     }

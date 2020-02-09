@@ -253,7 +253,10 @@ export default class CustomerAdd extends Vue {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 40px;
+
+            @include bp(m) {
+                margin-bottom: 40px;
+            }
         }
     }
 
@@ -261,11 +264,16 @@ export default class CustomerAdd extends Vue {
         display: block;
 
         &Wrap {
-            max-width: 200px;
             width: 100%;
 
+            @include bp(m) {
+                max-width: 200px;
+            }
+
             &:not(:last-child) {
-                margin-right: 60px;
+                @include bp(m) {
+                    margin-right: 60px;
+                }
             }
         }
     }

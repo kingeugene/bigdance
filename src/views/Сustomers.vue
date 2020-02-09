@@ -34,9 +34,10 @@ include ../lib/pugDeps.pug
 
     +e.VMODAL.modalDetails(
         name="change-customer"
-        height="auto"
+        height="555"
         width="85%"
         adaptive
+        scrollable
     )
         .close-modal(@click="$modal.hide('change-customer')") +
         +e.FORM.form(@submit.prevent="submitChangeCustomer")
@@ -102,7 +103,7 @@ export default class Customers extends Vue {
         perPage: 20,
         nextLabel: 'Вперед',
         prevLabel: 'Назад',
-        rowsPerPageLabel: 'Количество страниц',
+        rowsPerPageLabel: 'Кол-во стр: ',
         ofLabel: 'из',
         allLabel: 'Все',
     };
@@ -248,6 +249,7 @@ export default class Customers extends Vue {
         &Wrap {
             display: flex;
             justify-content: space-around;
+            min-width: 60px;
         }
 
         &Edit {
@@ -269,7 +271,10 @@ export default class Customers extends Vue {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 40px;
+
+            @include bp(m) {
+                margin-bottom: 40px;
+            }
         }
     }
 
@@ -277,11 +282,16 @@ export default class Customers extends Vue {
         display: block;
 
         &Wrap {
-            max-width: 200px;
             width: 100%;
 
+            @include bp(m) {
+                max-width: 200px;
+            }
+
             &:not(:last-child) {
-                margin-right: 60px;
+                @include bp(m) {
+                    margin-right: 60px;
+                }
             }
         }
     }

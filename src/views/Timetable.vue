@@ -67,10 +67,8 @@ include ../lib/pugDeps.pug
     +e.VMODAL.modal(
         name="modal-add"
         height="auto"
-        draggable
+        :draggable="!isMobileChoose"
         adaptive
-        scrollable
-        resizable
         @closed="flagEditRecord = 0"
     )
         .close-modal(@click="$modal.hide('modal-add')") +
@@ -680,9 +678,7 @@ export default class Timetable extends Vue {
                 let idRecord = Object.keys(value[key])[0],
                     record = value[key][idRecord],
                     dataAdd = document.getElementById(idRecord),
-                    itemData = document.createElement("div"),
-                    itemDataChild = document.createElement("div");
-
+                    itemData = document.createElement("div");
                 if (!dataAdd) {
                     return;
                 }
@@ -693,23 +689,6 @@ export default class Timetable extends Vue {
                 itemData.setAttribute("data-id", record[7]);
                 itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])} `;
                 itemData!.classList.add("is-record");
-
-                if (record[5].length || record[6].length) {
-                    let customer = "",
-                        coach = "";
-
-                    if (record[5].length) {
-                        customer = `<div>Кл: ${record[5]}</div>`;
-                    }
-
-                    if (record[6].length) {
-                        coach = `<div>Тр: ${record[6]}</div>`
-                    }
-
-                    itemDataChild!.innerHTML = `${customer}${coach}`;
-                    itemDataChild!.classList.add("is-record-tooltip");
-                    itemData!.appendChild(itemDataChild);
-                }
 
                 dataAdd!.appendChild(itemData);
             }
@@ -1073,7 +1052,7 @@ export default class Timetable extends Vue {
 
                 &-tooltip {
                     display: block;
-                    position: absolute;
+                    position: fixed;
                     bottom: 68px;
                     transition: .3s;
                     box-shadow: 0 0 12px 0 rgba(0,0,0,.2);

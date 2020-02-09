@@ -202,7 +202,7 @@ export default class Settings extends Vue {
         perPage: 20,
         nextLabel: 'Вперед',
         prevLabel: 'Назад',
-        rowsPerPageLabel: 'Количество страниц',
+        rowsPerPageLabel: 'Кол-во стр: ',
         ofLabel: 'из',
         allLabel: 'Все',
     };
@@ -399,6 +399,7 @@ export default class Settings extends Vue {
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-wrap: wrap;
         }
     }
 
@@ -415,6 +416,7 @@ export default class Settings extends Vue {
         &Wrap {
             display: flex;
             justify-content: space-around;
+            min-width: 60px;
         }
 
         &Edit {
@@ -445,8 +447,12 @@ export default class Settings extends Vue {
     &__label {
         &Wrap {
             width: 100%;
-            max-width: 200px;
+
             margin-bottom: 16px;
+
+            @include bp(m) {
+                max-width: 200px;
+            }
         }
     }
 

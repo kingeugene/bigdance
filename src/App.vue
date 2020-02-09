@@ -45,7 +45,7 @@ textarea, textarea:before, textarea:after {
     user-select: initial;
 }
 
-input {
+input, textarea {
     width: 100%;
     height: 34px;
     padding: 0 8px 4px;
@@ -62,6 +62,14 @@ input {
     top: -11px;
     transform: rotate(45deg);
     cursor: pointer;
+}
+
+.vgt-table {
+    min-width: 600px;
+}
+
+.v--modal-box {
+    overflow: auto !important;
 }
 
 #app {
