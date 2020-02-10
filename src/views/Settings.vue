@@ -341,8 +341,8 @@ export default class Settings extends Vue {
         }
 
         for (let key in this.tabs[currentData].data) {
-            let code = this.tabs[currentData].data[key].code;
-            this.tabs[currentData].data[key].value = row[code];
+            let code = this.tabs[currentData].data[key]["code"];
+            this.tabs[currentData].data[key]["value"] = row[code];
         }
 
         this.$modal.show(`modal-${this.activeTab}Add`);
