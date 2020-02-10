@@ -2,12 +2,11 @@
 include ../lib/pugDeps.pug
 vmodal(
     name="modal-record"
-    height="auto"
+    height="555"
     width="900"
-    draggable
+    :draggable="!isMobileChoose"
     adaptive
     scrollable
-    resizable
 )
     .close-modal(@click="$modal.hide('modal-record')") +
     +b.Record
@@ -58,6 +57,7 @@ export default class Record extends Vue {
 
     @State(state => state.profile.loading) loading!: boolean;
     @State(state => state.record.chooseRecord) record!: {};
+    @State(state => state.baseTable.isMobileChoose) isMobileChoose!: any;
 
 
     @Watch("time")
@@ -116,7 +116,12 @@ export default class Record extends Vue {
 
     &__wrap {
         display: flex;
+        flex-wrap: wrap;
         border: 1px solid #0b0e11;
+
+        @include bp(m) {
+            flex-wrap: nowrap;
+        }
     }
 
     &__wrapPerson {

@@ -275,7 +275,7 @@ class ApiService {
         data["sex"] = sex ? sex : "m";
         data["price"] = price ? price : 0;
         data["wage"] = wage ? wage : 0;
-        data["phones"] = phones[0] ? phones : ["000"];
+        data["phones"] = phones[0] ? phones : ["0"];
         data["availability"] = availability.length ? availability : [
             {
                 "slot": "wednesday",
@@ -358,13 +358,14 @@ class ApiService {
             });
     }
 
-    public listRecord({venue_id = 3, date, coach, client, mobile}: any): any {
+    public listRecord({venue_id = 3, date, coach, client, mobile, slide}: any): any {
         let dateR = date ? `&date=${date}` : "",
             coachR = coach ? `&coach=${coach}` : "",
             clientR = client ? `&client=${client}` : "",
-            mobileR = mobile ? `&mobile=${mobile}` : "" ;
+            mobileR = mobile ? `&mobile=${mobile}` : "",
+            slideR = slide ? `&slide=${slide}` : "" ;
 
-        return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}`)
+        return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}${slideR}`)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });

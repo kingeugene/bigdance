@@ -45,6 +45,7 @@ interface baseTableState {
     descriptionRecord: string,
     loadedInit: boolean;
     settingsVenue: {};
+    week_day: string;
 }
 
 const module: Module<baseTableState, any> = {
@@ -101,6 +102,7 @@ const module: Module<baseTableState, any> = {
         weeks: 1,
         descriptionRecord: "",
         settingsVenue: {},
+        week_day: "Понедельник",
 },
 
     mutations: {
@@ -223,6 +225,10 @@ const module: Module<baseTableState, any> = {
 
         setIsMobileChoose(state, data) {
             state.isMobileChoose = data;
+        },
+
+        setWeek_day(state, data) {
+            state.week_day = data;
         }
     },
 
@@ -303,10 +309,10 @@ const module: Module<baseTableState, any> = {
         },
 
 //GET
-        async getListRecord({commit, state, dispatch}, {venue_id, date, coach, client}) {
+        async getListRecord({commit, state, dispatch}, {venue_id, date, coach, client, slide = ""}) {
             commit("setLoading", true);
 
-            const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile: state.isMobileChoose});
+            const {data, status} = await api.listRecord({venue_id, date, coach, client, mobile: state.isMobileChoose, slide});
 
             if (status === 200) {
                 await commit("setListRecord", data);
@@ -327,7 +333,14 @@ const module: Module<baseTableState, any> = {
             for (let key in dataTable) {
                 dateArr.push(key);
 
+                if (dataTable[key][0]) {
+                    commit("setWeek_day", dataTable[key][0].week_day);
+                } else {
+                    commit("setWeek_day", "");
+                }
+
                 for (let indexItem = 0; indexItem < dataTable[key].length; indexItem++)  {
+
 
                     const venueID = dataTable[key][indexItem]["venue_object_id"],
                         tdId = `${(key + venueID)}`,
@@ -373,8 +386,8 @@ const module: Module<baseTableState, any> = {
 
                     arrSettings[id] = {
                         interval: data[key].interval,
-                        start_time: data[key].start_time,
-                        end_time: data[key].end_time,
+                        start_time: data[key].start_time_formated,
+                        end_time: data[key].end_time_formated,
                     }
                 }
 

@@ -44,6 +44,7 @@ include ../lib/pugDeps.pug
                 )
                     +e.headDate
                         div(v-if="!isMobileChoose") {{ daysWeek[index] }}
+                        div(else) {{ week_day }}
                         div {{dateArr[index]}}
                 +e.TR.th-row.is-halls(:style="{'background':  currentColor}")
                     +e.TH.th-cell(
@@ -162,6 +163,8 @@ include ../lib/pugDeps.pug
         @editRecord="editRecord"
         @addRecord="addRecord"
     )
+    +e.arrowLeft(v-if="isMobileChoose" @click="serActualDataItem('prev')") <
+    +e.arrowRight(v-if="isMobileChoose" @click="serActualDataItem('next')") >
 </template>
 
 <script lang="ts">
@@ -237,6 +240,7 @@ export default class Timetable extends Vue {
     @State(state => state.baseTable.weeks) weeks!: number;
     @State(state => state.baseTable.descriptionRecord) descriptionRecord!: string;
     @State(state => state.baseTable.settingsVenue) settingsVenue!: {};
+    @State(state => state.baseTable.week_day) week_day!: string;
     @State(state => state.record.chooseRecord) record!: {};
 
     @Mutation setDataTable!: ({}) => void;
@@ -264,7 +268,7 @@ export default class Timetable extends Vue {
 
     @Action initBaseTable!: () => void;
     @Action listVenueObject!: () => void;
-    @Action getListRecord!: ({venue_id, date, coach, client}: any) => void;
+    @Action getListRecord!: ({venue_id, date, coach, client, slide}: any) => void;
     @Action createRecord!: ({venue_object_id, activity_id, coaches, clients, number_weeks, description, edit}: any) => void;
 
     @Watch("dateTimeChoose")
@@ -478,13 +482,13 @@ export default class Timetable extends Vue {
         return this.listVenue.length ? (this.listVenue[this.currentVenue]["color" as any]) : "#2f628e";
     }
 
-    serActualDataItem() {
+    serActualDataItem(slide = "") {
         let venue_id = this.actualVenue,
             date = this.dateTimeChoose,
             coach = this.coachChoose.code,
             client = this.customerChoose.code;
 
-        this.getListRecord({ venue_id, date, coach, client});
+        this.getListRecord({ venue_id, date, coach, client, slide: slide});
     }
 
     handleSwitchVenue(venueId: number, index: number): void {
@@ -545,7 +549,7 @@ export default class Timetable extends Vue {
         this.currentHall = this.halls[this.halsTurn(currentTd + 1) - 1];
 
         if (target.classList.contains('is-record')) {
-            this.clickTime = Math.round((event.offsetY + parseInt(target.style.top)) / (60 / this.gapTime));
+            this.clickTime = Math.round((event.offsetY + parseInt(target.style.top || 0)) / (60 / this.gapTime));
             const id = target.getAttribute("data-id");
             this.currentRecord = id;
             this.$modal.show('modal-record');
@@ -1010,6 +1014,24 @@ export default class Timetable extends Vue {
             align-items: center;
             justify-content: space-between;
         }
+    }
+
+    &__arrowLeft,
+    &__arrowRight {
+        position: absolute;
+        bottom: 20px;
+        font-size: 40px;
+        font-weight: bold;
+        color: $orange;
+        z-index: 9999;
+    }
+
+    &__arrowLeft {
+        left: 20px;
+    }
+
+    &__arrowRight {
+        right: 20px;
     }
 }
 </style>

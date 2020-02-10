@@ -16,10 +16,8 @@ include ../lib/pugDeps.pug
         +e.VMODAL.modal(
             :name="'modal-' + item.code + 'Add'"
             height="auto"
-            draggable
             adaptive
             scrollable
-            resizable
         )
             .close-modal(@click="$modal.hide('modal-' + item.code + 'Add')") +
             +e.FORM.form(@submit.prevent="submitSettings(item.code)")
@@ -57,7 +55,7 @@ include ../lib/pugDeps.pug
     )
         template(slot="table-row" slot-scope="props")
             +e.iconWrap.SPAN(v-if="props.column.field == 'action'")
-                +e.iconEdit.I.fa.fa-edit(@click.prevent="editSetting(props.row)" title="Редактировать")
+                +e.iconEdit.I.fa.fa-edit( @click.prevent="editSetting(props.row)" title="Редактировать")
                 +e.iconEdit.I.fa.fa-trash(@click.prevent="showModalDelete(props.row.id)" title="Удалить")
     +e.VMODAL.modalDelete(
         name="delete-settings"
@@ -114,14 +112,14 @@ export default class Settings extends Vue {
                 {
                     name: "Начало работы*",
                     value: "",
-                    code: "start_time_formated",
+                    code: "start_time",
                     required: true,
 
                 },
                 {
                     name: "Окончание работы*",
                     value: "",
-                    code: "end_time_formated",
+                    code: "end_time",
                     required: true,
 
                 },
@@ -225,11 +223,11 @@ export default class Settings extends Vue {
         },
         {
             label: 'Начало',
-            field: 'start_time_formated',
+            field: 'start_time',
         },
         {
             label: 'Окончание',
-            field: 'end_time_formated',
+            field: 'end_time',
         },
         {
             label: 'Интервал',
@@ -282,10 +280,6 @@ export default class Settings extends Vue {
         {
             label: 'Бронь всего зала',
             field: 'block',
-        },
-        {
-            label: 'Ред',
-            field: 'action',
         },
     ];
 
