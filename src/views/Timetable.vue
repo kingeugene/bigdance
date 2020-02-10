@@ -163,8 +163,8 @@ include ../lib/pugDeps.pug
         @editRecord="editRecord"
         @addRecord="addRecord"
     )
-    +e.arrowLeft(v-if="isMobileChoose" @click="serActualDataItem('prev')") <
-    +e.arrowRight(v-if="isMobileChoose" @click="serActualDataItem('next')") >
+    +e.arrowLeft(v-if="isMobileChoose" @click="slideActualDataItem('prev')") <
+    +e.arrowRight(v-if="isMobileChoose" @click="slideActualDataItem('next')") >
 </template>
 
 <script lang="ts">
@@ -488,7 +488,16 @@ export default class Timetable extends Vue {
             coach = this.coachChoose.code,
             client = this.customerChoose.code;
 
-        this.getListRecord({ venue_id, date, coach, client, slide: slide});
+        this.getListRecord({ venue_id, date, coach, client});
+    }
+
+    slideActualDataItem(slide: string): void {
+        let venue_id = this.actualVenue,
+            date = this.dateArr[0],
+            coach = this.coachChoose.code,
+            client = this.customerChoose.code;
+
+        this.getListRecord({ venue_id, date, coach, client, slide});
     }
 
     handleSwitchVenue(venueId: number, index: number): void {
