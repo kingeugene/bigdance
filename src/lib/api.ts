@@ -122,7 +122,7 @@ class ApiService {
             number_weeks: number_weeks,
             description,
         })
-            .catch((error: any) => {
+            .catch((error: any, message) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
     }
@@ -391,7 +391,7 @@ class ApiService {
     }
 
     public recordOne({date, time, venue_object_id}): any {
-        return axios.get(`${serverName}/v0/records?date=${date}&time=${time}&venue_object_id=${venue_object_id}`)
+        return axios.get(`${serverName}/v0?date=${date}&time=${time}&venue_object_id=${venue_object_id}`)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });

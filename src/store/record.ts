@@ -24,7 +24,7 @@ const module: Module<recordState, any> = {
             const {data, status} = await api.recordOne({date, time, venue_object_id});
 
             if (status === 200) {
-                await commit("setChooseRecord", data.record);
+                await commit("setChooseRecord", data[date]);
             } else {
                 alert("Данные не загрузились!")
             }

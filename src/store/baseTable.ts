@@ -236,10 +236,12 @@ const module: Module<baseTableState, any> = {
                 status_record = "confirmed",
                 cancelled_at = "";
 
-            const {data, status} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description, edit });
+            const {data, status, errors} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description, edit });
 
             if (status === 200) {
                 dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null,});
+            } else {
+                alert("В связи с ограничениями, невозможно создать запись на данное время")
             }
 
             commit("setLoading", false);

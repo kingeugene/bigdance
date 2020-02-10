@@ -114,14 +114,14 @@ export default class Settings extends Vue {
                 {
                     name: "Начало работы*",
                     value: "",
-                    code: "start_time",
+                    code: "start_time_formated",
                     required: true,
 
                 },
                 {
                     name: "Окончание работы*",
                     value: "",
-                    code: "end_time",
+                    code: "end_time_formated",
                     required: true,
 
                 },
@@ -225,11 +225,11 @@ export default class Settings extends Vue {
         },
         {
             label: 'Начало',
-            field: 'start_time',
+            field: 'start_time_formated',
         },
         {
             label: 'Окончание',
-            field: 'end_time',
+            field: 'end_time_formated',
         },
         {
             label: 'Интервал',

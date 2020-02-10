@@ -58,7 +58,7 @@ input, textarea {
 .close-modal {
     font-size: 40px;
     position: absolute;
-    right: 16px;
+    right: 20px;
     top: -11px;
     transform: rotate(45deg);
     cursor: pointer;

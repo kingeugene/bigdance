@@ -155,6 +155,7 @@ include ../lib/pugDeps.pug
                 +e.errorMessage {{errorMessage}}
     // modall record
     Record(
+        :recordId="+currentRecord"
         :time="clickTime"
         :date="dateModal"
         :venue_object_id="currentHall.id"
@@ -597,19 +598,19 @@ export default class Timetable extends Vue {
         }
     }
 
-    editRecord() {
-        this.dateModal = this.record.date;
-        this.selectTimeStart = this.minInTime(this.record.start_time);
-        this.selectTimeEnd = this.minInTime(this.record.end_time);
+    editRecord(index) {
+        this.dateModal = this.record[index].date;
+        this.selectTimeStart = this.minInTime(this.record[index].start_time);
+        this.selectTimeEnd = this.minInTime(this.record[index].end_time);
 
-        let coaches = this.record.coaches.map(item => {
+        let coaches = this.record[index].coaches.map(item => {
             return {
                 code: item.person_id,
                 label: `${item.first_name} ${item.second_name}`,
             };
         });
 
-        let customer = this.record.clients.map(item => {
+        let customer = this.record[index].clients.map(item => {
 
             return {
                 code: item.person_id,
@@ -623,28 +624,28 @@ export default class Timetable extends Vue {
             account_id: 1,
             block: 1,
             color: "",
-            id: this.record.activity_id,
-            label: this.record.activity_type_name,
+            id: this.record[index].activity_id,
+            label: this.record[index].activity_type_name,
         };
         this.currentHall = {
-            name: this.record.venue_object_name,
-            id: this.record.venue_object_id,
+            name: this.record[index].venue_object_name,
+            id: this.record[index].venue_object_id,
         };
         this.currentWeeks = 1;
-        this.currentDescriptionRecord = this.record.description;
+        this.currentDescriptionRecord = this.record[index].description;
 
-        this.flagEditRecord = this.record.id;
+        this.flagEditRecord = this.record[index].id;
 
         this.$modal.show('modal-add');
     }
 
     addRecord() {
-        this.dateModal = this.record.date;
-        this.selectTimeStart = this.minInTime(this.record.start_time);
-        this.selectTimeEnd = this.minInTime(this.record.end_time);
+        this.dateModal = this.record[0].date;
+        this.selectTimeStart = this.minInTime(this.record[0].start_time);
+        this.selectTimeEnd = this.minInTime(this.record[0].end_time);
         this.currentHall = {
-            name: this.record.venue_object_name,
-            id: this.record.venue_object_id,
+            name: this.record[0].venue_object_name,
+            id: this.record[0].venue_object_id,
         };
         this.currentWeeks = 1;
         this.$modal.show('modal-add');

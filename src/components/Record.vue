@@ -13,29 +13,30 @@ vmodal(
     +b.Record
         +e.H4.title Запись
         template(v-if="!loading")
-            +e.wrap
-                +e.labelWrap
-                    +e.label Дата и Время
-                    +e.data {{record.date}} | {{minInTime(record.start_time)}} - {{minInTime(record.end_time)}}
+            template(v-for="(item, index) in record")
+                +e.wrap
+                    +e.labelWrap
+                        +e.label Дата и Время
+                        +e.data {{item.date}} </br> {{minInTime(item.start_time)}} - {{minInTime(item.end_time)}}
 
-                +e.labelWrap
-                    +e.label Тип
-                    +e.data {{record.activity_type_name}}
+                    +e.labelWrap
+                        +e.label Тип
+                        +e.data {{item.activity_type_name}}
 
-                +e.labelWrap(v-for="item in record.clients")
-                    +e.label Клиент
-                    +e.data {{item.first_name}} {{item.second_name}}
+                    +e.labelWrap(v-for="itemCustomer in item.clients")
+                        +e.label Клиент
+                        +e.data {{itemCustomer.first_name}} {{itemCustomer.second_name}} <br/> Прайс: {{itemCustomer.client_price}} <br/> Тел: {{itemCustomer.phone}}
 
-                +e.labelWrap(v-for="item in record.coaches")
-                    +e.label Тренер
-                    +e.data {{item.first_name}} {{item.second_name}}
+                    +e.labelWrap(v-for="itemCoach in item.coaches")
+                        +e.label Тренер
+                        +e.data {{itemCoach.first_name}} {{itemCoach.second_name}} <br/> Прайс: {{itemCoach.coach_price}} <br/> Тел: {{itemCoach.phone}}
 
-                +e.labelWrap
-                    +e.label Заметки
-                    +e.data {{record.description}}
-            +e.btnEdit
-                button.btn.btn-warning(@click="editRecord") Редактировать
-                button.btn.btn-danger(@click="recordDelete") Удалить
+                    +e.labelWrap
+                        +e.label Заметки
+                        +e.data {{item.description}}
+                +e.btnEdit
+                    button.btn.btn-warning(@click="editRecord(index)") Редактировать
+                    button.btn.btn-danger(@click="recordDelete") Удалить
 
             button.btn.btn-success(@click="addRecord") Добавить Запись
 </template>
@@ -46,8 +47,9 @@ import {State, Mutation, Action} from "vuex-class";
 
 @Component
 export default class Record extends Vue {
+    @Prop({type: Number, default: 1}) recordId!: string;
     @Prop({type: String, default: ""}) time!: string;
-    @Prop({type: String, default: 1}) date!: string;
+    @Prop({type: String, default: ""}) date!: string;
     @Prop({type: Number, default: 1}) venue_object_id!: number;
 
     @Action initChooseRecord!: ({date, time, venue_object_id}: any) => void;
@@ -79,17 +81,18 @@ export default class Record extends Vue {
         return  hours + ':' + mins;
     }
 
-    editRecord() {
-        this.$emit("editRecord");
+    editRecord(index) {
+        this.$emit("editRecord", index);
     }
 
-    addRecord() {
+    addRecord(index) {
         this.$emit("addRecord");
     }
 
     recordDelete() {
         if (window.confirm("Вы действительно хотите уалить Запись?")) {
             this.deleteRecord(this.recordId);
+            this.$modal.hide('modal-record');
         }
     }
 }
