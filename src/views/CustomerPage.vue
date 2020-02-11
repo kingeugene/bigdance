@@ -5,10 +5,26 @@ include ../lib/pugDeps.pug
     +e.wrap(v-if="loadedInit")
         div
             +e.coachWrap
-                +e.IMG.coach(src="https://sivator.com/uploads/posts/2017-08/1501737653_urodru20170803sheste_01.jpg")
+                +e.IMG.coach(src="https://ivara.ru/images/new/main_redgirl.png")
                 +e.coachName-wrap
                     +e.coachName {{customer.first_name}} <br> {{customer.second_name}}
                     div Прайс: {{customer.price}}
+                    +e.filter
+                        +e.select
+                            +e.selectName Выбрать тренера
+                            v-select(
+                                :options="coach"
+                                v-model="actualCoach"
+                            )
+                        datepicker2(
+                            lang="ru"
+                            v-model="date"
+                            valueType="format"
+                            clearable
+                            :first-day-of-week="7"
+                            width="100%"
+                            format="YYYY-MM-DD"
+                        )
         +e.tableWrap
             vue-good-table(
                 :columns="columns"
@@ -21,22 +37,6 @@ include ../lib/pugDeps.pug
                 max-height="600px"
                 theme="black-rhino"
             )
-            +e.filter
-                +e.select
-                    +e.selectName Выбрать тренера
-                    v-select(
-                        :options="coach"
-                        v-model="actualCoach"
-                    )
-                datepicker2(
-                    lang="ru"
-                    v-model="date"
-                    valueType="format"
-                    clearable
-                    :first-day-of-week="7"
-                    width="100%"
-                    format="YYYY-MM-DD"
-                )
 </template>
 
 <script lang="ts">
@@ -163,6 +163,10 @@ export default class CoachPage extends Vue {
     &__wrap {
         display: flex;
         flex-wrap: wrap;
+
+        @include bp(m) {
+            flex-wrap: nowrap;
+        }
     }
 
     &__title {
@@ -175,16 +179,15 @@ export default class CoachPage extends Vue {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
+
+        @include bp(m) {
+            flex-wrap: nowrap;
+        }
     }
 
     &__filter {
         width: 100%;
-        order: -1;
-
-        @include bp(m) {
-            order: 1;
-            margin-left: 30px;
-        }
+        margin-top: 40px;
     }
 
     &__select {
@@ -192,22 +195,29 @@ export default class CoachPage extends Vue {
     }
 
     &__coach {
-        width: 260px;
+        width: 200px;
+        object-fit: contain;
 
         &Wrap {
             display: flex;
             flex-wrap: wrap;
             margin-bottom: 40px;
+
+            @include bp(m) {
+                flex-wrap: nowrap;
+            }
         }
 
         &Name {
             font-size: 24px;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
 
             &-wrap {
+                width: 100%;
+
                 @include bp(m) {
-                    margin: 10px 50px;
-                    min-width: 168px;
+                    margin: 10px 30px;
+                    min-width: 200px;
                 }
             }
         }
@@ -222,6 +232,8 @@ export default class CoachPage extends Vue {
     }
 
     &__available {
+        margin-bottom: 30px;
+
         &Name {
             margin-bottom: 10px;
             font-size: 18px;
