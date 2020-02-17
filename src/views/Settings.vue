@@ -30,12 +30,6 @@ include ../lib/pugDeps.pug
                                 v-model="field.value"
                                 :reduce="name => name.id"
                             )
-                        div(v-else-if="field.block")
-                            div {{field.name}}
-                            +e.LABEL.radio Нет
-                                +e.INPUT.switch(type="radio" :value="0" v-model="field.value")
-                            +e.LABEL.radio Да
-                                +e.INPUT.switch(type="radio" :value="1" v-model="field.value")
 
                         +e.labelWrap(v-else)
                             +e.label {{field.name}}
@@ -181,8 +175,7 @@ export default class Settings extends Vue {
                     required: false,
                 },
                 {
-                    block: true,
-                    name: "Только одна бронь",
+                    name: "Кол-во броней",
                     value: 0,
                     code: "block",
                     required: false,
@@ -278,8 +271,12 @@ export default class Settings extends Vue {
             field: 'color',
         },
         {
-            label: 'Бронь всего зала',
+            label: 'Кол-во броней',
             field: 'block',
+        },
+        {
+            label: 'Ред',
+            field: 'action',
         },
     ];
 

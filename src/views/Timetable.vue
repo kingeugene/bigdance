@@ -44,7 +44,7 @@ include ../lib/pugDeps.pug
                 )
                     +e.headDate
                         div(v-if="!isMobileChoose") {{ daysWeek[index] }}
-                        div(else) {{ week_day }}
+                        div(else) {{ dayOfWeek(dateArr[index]) }}
                         div {{dateArr[index]}}
                 +e.TR.th-row.is-halls(:style="{'background':  currentColor}")
                     +e.TH.th-cell(
@@ -464,6 +464,12 @@ export default class Timetable extends Vue {
         }
 
         this.setRecordActivityType(value);
+    }
+
+    dayOfWeek(day: string): string {
+        return day
+            ? this.daysWeek[new Date(day.replace("-", ", ")).getDay() - 1]
+            : "";
     }
 
     get numHalls(): number {
