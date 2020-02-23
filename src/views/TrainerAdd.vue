@@ -17,6 +17,9 @@ include ../lib/pugDeps.pug
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="secondNameAdd" required)
 
+                +e.labelWrap
+                    +e.LABEL.label(for="photo") Фото*
+                    +e.INPUT.input#photo(accept="image/*" @change="uploadFile" type="file")
             +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="birthDate") Дата Рождения
@@ -207,6 +210,9 @@ export default class TrainersAdd extends Vue {
     @State(state => state.trainersAdd.phones) phones!: string;
     @Mutation setPhones!: (phones: string) => void;
 
+    @State(state => state.trainersAdd.photo) photo!: any;
+    @Mutation setPhoto!: (phones: any) => void;
+
     @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
     @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
 
@@ -333,6 +339,10 @@ export default class TrainersAdd extends Vue {
 
     set phonesAdd(phones: string) {
         this.setPhones(phones);
+    }
+
+    uploadFile(event) {
+        this.setPhoto(event.target.files[0])
     }
 
     submitForm(): void {

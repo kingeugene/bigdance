@@ -246,52 +246,8 @@ class ApiService {
             });
     }
 
-    public coachAdd({
-        id_card,
-        first_name,
-        second_name,
-        birth_date,
-        sex,
-        document_id,
-        notes,
-        switch_user,
-        username,
-        password,
-        position,
-        wage,
-        price,
-        style_id,
-        phones,
-        availability,
-    }: any ): any {
-        let data: any = {};
-
-        data["id_card"] = id_card;
-        data["account_id"] = 1;
-        data["first_name"] = first_name;
-        data["second_name"] = second_name;
-        data["switch_user"] = switch_user;
-        data["style_id"] = style_id;
-        data["sex"] = sex ? sex : "m";
-        data["price"] = price ? price : 0;
-        data["wage"] = wage ? wage : 0;
-        data["phones"] = phones[0] ? phones : ["0"];
-        data["availability"] = availability.length ? availability : [
-            {
-                "slot": "wednesday",
-                "from": "8:30",
-                "to": "17:00",
-            },
-        ];
-
-        if (birth_date) data["birth_date"] = birth_date;
-        if (document_id) data["document_id"] = document_id;
-        if (notes) data["notes"] = notes;
-        if (username) data["username"] = username;
-        if (password) data["password"] = password;
-        if (position) data["position"] = position;
-
-        return axios.post(`${serverName}/v0/coaches`, data)
+    public coachAdd(body): any {
+        return axios.post(`${serverName}/v0/coaches`, body)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
@@ -393,6 +349,13 @@ class ApiService {
 
     public recordOne({date, time, venue_object_id}): any {
         return axios.get(`${serverName}/v0?date=${date}&time=${time}&venue_object_id=${venue_object_id}`)
+            .catch((error: any) => {
+                return Promise.resolve({response: null, errors: error, status: 422});
+            });
+    }
+
+    public userSettings(): any {
+        return axios.get(`${serverName}/user/info`)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });

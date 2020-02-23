@@ -6,6 +6,7 @@ interface coachAddState {
     email: string;
     first_name: string;
     second_name: string;
+    photo: any;
     birth_date: string;
     sex: {
         label: string,
@@ -34,6 +35,7 @@ const module: Module<coachAddState, any> = {
         email: "",
         first_name: "",
         second_name: "",
+        photo: null,
         birth_date: "",
         sex: {
             label: "",
@@ -126,6 +128,10 @@ const module: Module<coachAddState, any> = {
             state.activityStyle = data;
         },
 
+        setPhoto(state, data) {
+            state.photo = data;
+        },
+
         clearAll(state) {
             state.email = "";
             state.first_name = "";
@@ -148,25 +154,27 @@ const module: Module<coachAddState, any> = {
         async submitTrainers({state, commit, dispatch}) {
             commit("setLoading", true);
 
-            const {data, status} = await api.coachAdd({
-                "account_id": 1,
-                "id_card": state.email,
-                "first_name": state.first_name,
-                "second_name": state.second_name,
-                "birth_date": state.birth_date,
-                "sex": state.sex.code,
-                "document_id": state.document_id,
-                "notes": state.notes,
-                "switch_user": state.switch_user,
-                "username": state.username,
-                "password": state.password,
-                "position": state.position,
-                "wage": state.wage,
-                "price":  state.price,
-                "phones": (state.phones).split(" "),
-                "style_id": state.style_id["id"],
-                "availability": state.availability,
-            });
+            const formData = new FormData();
+
+            formData.append("account_id",  "1");
+            formData.append("id_card",  state.email);
+            formData.append("first_name",  state.first_name);
+            formData.append("second_name",  state.second_name);
+            formData.append("photo",  state.photo);
+            formData.append("sex",  state.sex.code);
+            formData.append("document_id",  state.document_id);
+            formData.append("notes",  state.notes);
+            formData.append("switch_user",  Number(state.switch_user).toString());
+            formData.append("username",  state.username);
+            formData.append("password",  state.password);
+            formData.append("position",  state.position);
+            formData.append("wage",  state.wage);
+            formData.append("price",  state.price);
+            formData.append("phones",  JSON.stringify(state.phones.split(" ")));
+            formData.append("availability",  state.availability.toString());
+            formData.append("style_id",  state.style_id["id"].toString());
+
+            const {data, status} = await api.coachAdd(formData);
 
             if (status === 200) {
                 await dispatch("allCoach");

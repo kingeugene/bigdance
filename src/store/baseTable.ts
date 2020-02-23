@@ -46,6 +46,7 @@ interface baseTableState {
     loadedInit: boolean;
     settingsVenue: {};
     week_day: string;
+
 }
 
 const module: Module<baseTableState, any> = {
@@ -244,7 +245,7 @@ const module: Module<baseTableState, any> = {
 
             const {data, status, errors} = await api.createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description, edit });
 
-            if (status === 200) {
+            if (status === 200 && data.status !== "error") {
                 dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code, mobile: null,});
             } else {
                 alert("В связи с ограничениями, невозможно создать запись на данное время")
@@ -290,7 +291,10 @@ const module: Module<baseTableState, any> = {
                 commit("setIsMobileChoose", 1);
             }
 
-            await dispatch("listVenue");
+            let requestStart = [
+                dispatch("listVenue"),
+                dispatch("getUserInfo"),
+            ];
 
             let request = [
                 dispatch("listVenueObject"),
@@ -302,6 +306,7 @@ const module: Module<baseTableState, any> = {
                 dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code}),
             ];
 
+            await Promise.all(requestStart);
             await Promise.all(request);
 
             commit("setLoading", false);
@@ -320,6 +325,21 @@ const module: Module<baseTableState, any> = {
             } else {
                 alert("Данные не загрузились!")
             }
+
+            commit("setLoading", false);
+        },
+
+        async getUserInfo({commit}) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.userSettings();
+
+            // if (status === 200) {
+            //     await commit("setListRecord", data);
+            //     dispatch("dataForItem");
+            // } else {
+            //     alert("Данные не загрузились!")
+            // }
 
             commit("setLoading", false);
         },

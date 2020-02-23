@@ -44,7 +44,7 @@ include ../lib/pugDeps.pug
                 )
                     +e.headDate
                         div(v-if="!isMobileChoose") {{ daysWeek[index] }}
-                        div(else) {{ dayOfWeek(dateArr[index]) }}
+                        div(v-else) {{ dayOfWeek(dateArr[index]) }}
                         div {{dateArr[index]}}
                 +e.TR.th-row.is-halls(:style="{'background':  currentColor}")
                     +e.TH.th-cell(
