@@ -46,6 +46,7 @@ interface baseTableState {
     loadedInit: boolean;
     settingsVenue: {};
     week_day: string;
+    role: string;
 
 }
 
@@ -104,6 +105,7 @@ const module: Module<baseTableState, any> = {
         descriptionRecord: "",
         settingsVenue: {},
         week_day: "Понедельник",
+        role: "",
 },
 
     mutations: {
@@ -230,7 +232,11 @@ const module: Module<baseTableState, any> = {
 
         setWeek_day(state, data) {
             state.week_day = data;
-        }
+        },
+
+        setRole(state, data) {
+            state.role = data;
+        },
     },
 
     actions: {
@@ -334,12 +340,11 @@ const module: Module<baseTableState, any> = {
 
             const {data, status} = await api.userSettings();
 
-            // if (status === 200) {
-            //     await commit("setListRecord", data);
-            //     dispatch("dataForItem");
-            // } else {
-            //     alert("Данные не загрузились!")
-            // }
+            if (status === 200) {
+                commit("setRole", data.role);
+            } else {
+                alert("Данные не загрузились!")
+            }
 
             commit("setLoading", false);
         },

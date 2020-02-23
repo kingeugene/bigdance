@@ -14,7 +14,7 @@ include ../../lib/pugDeps.pug
             +e.logo(@click="$router.push('/').catch(err => {})") BIG Dance
             +e.navigation
                 template(v-if="token" v-for="item in navigationItem")
-                    +e.navigationItem(@click="$router.push(item.link).catch(err => {})") {{item.name}}
+                    +e.navigationItem(v-if="item.show" @click="$router.push(item.link).catch(err => {})") {{item.name}}
                 +e.navigationItem(v-if="token" @click="logout()") Выйти
                 +e.navigationItem(v-if="!token") Логин
             +e.mobileBtn(v-if="token" @click="toggleBurger" :class="{'is-active': menuOpen}")
@@ -38,6 +38,7 @@ export default class BaseHeader extends Vue {
     menuOpen: boolean = false;
 
     @State(state => state.baseTable.show) showFilter!: boolean;
+    @State(state => state.baseTable.role) role!: string;
     @State(state => state.login.token) token!: string;
 
     @Mutation setShow!: () => void;
@@ -57,28 +58,36 @@ export default class BaseHeader extends Vue {
         this.toggleBurger();
     }
 
-    navigationItem: {name: string, link: string}[] = [
-        {
-            name: "Расписание",
-            link: "/",
-        },
-        {
-            name: "Клиенты",
-            link: "/customers",
-        },
-        {
-            name: "Тренеры",
-            link: "/trainers",
-        },
-        {
-            name: "Справка",
-            link: "/reference",
-        },
-        {
-            name: "Настройки",
-            link: "/settings",
-        },
-    ];
+    get navigationItem(): {name: string, link: string, show: any}[] {
+        return [
+            {
+                name: "Расписание",
+                link: "/",
+                show: true,
+            },
+            {
+                name: "Клиенты",
+                link: "/customers",
+                show: this.role === "root",
+            },
+            {
+                name: "Тренеры",
+                link: "/trainers",
+                show: this.role === "root" || this.role === "Coach",
+            },
+            {
+                name: "Справка",
+                link: "/reference",
+                show: true,
+            },
+            {
+                name: "Настройки",
+                link: "/settings",
+                show: this.role === "root",
+            },
+        ];
+    }
+
 }
 </script>
 
