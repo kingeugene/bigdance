@@ -33,11 +33,11 @@ vmodal(
                     +e.labelWrap
                         +e.label Заметки
                         +e.data {{item.description}}
-                +e.btnEdit
+                +e.btnEdit(v-if="role === 'root'")
                     button.btn.btn-warning(@click="editRecord(index)") Редактировать
                     button.btn.btn-danger(@click="recordDelete") Удалить
 
-            button.btn.btn-success(@click="addRecord") Добавить Запись
+            button.btn.btn-success(v-if="role === 'root'" @click="addRecord") Добавить Запись
 </template>
 
 <script lang="ts">
@@ -54,7 +54,7 @@ export default class Record extends Vue {
     @Action initChooseRecord!: ({date, time, venue_object_id}: any) => void;
     @Action deleteRecord!: (id: string) => void;
 
-
+    @State(state => state.baseTable.role) role!: string;
     @State(state => state.profile.loading) loading!: boolean;
     @State(state => state.record.chooseRecord) record!: {};
     @State(state => state.baseTable.isMobileChoose) isMobileChoose!: any;
@@ -118,6 +118,7 @@ export default class Record extends Vue {
         display: flex;
         flex-wrap: wrap;
         border: 1px solid #0b0e11;
+        margin-bottom: 10px;
 
         @include bp(m) {
             flex-wrap: nowrap;
