@@ -5,7 +5,7 @@ include ../lib/pugDeps.pug
     +e.wrap(v-if="loadedInit")
         div
             +e.coachWrap
-                +e.IMG.coach(src="https://ivara.ru/images/new/main_redgirl.png")
+                +e.IMG.coach(src="http://tt-crm.loc:8085/api/1582578081.png")
                 +e.coachName-wrap
                     +e.coachName {{coach.first_name}} <br> {{coach.second_name}}
                     +e.coachPosition {{coach.position}}
@@ -33,7 +33,7 @@ include ../lib/pugDeps.pug
         +e.tableWrap
             vue-good-table(
                 :columns="columns"
-                :rows="recordCoach"
+                :rows="filterRecordCoach"
                 :search-options="optionSearch"
                 styleClass="vgt-table bordered"
                 :pagination-options="optionPagination"
@@ -65,7 +65,7 @@ export default class CoachPage extends Vue {
     @State(state => state.baseCoach.showCoach) coach!: any;
     @State(state => state.baseTable.allClients) clients!: string[];
     @State(state => state.baseTable.listVenue) listVenue!: string[];
-    @State(state => state.baseCoach.recordCoach) recordCoach!: string[];
+    @State(state => state.baseCoach.recordCoach) recordCoach!: any;
     @State(state => state.baseCoach.customerChoose) customerChoose!: any;
     @State(state => state.baseCoach.dateTimeChoose) dateTimeChoose!: string;
     @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
@@ -109,13 +109,10 @@ export default class CoachPage extends Vue {
         enabled: true,
     };
 
-    @Watch("customerChoose")
-    getActualСustomer(value: any) {
-        this.getRecordCoach({
-            date: this.dateTimeChoose,
-            coach: parseInt(this.$route.params.id),
-            client: value.code,
-        });
+    get filterRecordCoach(): any {
+        return this.actualCustomer!.code
+            ? this.recordCoach.filter(item => item.clientsId.some(id => id == this.actualCustomer!.code))
+            : this.recordCoach;
     }
 
     @Watch("dateTimeChoose")

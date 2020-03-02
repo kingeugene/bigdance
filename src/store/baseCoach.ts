@@ -62,14 +62,17 @@ const module: Module<coachState, any> = {
                     if (data[key].length) {
                         data[key].forEach((item: any) => {
                             let clients: string[] = [];
+                            let clientsId: string[] = [];
 
                             for (let indexClients in item["clients"]) {
                                 clients.push(item["clients"][indexClients].full_name);
+                                clientsId.push(item["clients"][indexClients].id);
                             }
 
                             dataRecord.push({
                                 date: `${item.date} ${minInTime(item.start_time)}-${minInTime(item.end_time)}`,
                                 clients: clients.join(", "),
+                                clientsId,
                                 type: item.activity_type_name,
                                 location: `${item.venue_name} ${item.venue_object_name}`,
                             });

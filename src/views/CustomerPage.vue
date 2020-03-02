@@ -28,7 +28,7 @@ include ../lib/pugDeps.pug
         +e.tableWrap
             vue-good-table(
                 :columns="columns"
-                :rows="recordCustomer"
+                :rows="filterRecordCustomer"
                 :search-options="optionSearch"
                 styleClass="vgt-table bordered"
                 :pagination-options="optionPagination"
@@ -60,7 +60,7 @@ export default class CoachPage extends Vue {
     @State(state => state.baseClients.showCustomer) customer!: any;
     @State(state => state.baseTable.allCoach) coach!: string[];
     @State(state => state.baseTable.listVenue) listVenue!: string[];
-    @State(state => state.baseClients.recordCustomer) recordCustomer!: string[];
+    @State(state => state.baseClients.recordCustomer) recordCustomer!: any;
     @State(state => state.baseClients.coachChoose) coachChoose!: any;
     @State(state => state.baseClients.dateTimeChoose) dateTimeChoose!: string;
     @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
@@ -103,13 +103,10 @@ export default class CoachPage extends Vue {
         enabled: true,
     };
 
-    @Watch("coachChoose")
-    getActualСustomer(value: any) {
-        this.getRecordCustomer({
-            date: this.dateTimeChoose,
-            coach: value.code,
-            client: parseInt(this.$route.params.id) ,
-        });
+    get filterRecordCustomer(): any {
+        return this.actualCoach!.code
+            ? this.recordCustomer.filter(item => item.coachesId.some(id => id == this.actualCoach!.code))
+            : this.recordCustomer;
     }
 
     @Watch("dateTimeChoose")

@@ -278,12 +278,16 @@ export default class Timetable extends Vue {
 
     @Watch("actualCoach")
     getActualСoach(value: any) {
-        this.serActualDataItem();
+        this.initDataItem = true;
+        this.setDataItem();
+        // this.serActualDataItem();
     }
 
     @Watch("customerChoose")
     getActualСustomer(value: any) {
-        this.serActualDataItem();
+        this.initDataItem = true;
+        this.setDataItem();
+        // this.serActualDataItem();
     }
 
     @Watch("actualVenue")
@@ -695,9 +699,22 @@ export default class Timetable extends Vue {
 
             for (let key = 0; key < value.length; key++) {
 
-                let idRecord = Object.keys(value[key])[0],
-                    record = value[key][idRecord],
-                    dataAdd = document.getElementById(idRecord),
+                let idRecord = Object.keys(value[key])[0];
+                let record = value[key][idRecord];
+
+                if (this.actualCoach!.code) {
+                    if (record[5].some(item => item.id != this.actualCoach!.code) || !record[5].length) {
+                        continue;
+                    }
+                }
+
+                if (this.actualCustomer!.code) {
+                    if (record[6].some(item => item.id != this.actualCustomer!.code) || !record[6].length) {
+                        continue;
+                    }
+                }
+
+                let dataAdd = document.getElementById(idRecord),
                     itemData = document.createElement("div");
                 if (!dataAdd) {
                     return;
@@ -707,7 +724,7 @@ export default class Timetable extends Vue {
                 itemData!.style.height = record[1] + "px";
                 itemData!.style.background = record[2];
                 itemData.setAttribute("data-id", record[7]);
-                itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])} `;
+                itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])}`;
                 itemData!.classList.add("is-record");
 
                 dataAdd!.appendChild(itemData);
