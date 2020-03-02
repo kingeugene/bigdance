@@ -128,7 +128,7 @@ const module: Module<coachAddState, any> = {
             state.activityStyle = data;
         },
 
-        setPhoto(state, data) {
+        setPhotoTrainers(state, data) {
             state.photo = data;
         },
 
@@ -171,7 +171,7 @@ const module: Module<coachAddState, any> = {
             formData.append("wage",  state.wage);
             formData.append("price",  state.price);
             formData.append("phones",  JSON.stringify(state.phones.split(" ")));
-            formData.append("availability",  state.availability.toString());
+            formData.append("availability",  JSON.stringify(state.availability));
             formData.append("style_id",  state.style_id["id"].toString());
 
             const {data, status} = await api.coachAdd(formData);
