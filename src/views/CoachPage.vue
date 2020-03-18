@@ -5,7 +5,7 @@ include ../lib/pugDeps.pug
     +e.wrap(v-if="loadedInit")
         div
             +e.coachWrap
-                +e.IMG.coach(src="http://tt-crm.loc:8085/api/1582578081.png")
+                +e.IMG.coach(:srcset="coach.photo")
                 +e.coachName-wrap
                     +e.coachName {{coach.first_name}} <br> {{coach.second_name}}
                     +e.coachPosition {{coach.position}}
@@ -198,7 +198,7 @@ export default class CoachPage extends Vue {
     }
 
     &__coach {
-        width: 200px;
+        width: 260px;
         object-fit: contain;
 
         &Wrap {

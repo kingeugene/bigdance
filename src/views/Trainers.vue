@@ -104,7 +104,7 @@ include ../lib/pugDeps.pug
 
                 +e.availabilityList(v-for="(item, index) in changeCoach.availability" :key="index")
                     +e.availabilityWrap
-                        +e.availabilityName {{item.slot}}
+                        +e.availabilityName {{item.label}}
                         +e.LABEL(for="switchUserFalse") C
                             +e.INPUT.switch(v-model="changeCoach.availability[index].from" )
                         +e.LABEL(for="switchUserTrue") Дo

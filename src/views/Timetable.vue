@@ -57,6 +57,7 @@ include ../lib/pugDeps.pug
             )
                 +e.TD.td-cell(
                     :id="classTd(indexTd, indexTr)"
+                    :class="{'is-border': !((indexTd + 1) % numHalls) }"
                     v-for="(cell, indexTd) of allDays"
                     :key="indexTd"
                     @click="showModal($event, indexTr, indexTd)"
@@ -880,6 +881,10 @@ export default class Timetable extends Vue {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+            }
+
+            &.is-border {
+                border-right: 3px solid #777777;
             }
         }
 

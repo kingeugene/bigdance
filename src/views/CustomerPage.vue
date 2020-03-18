@@ -1,11 +1,11 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
 +b.CoachPage
-    +e.H1.title Тренер
+    +e.H1.title Клиент
     +e.wrap(v-if="loadedInit")
         div
             +e.coachWrap
-                +e.IMG.coach(src="https://ivara.ru/images/new/main_redgirl.png")
+                +e.IMG.coach(:srcset="customer.photo")
                 +e.coachName-wrap
                     +e.coachName {{customer.first_name}} <br> {{customer.second_name}}
                     div Прайс: {{customer.price}}
@@ -52,7 +52,7 @@ import datepicker2 from "vue2-datepicker";
         datepicker2
     }
 })
-export default class CoachPage extends Vue {
+export default class CustomerPage extends Vue {
     @Action getCustomer!: (customer_id: number) => void;
     @Action getRecordCustomer!: ({date, coach, client}: any) => void;
     @Action initBaseTable!: () => void;
@@ -192,7 +192,7 @@ export default class CoachPage extends Vue {
     }
 
     &__coach {
-        width: 200px;
+        width: 260px;
         object-fit: contain;
 
         &Wrap {
