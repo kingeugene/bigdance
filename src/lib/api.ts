@@ -171,39 +171,8 @@ class ApiService {
                 });
     }
 
-    public customerAdd({
-        id_card,
-        first_name,
-        second_name,
-        birth_date,
-        sex,
-        document_id,
-        notes,
-        switch_user,
-        username,
-        password,
-        price,
-        phones,
-    }: any ): any {
-        let data: any = {};
-
-        data["id_card"] = id_card;
-        data["account_id"] = 1;
-        data["first_name"] = first_name;
-        data["second_name"] = second_name;
-        data["switch_user"] = switch_user;
-        data["sex"] = sex ? sex : "m";
-        data["price"] = price ? price : 0;
-        data["phones"] = phones[0] ? phones : ["000"];
-
-
-        if (birth_date) data["birth_date"] = birth_date;
-        if (document_id) data["document_id"] = document_id;
-        if (notes) data["notes"] = notes;
-        if (username) data["username"] = username;
-        if (password) data["password"] = password;
-
-        return axios.post(`${serverName}/v0/clients`, data)
+    public customerAdd(body): any {
+        return axios.post(`${serverName}/v0/clients`, body)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
@@ -253,39 +222,8 @@ class ApiService {
             });
     }
 
-    public coachUpdate({
-        person_id,
-        id_card,
-        first_name,
-        second_name,
-        birth_date,
-        sex,
-        document_id,
-        notes,
-        position,
-        wage,
-        price,
-        style_id,
-        phones,
-        availability,
-    }: any) {
-        return axios.put(`${serverName}/v0/coaches/${person_id}`, {
-            account_id: 1,
-            id_card,
-            first_name,
-            second_name,
-            birth_date,
-            sex,
-            document_id,
-            notes,
-            switch_user: false,
-            position,
-            wage,
-            price,
-            style_id,
-            phones,
-            availability,
-        })
+    public coachUpdate(body, person_id) {
+        return axios.put(`${serverName}/v0/coaches/${person_id}`, body)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });

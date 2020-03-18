@@ -19,6 +19,7 @@ interface customerAddState {
     password: string;
     price:  string;
     phones: string;
+    photo: any;
 }
 
 const module: Module<customerAddState, any> = {
@@ -38,6 +39,7 @@ const module: Module<customerAddState, any> = {
         password: "",
         price:  "",
         phones: "",
+        photo: null,
     },
 
     mutations: {
@@ -89,6 +91,10 @@ const module: Module<customerAddState, any> = {
             state.phones = data;
         },
 
+        setPhotoCustomer(state, data) {
+            state.photo = data;
+        },
+
         clearAll(state) {
             state.email = "";
             state.first_name = "";
@@ -107,21 +113,24 @@ const module: Module<customerAddState, any> = {
         async submit({state, commit, dispatch}) {
             commit("setLoading", true);
 
-            const {data, status} = await api.customerAdd({
-                "account_id": 1,
-                "id_card": state.email,
-                "first_name": state.first_name,
-                "second_name": state.second_name,
-                "birth_date": state.birth_date,
-                "sex": state.sex.code,
-                "document_id": state.document_id,
-                "notes": state.notes,
-                "switch_user": state.switch_user,
-                "username": state.username,
-                "password": state.password,
-                "price":  state.price,
-                "phones": (state.phones).split(" "),
-            });
+            const formData = new FormData();
+
+            formData.append("account_id",  "1");
+            formData.append("id_card",  state.email);
+            formData.append("first_name",  state.first_name);
+            formData.append("second_name",  state.second_name);
+            formData.append("photo",  state.photo);
+            formData.append("birth_date", state.birth_date);
+            formData.append("sex",  state.sex.code);
+            formData.append("document_id",  state.document_id);
+            formData.append("notes",  state.notes);
+            formData.append("switch_user",  Number(state.switch_user).toString());
+            formData.append("username", state.username,);
+            formData.append("password", state.password);
+            formData.append("price",  state.price);
+            formData.append("phones",  JSON.stringify(state.phones.split(" ")));
+
+            const {data, status} = await api.customerAdd(formData);
 
             if (status === 200) {
                 await dispatch("allClients");

@@ -17,6 +17,10 @@ include ../lib/pugDeps.pug
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="secondNameAdd" required)
 
+                +e.labelWrap
+                    +e.LABEL.label(for="photo") Фото*
+                    +e.INPUT.input#photo(accept="image/*" @change="uploadFile" type="file")
+
             +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="birthDate") Дата Рождения
@@ -120,6 +124,10 @@ export default class CustomerAdd extends Vue {
     @State(state => state.customerAdd.phones) phones!: string;
     @Mutation setPhones!: (phones: string) => void;
 
+    @State(state => state.customerAdd.photo) photo!: any;
+    @Mutation setPhotoCustomer!: (phones: any) => void;
+
+
     @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
 
     @Action initBaseTable!: () => void;
@@ -219,6 +227,10 @@ export default class CustomerAdd extends Vue {
 
     set phonesAdd(phones: string) {
         this.setPhones(phones);
+    }
+
+    uploadFile(event) {
+        this.setPhotoCustomer(event.target.files[0])
     }
 
     submitForm(): void {

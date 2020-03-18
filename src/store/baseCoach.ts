@@ -120,22 +120,24 @@ const module: Module<coachState, any> = {
         }) {
             commit("setLoading", true);
 
-            const {data, error} = await api.coachUpdate({
-                person_id,
-                id_card,
-                first_name,
-                second_name,
-                birth_date,
-                sex: sex["code"],
-                document_id,
-                notes,
-                position,
-                wage,
-                price,
-                style_id,
-                phones,
-                availability,
-            });
+            const formData = new FormData();
+
+            formData.append("account_id",  "1");
+            formData.append("id_card",  id_card);
+            formData.append("first_name",  first_name);
+            formData.append("second_name",  second_name);
+            formData.append("birth_date",  birth_date);
+            formData.append("sex",  sex.code);
+            formData.append("document_id",  document_id);
+            formData.append("notes",  notes);
+            formData.append("position",  position);
+            formData.append("wage",  wage);
+            formData.append("price",  price);
+            formData.append("phones",  JSON.stringify(phones));
+            formData.append("availability",  JSON.stringify(availability));
+            formData.append("style_id",  style_id["id"].toString());
+
+            const {data, error} = await api.coachUpdate(formData, person_id);
 
             if (!error) {
                 await dispatch("allCoach");

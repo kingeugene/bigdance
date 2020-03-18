@@ -53,6 +53,9 @@ include ../lib/pugDeps.pug
                 +e.labelWrap
                     +e.LABEL.label(for="secondName") Имя*
                     +e.INPUT.input#secondName(v-model="changeCoach.second_name" required)
+                +e.labelWrap
+                    +e.LABEL.label(for="phones") Телефон
+                    +e.INPUT.input#phones(type="tel" :maxlength="11" v-model="changeCoach.phones")
 
             +e.formWrap
                 +e.labelWrap
@@ -94,7 +97,6 @@ include ../lib/pugDeps.pug
                     )
             +e.formWrap
                 +e.V-SELECT.select#styleId(
-                    label="slot"
                     multiple
                     :options="availabilityDayOption"
                     v-model="changeCoach.availability"

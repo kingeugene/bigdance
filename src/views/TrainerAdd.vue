@@ -18,7 +18,7 @@ include ../lib/pugDeps.pug
                     +e.INPUT.input#secondName(v-model="secondNameAdd" required)
 
                 +e.labelWrap
-                    +e.LABEL.label(for="photo") Фото*
+                    +e.LABEL.label(for="photo") Фото
                     +e.INPUT.input#photo(accept="image/*" @change="uploadFile" type="file")
             +e.formWrap
                 +e.labelWrap
@@ -211,7 +211,7 @@ export default class TrainersAdd extends Vue {
     @Mutation setPhones!: (phones: string) => void;
 
     @State(state => state.trainersAdd.photo) photo!: any;
-    @Mutation setPhoto!: (phones: any) => void;
+    @Mutation setPhotoTrainers!: (phones: any) => void;
 
     @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
     @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
@@ -342,7 +342,7 @@ export default class TrainersAdd extends Vue {
     }
 
     uploadFile(event) {
-        this.setPhoto(event.target.files[0])
+        this.setPhotoTrainers(event.target.files[0])
     }
 
     submitForm(): void {
