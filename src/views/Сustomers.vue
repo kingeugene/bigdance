@@ -77,6 +77,18 @@ include ../lib/pugDeps.pug
                 +e.labelWrap
                     +e.LABEL.label(for="price") Прайс
                     +e.INPUT.input#price(type="number" v-model="changeCustomer.price")
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="username") Логин
+                    +e.INPUT.input#username(v-model="username"  autocomplete="off")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="password") Пароль
+                    +e.INPUT.input#password(type="password" v-model="password"  autocomplete="off")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="photo") Фото
+                    +e.INPUT.input#photo(accept="image/*" @change="uploadFile" type="file")
 
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
 </template>
@@ -93,6 +105,9 @@ import { VueGoodTable } from 'vue-good-table';
     }
 })
 export default class Customers extends Vue {
+    photo: any = null;
+    username: string = "";
+    password: string = "";
     numDeleteRow: number = 0;
     optionSearch: object = {
         enabled: true,
@@ -146,22 +161,24 @@ export default class Customers extends Vue {
     ];
 
     changeCustomer: {
-        account_id: number,
-        birth_date: string,
-        document_id: string,
-        email: string,
-        first_name: string,
-        id: number,
-        notes: string,
-        originalIndex: number,
-        person_id: number,
-        phones: Array<string>,
-        photo: null,
-        price: number,
-        second_name: string,
-        sex: string | {},
-        user_id: number | null,
-        vgt_id: number,
+        account_id: number;
+        birth_date: string;
+        document_id: string;
+        email: string;
+        first_name: string;
+        id: number;
+        notes: string;
+        originalIndex: number;
+        person_id: number;
+        phones: Array<string>;
+        photo: null;
+        price: number;
+        second_name: string;
+        sex: string | {};
+        user_id: number | null;
+        vgt_id: number;
+        username?: string | null;
+        password?: string | null;
     } = {
         account_id: 1,
         birth_date: "",
@@ -210,6 +227,10 @@ export default class Customers extends Vue {
         this.$modal.hide('delete-customer');
     }
 
+    uploadFile(event) {
+        this.photo = event.target.files[0];
+    }
+
     submitChangeCustomer(): void {
         delete this.changeCustomer.user_id;
         delete this.changeCustomer.vgt_id;
@@ -218,8 +239,14 @@ export default class Customers extends Vue {
         delete this.changeCustomer.person_id;
         delete this.changeCustomer.photo;
 
+        const data = this.changeCustomer;
+
+        data.photo = this.photo;
+        data.username = this.username;
+        data.password = this.password;
+
         this.$modal.hide('change-customer');
-        this.customerUpdate(this.changeCustomer);
+        this.customerUpdate(data);
     }
 
     created() {

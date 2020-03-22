@@ -113,21 +113,32 @@ const module: Module<clientsState, any> = {
             notes,
             price,
             phones,
+            photo,
+            username,
+            password,
         }) {
             commit("setLoading", true);
 
-            const {data, status} = await api.customerUpdate({
-                id,
-                id_card,
-                first_name,
-                second_name,
-                birth_date,
-                sex: sex.code,
-                document_id,
-                notes,
-                price,
-                phones,
-            });
+            const formData = new FormData();
+
+            formData.append("account_id",  "1");
+            formData.append("id_card",  id_card);
+            formData.append("first_name",  first_name);
+            formData.append("second_name",  second_name);
+            formData.append("birth_date",  birth_date);
+            formData.append("sex",  sex.code);
+            formData.append("document_id",  document_id);
+            formData.append("notes",  notes);
+            formData.append("price",  price);
+            formData.append("phones",  JSON.stringify(phones));
+            formData.append("photo",  photo);
+
+            if (username && password) {
+                formData.append("username",  username);
+                formData.append("password",  password);
+            }
+
+            const {data, status} = await api.customerUpdate(formData, id);
 
             if (status === 200) {
                 await dispatch("allClients");

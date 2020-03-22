@@ -35,7 +35,7 @@ vmodal(
                         +e.data {{item.description}}
                 +e.btnEdit(v-if="role === 'root'")
                     button.btn.btn-warning(@click="editRecord(index)") Редактировать
-                    button.btn.btn-danger(@click="recordDelete") Удалить
+                    button.btn.btn-danger(@click="recordDelete(item.id)") Удалить
 
             button.btn.btn-success(v-if="role === 'root'" @click="addRecord") Добавить Запись
 </template>
@@ -89,9 +89,9 @@ export default class Record extends Vue {
         this.$emit("addRecord");
     }
 
-    recordDelete() {
+    recordDelete(id) {
         if (window.confirm("Вы действительно хотите уалить Запись?")) {
-            this.deleteRecord(this.recordId);
+            this.deleteRecord(id);
             this.$modal.hide('modal-record');
         }
     }

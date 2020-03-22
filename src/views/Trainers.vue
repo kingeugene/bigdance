@@ -40,7 +40,7 @@ include ../lib/pugDeps.pug
         adaptive
     )
         .close-modal(@click="$modal.hide('change-coach')") +
-        +e.FORM.form(@submit.prevent="submitChangeCoach")
+        +e.FORM.form(@submit.prevent="submitChangeCoach" autocomplete="off")
             +e.formWrap
                 +e.labelWrap
                     +e.LABEL.label(for="email") Номер карты**
@@ -93,8 +93,20 @@ include ../lib/pugDeps.pug
                     +e.LABEL.label(for="styleId") Тип танца
                     +e.V-SELECT.select#styleId(
                         :options="activityStyle"
-                        v-model="changeCoach.style_id"
+                        v-model="changeCoach.style"
                     )
+            +e.formWrap
+                +e.labelWrap
+                    +e.LABEL.label(for="username") Логин
+                    +e.INPUT.input#username(v-model="username"  autocomplete="off")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="password") Пароль
+                    +e.INPUT.input#password(type="password" v-model="password"  autocomplete="off")
+
+                +e.labelWrap
+                    +e.LABEL.label(for="photo") Фото
+                    +e.INPUT.input#photo(accept="image/*" @change="uploadFile" type="file")
             +e.formWrap
                 +e.V-SELECT.select#styleId(
                     multiple
@@ -109,7 +121,6 @@ include ../lib/pugDeps.pug
                             +e.INPUT.switch(v-model="changeCoach.availability[index].from" )
                         +e.LABEL(for="switchUserTrue") Дo
                             +e.INPUT.switch(v-model="changeCoach.availability[index].to" )
-
 
             +e.BUTTON.btn.btn.btn-success(type="submit") Отправить
 
@@ -127,6 +138,9 @@ import { VueGoodTable } from 'vue-good-table';
     }
 })
 export default class Trainers extends Vue {
+    photo: any = null;
+    username: string = "";
+    password: string = "";
     numDeleteRow: number = 0;
     optionSearch: object = {
         enabled: true,
@@ -169,26 +183,28 @@ export default class Trainers extends Vue {
     ];
 
     changeCoach: {
-        account_id: number
-        availability: []
-        birth_date: string
-        document_id: string
-        id_card: string
-        first_name: string
-        id: number
-        notes: string
-        originalIndex: number
-        person_id: number
-        phones: []
-        photo: string | null
-        position: string
-        price: number
-        second_name: string
-        sex: string
-        style_id: number
-        user_id: number
-        vgt_id: number
-        wage: number
+        account_id: number;
+        availability: [];
+        birth_date: string;
+        document_id: string;
+        id_card: string;
+        first_name: string;
+        id: number;
+        notes: string;
+        originalIndex: number;
+        person_id: number;
+        phones: [];
+        photo: string | null;
+        position: string;
+        price: number;
+        second_name: string;
+        sex: string;
+        style_id: number;
+        user_id: number;
+        vgt_id: number;
+        wage: number;
+        username?: string | null;
+        password?: string | null;
     } = {
         person_id: 0,
         position: "",
@@ -285,13 +301,25 @@ export default class Trainers extends Vue {
     }
 
     edit(item: any): void {
-        this.changeCoach = item.row;
+        const data = item.row,
+            style = {
+                label: data.style_name,
+                id : data.style_id,
+            };
+        data.style = style;
+
+        console.log(data);
+        this.changeCoach = data;
         this.$modal.show('change-coach');
     }
 
     showModalDelete(id: number): void {
         this.$modal.show('delete-coach');
         this.numDeleteRow = id;
+    }
+
+    uploadFile(event) {
+        this.photo = event.target.files[0];
     }
 
     deleteRow(): void {
@@ -306,8 +334,14 @@ export default class Trainers extends Vue {
         delete this.changeCoach.account_id;
         delete this.changeCoach.photo;
 
+        const data = this.changeCoach;
+
+        data.photo = this.photo;
+        data.username = this.username;
+        data.password = this.password;
+
         this.$modal.hide('change-coach');
-        this.coachUpdate(this.changeCoach);
+        this.coachUpdate(data);
     }
 
     created() {

@@ -114,9 +114,12 @@ const module: Module<coachState, any> = {
             position,
             wage,
             price,
-            style_id,
+            style,
             phones,
             availability,
+            photo,
+            username,
+            password,
         }) {
             commit("setLoading", true);
 
@@ -127,6 +130,7 @@ const module: Module<coachState, any> = {
             formData.append("first_name",  first_name);
             formData.append("second_name",  second_name);
             formData.append("birth_date",  birth_date);
+            formData.append("photo",  photo);
             formData.append("sex",  sex.code);
             formData.append("document_id",  document_id);
             formData.append("notes",  notes);
@@ -135,11 +139,16 @@ const module: Module<coachState, any> = {
             formData.append("price",  price);
             formData.append("phones",  JSON.stringify(phones));
             formData.append("availability",  JSON.stringify(availability));
-            formData.append("style_id",  style_id["id"].toString());
+            formData.append("style_id",  style["id"].toString());
 
-            const {data, error} = await api.coachUpdate(formData, person_id);
+            if (username && password) {
+                formData.append("username",  username);
+                formData.append("password",  password);
+            }
 
-            if (!error) {
+            const {data, status} = await api.coachUpdate(formData, person_id);
+
+            if (status === 200) {
                 await dispatch("allCoach");
             } else {
                 alert("Тренер не обнавлен");
