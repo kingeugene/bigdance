@@ -185,31 +185,8 @@ class ApiService {
             });
     }
 
-    public customerUpdate({
-              id,
-              id_card,
-              first_name,
-              second_name,
-              birth_date,
-              sex,
-              document_id,
-              notes,
-              price,
-              phones,
-        }: any) {
-        return axios.put(`${serverName}/v0/clients/${id}`, {
-            account_id: 1,
-            id_card,
-            first_name: first_name,
-            second_name: second_name,
-            birth_date: birth_date,
-            sex: sex,
-            document_id: document_id,
-            notes: notes,
-            switch_user: false,
-            price:  price,
-            phones: phones,
-        })
+    public customerUpdate(body, id) {
+        return axios.put(`${serverName}/v0/clients/${id}`, body)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
