@@ -161,7 +161,6 @@
         :time="clickTime"
         :date="dateModal"
         :venue_object_id="currentHall.id"
-        @copyRecord="copyRecord"
         @editRecord="editRecord"
         @addRecord="addRecord"
         )
