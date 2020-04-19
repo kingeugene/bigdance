@@ -121,21 +121,22 @@ const module: Module<clientsState, any> = {
 
             const formData = new FormData();
 
-            formData.append("account_id",  "1");
-            formData.append("id_card",  id_card);
-            formData.append("first_name",  first_name);
-            formData.append("second_name",  second_name);
-            formData.append("birth_date",  birth_date);
-            formData.append("sex",  sex.code);
-            formData.append("document_id",  document_id);
-            formData.append("notes",  notes);
-            formData.append("price",  price);
-            formData.append("phones",  JSON.stringify(phones));
-            formData.append("photo",  photo);
+            formData.append("_method",  "PUT");
+            if (id_card) formData.append("id_card",  id_card);
+            if (first_name) formData.append("first_name",  first_name);
+            if (second_name) formData.append("second_name",  second_name);
+            if (birth_date) formData.append("birth_date",  birth_date);
+            if (sex) formData.append("sex",  sex.code);
+            if (document_id) formData.append("document_id",  document_id);
+            if (notes) formData.append("notes",  notes);
+            if (price) formData.append("price",  price);
+            if (phones) formData.append("phones",  JSON.stringify(phones));
+            if (photo) formData.append("photo",  photo);
 
             if (username && password) {
                 formData.append("username",  username);
                 formData.append("password",  password);
+                formData.append("switch_user",  "1");
             }
 
             const {data, status} = await api.customerUpdate(formData, id);
@@ -143,7 +144,7 @@ const module: Module<clientsState, any> = {
             if (status === 200) {
                 await dispatch("allClients");
             } else {
-                alert("Пользователь не обнавлен")
+                alert("Пользователь не обновлен")
             }
 
             commit("setLoading", false);

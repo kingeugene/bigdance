@@ -125,25 +125,26 @@ const module: Module<coachState, any> = {
 
             const formData = new FormData();
 
-            formData.append("account_id",  "1");
-            formData.append("id_card",  id_card);
-            formData.append("first_name",  first_name);
-            formData.append("second_name",  second_name);
-            formData.append("birth_date",  birth_date);
-            formData.append("photo",  photo);
-            formData.append("sex",  sex.code);
-            formData.append("document_id",  document_id);
-            formData.append("notes",  notes);
-            formData.append("position",  position);
-            formData.append("wage",  wage);
-            formData.append("price",  price);
-            formData.append("phones",  JSON.stringify(phones));
-            formData.append("availability",  JSON.stringify(availability));
-            formData.append("style_id",  style["id"].toString());
+            formData.append('_method', 'PUT');
+            if (id_card) formData.append("id_card",  id_card);
+            if (first_name) formData.append("first_name",  first_name);
+            if (second_name) formData.append("second_name",  second_name);
+            if (birth_date) formData.append("birth_date",  birth_date);
+            if (photo) formData.append("photo",  photo);
+            if (sex) formData.append("sex",  sex.code);
+            if (document_id) formData.append("document_id",  document_id);
+            if (notes) formData.append("notes",  notes);
+            if (position) formData.append("position",  position);
+            if (wage) formData.append("wage",  wage);
+            if (price) formData.append("price",  price);
+            if (phones) formData.append("phones",  JSON.stringify(phones));
+            if (availability) formData.append("availability",  JSON.stringify(availability));
+            if (style) formData.append("style_id",  style["id"].toString());
 
             if (username && password) {
                 formData.append("username",  username);
                 formData.append("password",  password);
+                formData.append("switch_user",  "1");
             }
 
             const {data, status} = await api.coachUpdate(formData, person_id);
@@ -151,7 +152,7 @@ const module: Module<coachState, any> = {
             if (status === 200) {
                 await dispatch("allCoach");
             } else {
-                alert("Тренер не обнавлен");
+                alert("Тренер не обновлен");
             }
 
             commit("setLoading", false);

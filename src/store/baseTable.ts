@@ -240,6 +240,18 @@ const module: Module<baseTableState, any> = {
     },
 
     actions: {
+        async recordCopy({state, commit, dispatch}, id) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.copyRecord(id);
+
+            if (status !== 200 || data.status !== 'ok') {
+                alert("В связи с ограничениями, невозможно скопировать запись на данное время")
+            }
+
+            commit("setLoading", false);
+        },
+
         async createRecord({state, commit, dispatch}, {venue_object_id, activity_id, coaches, clients, number_weeks, description, edit})  {
             commit("setLoading", true);
 

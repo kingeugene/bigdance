@@ -127,6 +127,13 @@ class ApiService {
             });
     }
 
+    public copyRecord(id): any {
+        return axios.get(`${serverName}/v0/records/copy/${id}`)
+            .catch((error: any) => {
+                return Promise.resolve({response: null, errors: error, status: 422});
+            });
+    }
+
     public deleteRecord(id): any {
         return axios.delete(`${serverName}/v0/records/${id}`)
             .catch((error: any) => {
@@ -186,7 +193,7 @@ class ApiService {
     }
 
     public customerUpdate(body, id) {
-        return axios.put(`${serverName}/v0/clients/${id}`, body)
+        return axios.post(`${serverName}/v0/clients/${id}`, body)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
@@ -200,7 +207,7 @@ class ApiService {
     }
 
     public coachUpdate(body, person_id) {
-        return axios.put(`${serverName}/v0/coaches/${person_id}`, body)
+        return axios.post(`${serverName}/v0/coaches/${person_id}`, body)
             .catch((error: any) => {
                 return Promise.resolve({response: null, errors: error, status: 422});
             });
