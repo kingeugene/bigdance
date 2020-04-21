@@ -309,12 +309,12 @@ const module: Module<baseTableState, any> = {
                 commit("setIsMobileChoose", 1);
             }
 
-            let requestStart = [
+            await Promise.all([
                 dispatch("listVenue"),
                 dispatch("getUserInfo"),
-            ];
+            ]);
 
-            let request = [
+            await Promise.all([
                 dispatch("listVenueObject"),
                 dispatch("activitiesType"),
                 dispatch("allClients"),
@@ -322,10 +322,7 @@ const module: Module<baseTableState, any> = {
                 dispatch("listVenueObjectAll"),
                 dispatch("activityStyleTrain"),
                 dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code}),
-            ];
-
-            await Promise.all(requestStart);
-            await Promise.all(request);
+            ]);
 
             commit("setLoading", false);
             commit("setLoadedInit", true);
@@ -450,8 +447,6 @@ const module: Module<baseTableState, any> = {
 
         async listVenueObject({commit, state}) {
             commit("setLoading", true);
-
-
             const {data, status} = await api.showVenueObject(state.currentVenue);
 
             if (status === 200) {
