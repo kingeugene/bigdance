@@ -1,4 +1,4 @@
-const notify = process.env.NODE_ENV !== "production" ? "error" : "off";
+const notify = process.env.NODE_ENV !== "production" ? "off" : "off";
 
 module.exports = {
     root: true,
@@ -39,7 +39,7 @@ module.exports = {
             notify,
             "always",
         ],
-        "no-implicit-dependencies": false,
+        "no-implicit-dependencies": 0,
         "comma-dangle": [
             notify,
             {
@@ -50,8 +50,11 @@ module.exports = {
                 functions: "ignore",
             },
         ],
+        "prefer-const": 0,
+        "prefer-spread": 0,
+        "no-prototype-builtins": 0,
     },
     parserOptions: {
-        parser: "typescript-eslint-parser",
+        parser: "@typescript-eslint/parser",
     },
 };
