@@ -63,12 +63,12 @@ export default class CoachPage extends Vue {
     @Action initBaseTable!: () => void;
 
     @State(state => state.baseCoach.showCoach) coach!: any;
-    @State(state => state.baseTable.allClients) clients!: string[];
-    @State(state => state.baseTable.listVenue) listVenue!: string[];
+    @State(state => state.calendar.allClients) clients!: string[];
+    @State(state => state.calendar.listVenue) listVenue!: string[];
     @State(state => state.baseCoach.recordCoach) recordCoach!: any;
     @State(state => state.baseCoach.customerChoose) customerChoose!: any;
     @State(state => state.baseCoach.dateTimeChoose) dateTimeChoose!: string;
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
 
     @Mutation setCustomerChoosePageCoach!: (customer: {code: string, label: string}) => void;
     @Mutation setDateTimeChoosePageCoach!: (date: string) => void;

@@ -284,8 +284,8 @@ export default class Trainers extends Vue {
         },
     ];
 
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
-    @State(state => state.baseTable.coach) coach!: string[];
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.coach) coach!: string[];
     @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
 
     @Action initBaseTable!: () => void;

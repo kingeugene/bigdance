@@ -198,9 +198,9 @@ export default class Customers extends Vue {
         vgt_id: 0,
     };
 
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
     @State(state => state.profile.loading) loading!: boolean;
-    @State(state => state.baseTable.customers) customers!: string[];
+    @State(state => state.calendar.customers) customers!: string[];
 
     @Action initBaseTable!: () => void;
     @Action customerDelete!: (id: number) => void;

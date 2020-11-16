@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import baseTable from "./baseTable";
+import calendar from "./calendar";
 import baseClients from "./baseClients";
 import baseCoach from "./baseCoach";
 import login from "./login";
@@ -14,7 +14,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store<any>({
     modules: {
-        baseTable,
+        calendar,
         baseClients,
         baseCoach,
         login,

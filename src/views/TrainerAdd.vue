@@ -214,7 +214,7 @@ export default class TrainersAdd extends Vue {
     @Mutation setPhotoTrainers!: (phones: any) => void;
 
     @State(state => state.trainersAdd.activityStyle) activityStyle!: [];
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
 
     @Mutation setAvailability!: (availability: {slot: string, from: string, to: string}[] ) => void;
 

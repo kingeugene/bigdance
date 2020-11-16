@@ -1,16 +1,21 @@
 import { Module } from 'vuex';
 import api from "@/lib/api"
+import {createForm, maxLength, required} from "@/store/lib/vuex-form";
+import {defaultVenueColor} from "@/constants";
 
 interface baseTableState {
+    listVenue: TypeVenues;
+    listHalsVenueAll: TypeHalsVenueApi[];
+
+
+
     show: boolean;
     account_id: number;
     currentDate: string;
     currentVenueColor: number;
     currentVenue: number;
     currentColor: string;
-    listVenue: [];
-    listVenueObject: [];
-    listVenueObjectAll: [];
+
     activitiesType: [];
     allClients: [];
     customers: [];
@@ -44,14 +49,16 @@ interface baseTableState {
     weeks: number;
     descriptionRecord: string,
     loadedInit: boolean;
-    settingsVenue: {};
     week_day: string;
     role: string;
-
 }
 
 const module: Module<baseTableState, any> = {
     state: {
+        listVenue: {},
+        listHalsVenueAll: [],
+
+
         show: true,
         account_id: 1,
         currentDate: "",
@@ -68,9 +75,6 @@ const module: Module<baseTableState, any> = {
         },
         isMobileChoose: 0,
         currentColor: "#2f628e",
-        listVenue: [],
-        listVenueObject: [],
-        listVenueObjectAll: [],
         activitiesType: [],
         allClients: [],
         customers: [],
@@ -103,11 +107,15 @@ const module: Module<baseTableState, any> = {
         },
         weeks: 1,
         descriptionRecord: "",
-        settingsVenue: {},
         week_day: "Понедельник",
         role: "",
 },
-
+    getters: {
+        colorVenue: state => state.listVenue[state.currentVenue].color,
+        intervalVenue: state => state.listVenue[state.currentVenue].interval,
+        startTimeVenue: state => state.listVenue[state.currentVenue].start_time_formated,
+        endTimeVenue: state => state.listVenue[state.currentVenue].end_time_formated,
+    },
     mutations: {
         setCurrentDate(state, data) {
             state.currentDate = data
@@ -120,10 +128,6 @@ const module: Module<baseTableState, any> = {
 
         setDateTimeChoose(state, data) {
             state.dateTimeChoose = data;
-        },
-
-        setCurrentVenueColor(state, data) {
-          state.currentVenueColor = data;
         },
 
         setCoachChoose(state, data) {
@@ -150,12 +154,8 @@ const module: Module<baseTableState, any> = {
             state.listVenue = data;
         },
 
-        setListVenueObject(state, data) {
-            state.listVenueObject = data;
-        },
-
-        setListVenueObjectAll(state, data) {
-            state.listVenueObjectAll = data;
+        setListHalsVenueAll(state, data) {
+            state.listHalsVenueAll = data;
         },
 
         setActivitiesType(state, data) {
@@ -222,10 +222,6 @@ const module: Module<baseTableState, any> = {
             state.descriptionRecord = data;
         },
 
-        setSettingsVenue(state, data) {
-            state.settingsVenue = data;
-        },
-
         setIsMobileChoose(state, data) {
             state.isMobileChoose = data;
         },
@@ -240,6 +236,64 @@ const module: Module<baseTableState, any> = {
     },
 
     actions: {
+        async getListVenue({commit}) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.getListVenues();
+
+            if (status === 200) {
+                const response = parseVenues(data!);
+
+                commit("setListVenue", response);
+                commit("setCurrentVenue", data![0].id);
+            }
+
+            commit("setLoading", false);
+        },
+
+        async getListHalsVenueAll({commit}) {
+            commit("setLoading", true);
+
+            const {data, status} = await api.getListHalsVenue();
+
+            if (status === 200) {
+                commit("setListHalsVenueAll", parseHals(data!));
+            }
+
+            commit("setLoading", false);
+        },
+
+        async initBaseTable({dispatch, commit, state}) {
+            commit("setLoadedInit", false);
+            commit("setLoading", true);
+
+            if (window.innerWidth < 768) {
+                commit("setIsMobileChoose", 1);
+            }
+
+            await Promise.all([
+                dispatch("getListVenue"),
+                dispatch("getUserInfo"),
+            ]);
+
+            await Promise.all([
+                dispatch("activitiesType"),
+                dispatch("allClients"),
+                dispatch("allCoach"),
+                dispatch("getListHalsVenueAll"),
+                dispatch("activityStyleTrain"),
+                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code}),
+            ]);
+
+            commit("setLoading", false);
+            commit("setLoadedInit", true);
+        },
+
+
+
+
+
+
         async recordCopy({state, commit, dispatch}, id) {
             commit("setLoading", true);
 
@@ -301,32 +355,7 @@ const module: Module<baseTableState, any> = {
             commit("setCurrentDate", `${year}-${month}-${day}`);
         },
 
-        async initBaseTable({dispatch, commit, state}) {
-            commit("setLoadedInit", false);
-            commit("setLoading", true);
 
-            if (window.innerWidth < 768) {
-                commit("setIsMobileChoose", 1);
-            }
-
-            await Promise.all([
-                dispatch("listVenue"),
-                dispatch("getUserInfo"),
-            ]);
-
-            await Promise.all([
-                dispatch("listVenueObject"),
-                dispatch("activitiesType"),
-                dispatch("allClients"),
-                dispatch("allCoach"),
-                dispatch("listVenueObjectAll"),
-                dispatch("activityStyleTrain"),
-                dispatch("getListRecord", {venue_id: state.currentVenue, date: state.dateTimeChoose, coach: state.coachChoose.code, client: state.customerChoose.code}),
-            ]);
-
-            commit("setLoading", false);
-            commit("setLoadedInit", true);
-        },
 
 //GET
         async getListRecord({commit, state, dispatch}, {venue_id, date, coach, client, slide = ""}) {
@@ -360,6 +389,7 @@ const module: Module<baseTableState, any> = {
 
         dataForItem({commit, state}) {
             commit("setLoading", true);
+
             const dataTable = state.listRecord,
                 dateArr: string[] = [],
                 dataItem: any = [];
@@ -384,8 +414,8 @@ const module: Module<baseTableState, any> = {
                         nameCoach = dataTable[key][indexItem]["coaches"],
                         nameCustomer = dataTable[key][indexItem]["clients"],
                         id = dataTable[key][indexItem]["id"],
-                        startVenue = state.settingsVenue[state.currentVenue].start_time,
-                        oneMinInPx = 60 / state.settingsVenue[state.currentVenue].interval;
+                        startVenue = state.listVenue[state.currentVenue].start_time,
+                        oneMinInPx = 60 / state.listVenue[state.currentVenue].interval;
 
                     const startPosition = (startTrain - startVenue) * oneMinInPx,
                         heightRecord = (endTrain - startTrain) * oneMinInPx - 1;
@@ -404,55 +434,6 @@ const module: Module<baseTableState, any> = {
             }
 
             commit("setAllDataItem", {dateArr, dataItem});
-            commit("setLoading", false);
-        },
-
-        async listVenue({commit, state}) {
-            commit("setLoading", true);
-
-            const {data, status} = await api.listVenues();
-
-            if (status === 200) {
-                const arrSettings = {};
-
-                for (let key in data) {
-                    const id = data[key].id;
-
-                    arrSettings[id] = {
-                        interval: data[key].interval,
-                        start_time: data[key].start_time_formated,
-                        end_time: data[key].end_time_formated,
-                    }
-                }
-
-                commit("setSettingsVenue", arrSettings);
-                commit("setListVenue", data);
-                commit("setCurrentVenue", data[0].id);
-            }
-
-            commit("setLoading", false);
-        },
-
-        async listVenueObjectAll({commit, state}) {
-            commit("setLoading", true);
-
-            const {data, status} = await api.listVenueObject();
-
-            if (status === 200) {
-                commit("setListVenueObjectAll", data);
-            }
-
-            commit("setLoading", false);
-        },
-
-        async listVenueObject({commit, state}) {
-            commit("setLoading", true);
-            const {data, status} = await api.showVenueObject(state.currentVenue);
-
-            if (status === 200) {
-                commit("setListVenueObject", data);
-            }
-
             commit("setLoading", false);
         },
 
@@ -506,7 +487,48 @@ const module: Module<baseTableState, any> = {
 
             commit("setLoading", false);
         },
+    },
+    modules: {
+        filterTable: createForm("filterTable", {
+            fields: {
+                dateTime: {
+                    type: String,
+                },
+                selectedCoach: {
+                    type: Object,
+                },
+                selectedCustomer: {
+                    type: Object,
+                }
+            },
+        })
     }
 };
+
+function parseVenues(data: TypeVenuesApi[]): TypeVenues {
+    const arrSettings: TypeVenues = {};
+
+    for (const key in data) {
+        const id = data[key].id;
+
+        arrSettings[id] = data[key];
+    }
+
+    return arrSettings;
+}
+
+function parseHals(data: TypeHalsVenueApi[]): TypeHalsState {
+    const dataHals: TypeHalsState = {};
+
+     data.forEach(item => {
+         if (!dataHals[item.venue_id]) {
+             dataHals[item.venue_id] = [];
+         }
+
+         dataHals[item.venue_id].push(item);
+     });
+
+     return dataHals;
+}
 
 export default module;

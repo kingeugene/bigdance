@@ -3,15 +3,15 @@ include ../../lib/pugDeps.pug
 
 +b.BaseLayout
     +e.BASEHEADER.header
-    +e.MAIN.main
+    +e.MAIN.main(v-if="loadedInit")
         +e.container(:class="{'container': haveContainerClass}"): slot/
-    loading(:active.sync="loading")
+    loading(:active="!loadedInit || loading")
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import baseheader from "@/components/base/BaseHeader.vue";
-import {State} from "vuex-class";
+import {Action, State, Getter} from "vuex-class";
 
 @Component({
     components: {
@@ -20,6 +20,11 @@ import {State} from "vuex-class";
 })
 export default class BaseLayout extends Vue {
     @State(state => state.profile.loading) loading!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
+
+    @Getter("isAuthenticated") isAuthenticated!: boolean;
+
+    @Action initBaseTable!: () => void;
 
     get haveContainerClass(): boolean {
         switch (this.$route.name) {
@@ -37,6 +42,13 @@ export default class BaseLayout extends Vue {
             document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "";
+        }
+    }
+
+    created() {
+        if (!this.loadedInit && this.isAuthenticated) {
+            console.log(this.$route.name);
+            this.initBaseTable();
         }
     }
 }

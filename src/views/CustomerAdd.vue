@@ -128,7 +128,7 @@ export default class CustomerAdd extends Vue {
     @Mutation setPhotoCustomer!: (phones: any) => void;
 
 
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
 
     @Action initBaseTable!: () => void;
     @Action submit!: () => void;

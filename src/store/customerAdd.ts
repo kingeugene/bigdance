@@ -1,6 +1,5 @@
 import { Module } from 'vuex';
 import api from "@/lib/api";
-import timetable from "@/store/baseTable";
 import router from "@/router";
 
 interface customerAddState {

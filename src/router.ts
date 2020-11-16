@@ -29,7 +29,7 @@ const router = new Router({
       meta: {
         title: "Расписание",
       },
-      component: () => import(/* webpackChunkName: "about" */ './views/Timetable.vue'),
+      component: () => import(/* webpackChunkName: "about" */ './views/WelcomePage.vue'),
       beforeEnter: ifAuthenticated,
     },
     {

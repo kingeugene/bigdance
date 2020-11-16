@@ -36,7 +36,7 @@ const module: Module<settingsState, any> = {
             const {data, status} = await api.createHall({venue_id, name, id});
 
             if (status === 200) {
-                dispatch("listVenueObjectAll");
+                dispatch("getListHalsVenueAll");
             } else {
                 alert("Студия не создана");
             }
@@ -92,7 +92,7 @@ const module: Module<settingsState, any> = {
             const {data, status} = await api.deleteHall(id);
 
             if (status === 200) {
-                dispatch("listVenueObjectAll");
+                dispatch("getListHalsVenueAll");
             } else {
                 alert("Зал не удален");
             }

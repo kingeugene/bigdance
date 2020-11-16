@@ -37,8 +37,8 @@ import {} from "vuex";
 export default class BaseHeader extends Vue {
     menuOpen: boolean = false;
 
-    @State(state => state.baseTable.show) showFilter!: boolean;
-    @State(state => state.baseTable.role) role!: string;
+    @State(state => state.calendar.show) showFilter!: boolean;
+    @State(state => state.calendar.role) role!: string;
     @State(state => state.login.token) token!: string;
 
     @Mutation setShow!: () => void;

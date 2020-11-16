@@ -17,7 +17,6 @@ const axios = require('axios').default;
 export default class App extends Vue {
     @Action logout!: () => void;
 
-
     created() {
         let currentThis = this;
 

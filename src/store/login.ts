@@ -1,6 +1,7 @@
 import { Module } from 'vuex';
 import api from "@/lib/api"
 import router from "@/router";
+import {createForm, email, maxLength, password, required} from "@/store/lib/vuex-form";
 const axios = require('axios').default;
 
 interface loginState {
@@ -43,10 +44,12 @@ const module: Module<loginState, any> = {
     },
 
     actions: {
-        async submitForm({commit, state}, body) {
+        async submitForm({commit, getters}) {
             commit("auth_request");
             commit("setLoading", true);
-            const { data, errors, status } = await api.login(body);
+
+            let { name, password } = getters["loginForm/allFields"];
+            const { data, errors } = await api.login({name, password});
 
             if (errors) {
                 localStorage.removeItem('user-token');
@@ -79,7 +82,31 @@ const module: Module<loginState, any> = {
                 router.push('/login').catch(err => {});
             }
         }
+    },
+    modules: {
+        loginForm: createForm("loginForm", {
+            fields: {
+                name: {
+                    type: String,
+                    validators: [
+                        required(),
+                        maxLength(255),
+                    ]
+                },
+                password: {
+                    type: String,
+                    validators: [
+                        required(),
+                    ],
+                },
+            },
+            onSubmit({dispatch}) {
+                dispatch("submitForm", {}, { root: true });
+            }
+        })
     }
 };
+
+
 
 export default module;

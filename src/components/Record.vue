@@ -1,44 +1,44 @@
 <template lang="pug">
-    include ../lib/pugDeps.pug
-    vmodal(
+include ../lib/pugDeps.pug
+vmodal(
     name="modal-record"
     height="555"
     width="900"
     :draggable="!isMobileChoose"
     adaptive
     scrollable
-    )
-        .close-modal(@click="$modal.hide('modal-record')") +
-        +b.Record
-            +e.H4.title Запись
-            template(v-if="!loading")
-                template(v-for="(item, index) in record")
-                    +e.wrap
-                        +e.labelWrap
-                            +e.label Дата и Время
-                            +e.data {{item.date}} </br> {{minInTime(item.start_time)}} - {{minInTime(item.end_time)}}
+)
+    .close-modal(@click="$modal.hide('modal-record')") +
+    +b.Record
+        +e.H4.title Запись
+        template(v-if="!loading")
+            template(v-for="(item, index) in record")
+                +e.wrap
+                    +e.labelWrap
+                        +e.label Дата и Время
+                        +e.data {{item.date}} </br> {{minInTime(item.start_time)}} - {{minInTime(item.end_time)}}
 
-                        +e.labelWrap
-                            +e.label Тип
-                            +e.data {{item.activity_type_name}}
+                    +e.labelWrap
+                        +e.label Тип
+                        +e.data {{item.activity_type_name}}
 
-                        +e.labelWrap(v-for="itemCustomer in item.clients")
-                            +e.label Клиент
-                            +e.data {{itemCustomer.first_name}} {{itemCustomer.second_name}} <br/> Прайс: {{itemCustomer.client_price}} <br/> Тел: {{itemCustomer.phone}}
+                    +e.labelWrap(v-for="itemCustomer in item.clients")
+                        +e.label Клиент
+                        +e.data {{itemCustomer.first_name}} {{itemCustomer.second_name}} <br/> Прайс: {{itemCustomer.client_price}} <br/> Тел: {{itemCustomer.phone}}
 
-                        +e.labelWrap(v-for="itemCoach in item.coaches")
-                            +e.label Тренер
-                            +e.data {{itemCoach.first_name}} {{itemCoach.second_name}} <br/> Прайс: {{itemCoach.coach_price}} <br/> Тел: {{itemCoach.phone}}
+                    +e.labelWrap(v-for="itemCoach in item.coaches")
+                        +e.label Тренер
+                        +e.data {{itemCoach.first_name}} {{itemCoach.second_name}} <br/> Прайс: {{itemCoach.coach_price}} <br/> Тел: {{itemCoach.phone}}
 
-                        +e.labelWrap
-                            +e.label Заметки
-                            +e.data {{item.description}}
-                    +e.btnEdit(v-if="role === 'root'")
-                        button.btn.btn-primary(@click="copyRecord(item.id)") Скопировать на следующую неделю
-                        button.btn.btn-warning(@click="editRecord(index)") Редактировать
-                        button.btn.btn-danger(@click="recordDelete(item.id)") Удалить
+                    +e.labelWrap
+                        +e.label Заметки
+                        +e.data {{item.description}}
+                +e.btnEdit(v-if="role === 'root'")
+                    button.btn.btn-primary(@click="copyRecord(item.id)") Скопировать на следующую неделю
+                    button.btn.btn-warning(@click="editRecord(index)") Редактировать
+                    button.btn.btn-danger(@click="recordDelete(item.id)") Удалить
 
-                button.btn.btn-success(v-if="role === 'root'" @click="addRecord") Добавить Запись
+            button.btn.btn-success(v-if="role === 'root'" @click="addRecord") Добавить Запись
 </template>
 
 <script lang="ts">
@@ -56,10 +56,10 @@
         @Action deleteRecord!: (id: string) => void;
         @Action recordCopy!: (id: string) => void;
 
-        @State(state => state.baseTable.role) role!: string;
+        @State(state => state.calendar.role) role!: string;
         @State(state => state.profile.loading) loading!: boolean;
         @State(state => state.record.chooseRecord) record!: {};
-        @State(state => state.baseTable.isMobileChoose) isMobileChoose!: any;
+        @State(state => state.calendar.isMobileChoose) isMobileChoose!: any;
 
 
         @Watch("time")

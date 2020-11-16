@@ -1,29 +1,46 @@
 <template lang="pug">
 include ../lib/pugDeps.pug
+
 +b.Auth
-    +e.FORM.form(@submit.prevent="submitForm({name: name, password: password})" novalidate="novalidate")
+    +e.FORM.form(@submit.prevent="submit" novalidate="novalidate")
         +e.H2.header Логин
         +e.subHeader заполните все поля
-        +e.LABEL.label(for="Auth__login") Логин
-        +e.INPUT.input#Auth__login(type="text" v-model="name" autocomplete="off")
-        +e.LABEL.label(for="Auth__password") Пароль
-        +e.INPUT.input#Auth__password(type="password" v-model="password")
+        baseinput(
+            :formKey="formKey"
+            label="Логин"
+            name="name"
+            v-model="name"
+        )
+        baseinput(
+            :formKey="formKey"
+            label="Пароль"
+            name="password"
+            v-model="password"
+        )
         +e.valid {{ validLogin }}
         +e.BUTTON.button.btn.btn-success(type="submit") Вход
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { State, Mutation, Getter, Action } from "vuex-class";
+import {Component, Vue} from 'vue-property-decorator';
+import {Action, State} from "vuex-class";
+import {mapFieldsToComputed} from "@/store/lib/vuex-form";
 
-@Component
+@Component({
+    components: {
+        baseinput: () => import(/* webpackChunkName: "components" */ "@/components/base/BaseInput.vue"),
+    },
+    computed: mapFieldsToComputed("loginForm", [
+        "name",
+        "password",
+    ]),
+})
 export default class Login extends Vue {
-    name: string = "";
-    password: string = "";
+    formKey = "loginForm";
 
     @State(state => state.login.validLogin) validLogin!: string;
 
-    @Action submitForm!: (o: {name: string; password: string;}) => void;
+    @Action("loginForm/submit") submit!: () => void;
 }
 </script>
 

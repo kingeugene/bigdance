@@ -1,22 +1,41 @@
 import Vue from "vue";
+import {AxiosRequestConfig} from "axios";
 const axios = require('axios').default,
     serverName = process.env.VUE_APP_NAME_SERVE;
 
+type Response<T = {}> = Promise<CommonResponse<T>>;
 
 class ApiService {
-    public login(body: any): any {
-        return axios.post(`${serverName}/login`, body)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+    private get(url: string) {
+        return axios
+            .get(url)
+            .catch((error) => Promise.resolve({response: null, errors: error, status: 422}));
+    }
 
+    private post(url: string, data?) {
+        return axios
+            .post(url, data)
+            .catch((error) => Promise.resolve({response: null, errors: error, status: 422}));
+    }
+
+    private put(url: string, data?) {
+        return axios
+            .put(url, data)
+            .catch((error) => Promise.resolve({response: null, errors: error, status: 422}));
+    }
+
+    private delete(url: string) {
+        return axios
+            .delete(url)
+            .catch((error) => Promise.resolve({response: null, errors: error, status: 422}));
+    }
+
+    public login(body: any): any {
+        return this.post(`${serverName}/login`, body);
     }
 
     public logout(): any {
-        return axios.post(`${serverName}/logout`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});;
-            });
+        return this.post(`${serverName}/logout`);
     }
 
     public createVenue({name, location, color, start_time, end_time, interval, id}: any):any {
@@ -31,81 +50,50 @@ class ApiService {
         if (color) dataArr["color"] = color;
 
         if (id) {
-            return axios.put(`${serverName}/v0/venues/${id}`, dataArr);
+            return this.put(`${serverName}/v0/venues/${id}`, dataArr);
         }
 
-        return axios.post(`${serverName}/v0/venues`, dataArr)
-            .catch((error: any) => {
-                  return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/venues`, dataArr);
     }
 
     public deleteVenue(id: number) {
-        return axios.delete(`${serverName}/v0/venues/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
-
+        return this.delete(`${serverName}/v0/venues/${id}`);
     }
 
     public createHall({venue_id, name, id}: any):any {
         if (id) {
-            return axios.put(`${serverName}/v0/venues/objects/${id}`, {venue_id, name});
+            return this.put(`${serverName}/v0/venues/objects/${id}`, {venue_id, name});
         }
 
-        return axios.post(`${serverName}/v0/venues/objects`, {venue_id, name})
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/venues/objects`, {venue_id, name});
     }
 
     public deleteHall(id: number) {
-        return axios.delete(`${serverName}/v0/venues/objects/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.delete(`${serverName}/v0/venues/objects/${id}`);
     }
 
     public createStyleDance({label, id}: any): any {
         if (id) {
-            return axios.put(`${serverName}/v0/activities/style/${id}`, {"account_id": 1, name: label})
-                .catch((error: any) => {
-                    return Promise.resolve({response: null, errors: error, status: 422});
-                });
+            return this.put(`${serverName}/v0/activities/style/${id}`, {"account_id": 1, name: label});
         }
 
-        return axios.post(`${serverName}/v0/activities/style`, {"account_id": 1, name: label})
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/activities/style`, {"account_id": 1, name: label});
     }
 
     public deleteStyleDance(id: number) {
-        return axios.delete(`${serverName}/v0/activities/style/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.delete(`${serverName}/v0/activities/style/${id}`);
     }
 
     public createTypeDance({label, color, block, id}: any): any {
         if (id) {
-            return axios.put(`${serverName}/v0/activities/type/${id}`, {"account_id": 1, name: label, color, block})
-                .catch((error: any) => {
-                    return Promise.resolve({response: null, errors: error, status: 422});
-                });
+            return this.put(`${serverName}/v0/activities/type/${id}`, {"account_id": 1, name: label, color, block});
         }
 
-        return axios.post(`${serverName}/v0/activities/type`, {"account_id": 1, name: label, color, block})
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/activities/type`, {"account_id": 1, name: label, color, block});
     }
 
     public deleteTypeDance(id: number) {
-        return axios.delete(`${serverName}/v0/activities/type/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.delete(`${serverName}/v0/activities/type/${id}`);
     }
 
     public createRecord({venue_object_id, activity_id, color, start_time, end_time, status_record, cancelled_at, coaches, clients, number_weeks, description, edit}: any): any {
@@ -128,112 +116,63 @@ class ApiService {
     }
 
     public copyRecord(id): any {
-        return axios.get(`${serverName}/v0/records/copy/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0/records/copy/${id}`);
     }
 
     public deleteRecord(id): any {
-        return axios.delete(`${serverName}/v0/records/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.delete(`${serverName}/v0/records/${id}`);
     }
 
-    public listVenues(): any {
-        return axios.get(`${serverName}/v0/venues`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+    public getListVenues(): Response<TypeVenuesApi[]> {
+        return this.get(`${serverName}/v0/venues`);
     }
 
-    public showVenueObject(venue_id: number): any {
-        return axios.get(`${serverName}/v0/venues/objects?venue_id=${venue_id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
-    }
-
-    public listVenueObject(): any {
-        return axios.get(`${serverName}/v0/venues/objects`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+    public getListHalsVenue(): Response<TypeHalsVenueApi[]> {
+        return this.get(`${serverName}/v0/venues/objects`);
     }
 
     public activitiesType(): any {
-        return axios.get(`${serverName}/v0/activities/type`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0/activities/type`);
     }
 
     public createClient(customer_id?: number): any {
         return customer_id
-            ? axios.get(`${serverName}/v0/clients/${customer_id}`)
-            : axios.get(`${serverName}/v0/clients`)
-                .catch((error: any) => {
-                    return Promise.resolve({response: null, errors: error, status: 422});
-                });
+            ? this.get(`${serverName}/v0/clients/${customer_id}`)
+            : this.get(`${serverName}/v0/clients`);
     }
 
     public customerAdd(body): any {
-        return axios.post(`${serverName}/v0/clients`, body)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/clients`, body);
     }
 
     public customerDelete(id: number) {
-        return axios.delete(`${serverName}/v0/clients/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.delete(`${serverName}/v0/clients/${id}`);
     }
 
     public customerUpdate(body, id) {
-        return axios.post(`${serverName}/v0/clients/${id}`, body)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/clients/${id}`, body);
     }
 
     public coachAdd(body): any {
-        return axios.post(`${serverName}/v0/coaches`, body)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/coaches`, body);
     }
 
     public coachUpdate(body, person_id) {
-        return axios.post(`${serverName}/v0/coaches/${person_id}`, body)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.post(`${serverName}/v0/coaches/${person_id}`, body);
     }
 
     public coachDelete(id: number) {
-        return axios.delete(`${serverName}/v0/coaches/${id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.delete(`${serverName}/v0/coaches/${id}`);
     }
 
     public showAllCoach(coach_id?: number): any {
         return coach_id
-            ? axios.get(`${serverName}/v0/coaches/${coach_id}`)
-            : axios.get(`${serverName}/v0/coaches`)
-                .catch((error: any) => {
-                    return Promise.resolve({response: null, errors: error, status: 422});
-                });
+            ? this.get(`${serverName}/v0/coaches/${coach_id}`)
+            : this.get(`${serverName}/v0/coaches`);
     }
 
     public activityStyle(): any {
-        return axios.get(`${serverName}/v0/activities/style`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0/activities/style`);
     }
 
     public listRecord({venue_id = 3, date, coach, client, mobile, slide}: any): any {
@@ -243,44 +182,29 @@ class ApiService {
             mobileR = mobile ? `&mobile=${mobile}` : "",
             slideR = slide ? `&slide=${slide}` : "" ;
 
-        return axios.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}${slideR}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0?venue_id=${venue_id}${dateR}${coachR}${clientR}${mobileR}${slideR}`);
     }
 
     public listRecordCoach({date, coach, client}: any): any {
         let dateR = date ? `&date=${date}` : "",
           clientR = client ? `&client=${client}` : "";
 
-        return axios.get(`${serverName}/v0?coach=${coach}${dateR}${clientR}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0?coach=${coach}${dateR}${clientR}`);
     }
 
     public listRecordCustomer({date, client, coach}: any): any {
         let dateR = date ? `&date=${date}` : "",
             coachR = coach ? `&coach=${coach}` : "";
 
-        return axios.get(`${serverName}/v0?client=${client}${dateR}${coachR}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0?client=${client}${dateR}${coachR}`);
     }
 
     public recordOne({date, time, venue_object_id}): any {
-        return axios.get(`${serverName}/v0?date=${date}&time=${time}&venue_object_id=${venue_object_id}`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/v0?date=${date}&time=${time}&venue_object_id=${venue_object_id}`);
     }
 
     public userSettings(): any {
-        return axios.get(`${serverName}/user/info`)
-            .catch((error: any) => {
-                return Promise.resolve({response: null, errors: error, status: 422});
-            });
+        return this.get(`${serverName}/user/info`);
     }
 }
 

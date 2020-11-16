@@ -58,12 +58,12 @@ export default class CustomerPage extends Vue {
     @Action initBaseTable!: () => void;
 
     @State(state => state.baseClients.showCustomer) customer!: any;
-    @State(state => state.baseTable.allCoach) coach!: string[];
-    @State(state => state.baseTable.listVenue) listVenue!: string[];
+    @State(state => state.calendar.allCoach) coach!: string[];
+    @State(state => state.calendar.listVenue) listVenue!: string[];
     @State(state => state.baseClients.recordCustomer) recordCustomer!: any;
     @State(state => state.baseClients.coachChoose) coachChoose!: any;
     @State(state => state.baseClients.dateTimeChoose) dateTimeChoose!: string;
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
 
     @Mutation setCoachChoosePageCustomer!: (customer: {code: string, label: string}) => void;
     @Mutation setDateTimeChoosePageCustomer!: (date: string) => void;

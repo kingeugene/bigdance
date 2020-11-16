@@ -280,11 +280,11 @@ export default class Settings extends Vue {
         },
     ];
 
-    @State(state => state.baseTable.listVenue) venueList!: string[];
-    @State(state => state.baseTable.listVenueObjectAll) hallList!: string[];
-    @State(state => state.baseTable.activitiesType) typeDanceList!: string[];
+    @State(state => state.calendar.listVenue) venueList!: string[];
+    @State(state => state.calendar.listHalsVenueAll) hallList!: string[];
+    @State(state => state.calendar.activitiesType) typeDanceList!: string[];
     @State(state => state.trainersAdd.activityStyle) styleDanceList!: [];
-    @State(state => state.baseTable.loadedInit) loadedInit!: boolean;
+    @State(state => state.calendar.loadedInit) loadedInit!: boolean;
 
     @Action initBaseTable!: () => void;
     @Action venueCreate!: ({name, location, color, start_time, end_time, interval}: any) => void;

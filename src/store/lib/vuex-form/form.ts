@@ -1,5 +1,4 @@
 import { ActionContext, Commit, Dispatch, Module } from "vuex";
-// @ts-ignore
 import { Map, Set } from "immutable";
 import { isString, debounce, isFunction, isArray } from "lodash";
 
@@ -465,6 +464,10 @@ export class Form<TFields = any> implements Module<FormState<TFields>, any> {
 }
 
 export function createForm<TFields>(name: string, config): Form<TFields> {
+    if (!window.FORMS) {
+        window.FORMS = [];
+    }
+
     window.FORMS.push(name);
 
     return new Form(config);
