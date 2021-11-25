@@ -243,6 +243,7 @@
         @State(state => state.baseTable.settingsVenue) settingsVenue!: {};
         @State(state => state.baseTable.week_day) week_day!: string;
         @State(state => state.record.chooseRecord) record!: {};
+        @State(state => state.baseTable.role) role!: string;
 
         @Mutation setDataTable!: ({}) => void;
         @Mutation setCurrentVenue!: (id: number) => void;
@@ -729,11 +730,17 @@
                         return;
                     }
 
+                    let namesCoach = '';
+
+                    if (this.role === "root") {
+                      namesCoach = record[5].map(item => item.second_name).join(', ');
+                    }
+
                     itemData!.style.top = record[0] + "px";
                     itemData!.style.height = record[1] + "px";
                     itemData!.style.background = record[2];
                     itemData.setAttribute("data-id", record[7]);
-                    itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])}`;
+                    itemData!.innerHTML = `${this.minInTime(record[3])}-${this.minInTime(record[4])}<br /> ${namesCoach}`;
                     itemData!.classList.add("is-record");
 
                     dataAdd!.appendChild(itemData);
